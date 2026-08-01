@@ -1,32 +1,43 @@
+
+Todfo dark white mode clonen
+
+:root {
+  --bg-color: rgb(0, 0, 0);
+  --default-text: rgb(210, 210, 210);
+  --header-title-text:rgb(40,40,40);
+}
+
 html {
-  background-color: #f1f5f9;
-  font-family: sans-serif;
+  position:relative;
+  min-height:100%
+
 }
 
 body {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 80ch;
-  padding: 1rem;
-  line-height: 1.5;
+  background-color: var(--bg-color);
+  margin:0 0 calc(1em + 10px);
+  font-family: serif;
+  color: var(--default-text); 
 }
 
-* {
-  box-sizing: border-box;
-}
+/* header styles */
 
-h1 {
-  margin: 1rem 0;
-  font-size: 2.5rem;
+header h1 {
+  text-align:center;
+  margin-top:15px;
+  margin-bottom:0;
+  font-size:3em;
+  font-weight:400;
+  color:var(--header-title-text)
 }
 
 
 /* nav styles */
 
-.nav-links {
-  width: 100%;
-  display: none;
-  margin: 0;
+header nav {
+  display:flex;
+  flex-flow:row wrap;
+  justify-content:space-around
 }
 
 .nav-links a {
