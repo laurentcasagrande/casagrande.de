@@ -180,18 +180,6 @@ header nav a:hover {
   text-decoration: underline;
 }
 
-
-
-/* main */
-
-BaseLayout {
-  width: 90%;
-  margin: auto;
-  margin-bottom: 4em;
-  color: var(--default-text);
-}
-
-
 /* Footer */
 
 footer {
@@ -204,4 +192,276 @@ footer {
 
 footer p {
   color: var(--default-text);
+}
+
+/* ========================================
+   Markdown blog posts
+   ======================================== */
+
+.blog-post {
+  width: 90%;
+  margin: 0 auto 4em;
+  padding: 0;
+  color: var(--default-text);
+}
+
+.markdown-content {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+/* Post title */
+
+.markdown-content > h1:first-child {
+  margin-top: 0;
+  margin-bottom: 0.67em;
+
+  font-size: 2em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Headings */
+
+.markdown-content h2 {
+  margin-top: 0.83em;
+  margin-bottom: 0.83em;
+
+  font-size: 1.5em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.markdown-content h3 {
+  margin-top: 1em;
+  margin-bottom: 1em;
+
+  font-size: 1.17em;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.markdown-content h4 {
+  margin-top: 1.33em;
+  margin-bottom: 1.33em;
+
+  font-size: 1em;
+  font-weight: 700;
+}
+
+/* Paragraphs */
+
+.markdown-content p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* Links */
+
+.markdown-content a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.markdown-content a:hover {
+  color: var(--link-hover);
+}
+
+/* Lists */
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 2.5em;
+}
+
+.markdown-content li {
+  margin: 0.25em 0;
+}
+
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+/* Images and figures */
+
+.markdown-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1em auto;
+}
+
+.markdown-content figure {
+  margin: 1em auto;
+  text-align: center;
+}
+
+.markdown-content figure img {
+  margin: 0 auto;
+}
+
+.markdown-content figcaption {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* Tables */
+
+.markdown-content table {
+  width: 100%;
+  margin: 1em 0;
+
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  padding: 0.5em;
+  border: 1px solid var(--card-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown-content th {
+  background-color: var(--card-header);
+  font-weight: 700;
+}
+
+.markdown-content tbody tr:nth-child(even) {
+  background-color: var(--card-bg);
+}
+
+/* Inline code */
+
+.markdown-content code {
+  padding: 0.1em 0.3em;
+
+  border-radius: 3px;
+  background-color: var(--card-header);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    "Liberation Mono",
+    monospace;
+
+  font-size: 0.9em;
+}
+
+/* Code blocks */
+
+.markdown-content pre {
+  margin: 1em 0;
+  padding: 1em;
+
+  overflow-x: auto;
+
+  border: 1px solid var(--card-border);
+  border-radius: 3px;
+  background-color: var(--card-header);
+
+  line-height: 1.4;
+}
+
+.markdown-content pre code {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 0.9em;
+}
+
+/* Blockquotes */
+
+.markdown-content blockquote {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+
+  border-left: 4px solid var(--blockquote-border);
+  background-color: var(--blockquote-bg);
+}
+
+.markdown-content blockquote > :first-child {
+  margin-top: 0;
+}
+
+.markdown-content blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* Horizontal rules */
+
+.markdown-content hr {
+  margin: 2em 0;
+  border: 0;
+  border-bottom: 1px solid var(--navbar-rule);
+}
+
+/* Footnotes and superscript */
+
+.markdown-content sup {
+  font-size: 0.75em;
+  line-height: 0;
+}
+
+.markdown-content .footnotes {
+  margin-top: 3em;
+  font-size: 0.9em;
+}
+
+/* Prevent embedded elements from overflowing */
+
+.markdown-content iframe,
+.markdown-content video,
+.markdown-content canvas,
+.markdown-content svg {
+  max-width: 100%;
+}
+
+/* Mobile tables */
+
+@media screen and (max-width: 700px) {
+  .blog-post {
+    width: 90%;
+  }
+
+  .markdown-content {
+    font-size: 0.95rem;
+  }
+
+  .markdown-content > h1:first-child {
+    font-size: 1.75em;
+  }
+
+  .markdown-content h2 {
+    font-size: 1.4em;
+  }
+
+  .markdown-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .markdown-content th,
+  .markdown-content td {
+    padding: 0.4em;
+  }
+
+  .markdown-content pre {
+    padding: 0.75em;
+  }
 }
