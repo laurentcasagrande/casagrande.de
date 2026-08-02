@@ -1,3 +1,31 @@
+@font-face {
+  font-family: "Crimson";
+  src: url("/fonts/crimson-roman-webfont.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Crimson";
+  src: url("/fonts/crimson-bold-webfont.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Crimson";
+  src: url("/fonts/crimson-italic-webfont.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Crimson";
+  src: url("/fonts/crimson-roman-webfont.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+}
+
 :root {
   color-scheme: light;
 
@@ -12,7 +40,7 @@
   --link-hover: rgb(42, 82, 128);
 
   /* Footer and cards */
-  --footer-bg: rgb(235, 232, 225);
+  --footer-bg: rgb(246, 244, 239);
   --card-header: rgb(238, 235, 228);
   --card-bg: rgb(251, 250, 247);
   --card-border: rgb(207, 203, 194);
@@ -60,7 +88,7 @@ html[data-theme="dark"] {
   --link-hover: rgb(158, 193, 219);
 
   /* Footer and cards */
-  --footer-bg: rgb(39, 41, 42);
+  --footer-bg: rgb(24, 26, 27);
   --card-header: rgb(39, 41, 42);
   --card-bg: rgb(24, 26, 27);
   --card-border: rgb(69, 72, 74);
@@ -102,12 +130,10 @@ html {
 }
 
 body {
+  margin: 0 0 calc(1em + 10px);
   background-color: var(--bg-color);
-  margin:0 0 calc(1em + 10px);
-  font-family: serif;
+  font-family: "Crimson", serif;
 }
-
-/* header styles */
 
 header h1 {
   text-align: center;
@@ -200,8 +226,8 @@ footer p {
 
 .blog-post {
   width: 90%;
-  margin: 0 auto 4em;
-  padding: 0;
+  max-width: 100ch;
+  margin: auto auto 4em;
   color: var(--default-text);
 }
 
@@ -209,259 +235,203 @@ footer p {
   width: 100%;
   margin: 0;
   padding: 0;
-
-  font-size: 1rem;
-  line-height: 1.5;
-  overflow-wrap: break-word;
 }
 
-/* Post title */
-
-.markdown-content > h1:first-child {
-  margin-top: 0;
-  margin-bottom: 0.67em;
-
-  font-size: 2em;
-  font-weight: 700;
-  line-height: 1.2;
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-weight: 400;
 }
 
-/* Headings */
+.markdown-content h1 {
+  font-size: 2.3em;
+}
 
 .markdown-content h2 {
-  margin-top: 0.83em;
-  margin-bottom: 0.83em;
-
-  font-size: 1.5em;
-  font-weight: 700;
-  line-height: 1.25;
+  margin-bottom: 0.5em;
+  font-size: 1.8em;
+  text-decoration: underline;
 }
 
 .markdown-content h3 {
-  margin-top: 1em;
-  margin-bottom: 1em;
-
-  font-size: 1.17em;
-  font-weight: 700;
-  line-height: 1.3;
+  margin-bottom: 0;
+  font-size: 1.5em;
+  text-decoration: underline;
 }
 
 .markdown-content h4 {
-  margin-top: 1.33em;
-  margin-bottom: 1.33em;
-
-  font-size: 1em;
-  font-weight: 700;
+  margin-bottom: 0;
+  font-size: 1.4em;
 }
 
-/* Paragraphs */
+.markdown-content h5 {
+  margin-bottom: 0;
+  font-size: 1.3em;
+}
+
+.markdown-content h6 {
+  margin-bottom: 0;
+  font-size: 1.2em;
+}
 
 .markdown-content p {
-  margin-top: 1em;
-  margin-bottom: 1em;
+  line-height: 1.5em;
 }
-
-/* Links */
 
 .markdown-content a {
   color: var(--link-color);
-  text-decoration: underline;
-  text-underline-offset: 0.12em;
+  text-decoration: none;
 }
 
 .markdown-content a:hover {
   color: var(--link-hover);
+  text-decoration: underline;
 }
 
-/* Lists */
+.markdown-content ul {
+  padding-left: 1.5em;
+  list-style-type: circle;
+}
 
-.markdown-content ul,
-.markdown-content ol {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  padding-left: 2.5em;
+.markdown-content ul ul {
+  list-style-type: disc;
+}
+
+.markdown-content ul ul ul {
+  list-style-type: circle;
 }
 
 .markdown-content li {
-  margin: 0.25em 0;
+  padding-bottom: 0.3em;
+  line-height: 1.5em;
 }
-
-.markdown-content li > ul,
-.markdown-content li > ol {
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-}
-
-/* Images and figures */
-
-.markdown-content img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 1em auto;
-}
-
-.markdown-content figure {
-  margin: 1em auto;
-  text-align: center;
-}
-
-.markdown-content figure img {
-  margin: 0 auto;
-}
-
-.markdown-content figcaption {
-  margin-top: 0.5em;
-  font-size: 0.9em;
-  line-height: 1.4;
-  text-align: center;
-}
-
-/* Tables */
-
-.markdown-content table {
-  width: 100%;
-  margin: 1em 0;
-
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-.markdown-content th,
-.markdown-content td {
-  padding: 0.5em;
-  border: 1px solid var(--card-border);
-  text-align: left;
-  vertical-align: top;
-}
-
-.markdown-content th {
-  background-color: var(--card-header);
-  font-weight: 700;
-}
-
-.markdown-content tbody tr:nth-child(even) {
-  background-color: var(--card-bg);
-}
-
-/* Inline code */
 
 .markdown-content code {
-  padding: 0.1em 0.3em;
-
-  border-radius: 3px;
-  background-color: var(--card-header);
-
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Consolas,
-    "Liberation Mono",
-    monospace;
-
-  font-size: 0.9em;
+  padding: 2px 4px;
+  background-color: var(--code-bg);
 }
 
-/* Code blocks */
-
 .markdown-content pre {
-  margin: 1em 0;
-  padding: 1em;
-
-  overflow-x: auto;
-
-  border: 1px solid var(--card-border);
-  border-radius: 3px;
-  background-color: var(--card-header);
-
-  line-height: 1.4;
+  margin: 16px 32px;
+  padding: 8px 16px;
+  overflow: auto hidden;
+  border: 0;
+  border-left: 4px solid var(--code-border);
+  background: var(--code-bg) !important;
 }
 
 .markdown-content pre code {
   padding: 0;
-  border-radius: 0;
-  background: none;
-  font-size: 0.9em;
+  background: transparent;
 }
 
-/* Blockquotes */
-
 .markdown-content blockquote {
-  margin: 1em 0;
-  padding: 0.5em 1em;
-
+  margin: 1em 2em;
+  padding: 0.25em 0 0.25em 1em;
   border-left: 4px solid var(--blockquote-border);
   background-color: var(--blockquote-bg);
 }
 
-.markdown-content blockquote > :first-child {
-  margin-top: 0;
+.markdown-content table {
+  margin: auto;
+  border-top: 2px solid var(--table-bold-line);
+  border-bottom: 2px solid var(--table-bold-line);
+  border-collapse: collapse;
 }
 
-.markdown-content blockquote > :last-child {
-  margin-bottom: 0;
+.markdown-content th,
+.markdown-content td {
+  padding: 0.25em 1em;
 }
 
-/* Horizontal rules */
-
-.markdown-content hr {
-  margin: 2em 0;
-  border: 0;
-  border-bottom: 1px solid var(--navbar-rule);
+.markdown-content th {
+  border-bottom: 1px solid var(--table-midrule);
 }
 
-/* Footnotes and superscript */
-
-.markdown-content sup {
-  font-size: 0.75em;
-  line-height: 0;
+.markdown-content tr:hover {
+  background-color: var(--table-hover);
 }
 
-.markdown-content .footnotes {
-  margin-top: 3em;
-  font-size: 0.9em;
+.markdown-content figure {
+  margin: 1em auto;
+  padding: 0.5em;
+  border: 1px solid var(--fig-border);
+  background-color: var(--fig-bg);
 }
 
-/* Prevent embedded elements from overflowing */
-
-.markdown-content iframe,
-.markdown-content video,
-.markdown-content canvas,
-.markdown-content svg {
-  max-width: 100%;
+.markdown-content figcaption {
+  padding: 0.5em;
+  text-align: justify;
 }
 
-/* Mobile tables */
+.markdown-content figcaption p {
+  margin: 0;
+}
 
-@media screen and (max-width: 700px) {
-  .blog-post {
-    width: 90%;
-  }
+.markdown-content figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
-  .markdown-content {
-    font-size: 0.95rem;
-  }
+.markdown-content .fig-w100 {
+  width: 100%;
+}
 
-  .markdown-content > h1:first-child {
-    font-size: 1.75em;
-  }
+.markdown-content .fig-w80 {
+  width: 80%;
+}
 
-  .markdown-content h2 {
-    font-size: 1.4em;
+.markdown-content .fig-w60 {
+  width: 60%;
+}
+
+.markdown-content .fig-h50 {
+  max-height: 50vh;
+}
+
+.markdown-content .fig-h25 {
+  max-height: 25vh;
+}
+
+.markdown-content figure.invertible img,
+.markdown-content img.invertible {
+  filter: invert(var(--invert));
+}
+
+.markdown-content figure.invertible img:hover,
+.markdown-content img.invertible:hover {
+  filter: invert(calc(1 - var(--invert)));
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: calc(100% - 10px);
+  height: 1em;
+  padding: 5px;
+  overflow: hidden;
+  background-color: var(--footer-bg);
+  color: var(--default-text);
+}
+
+footer p {
+  margin: 0;
+  line-height: 1em;
+}
+
+@media only screen and (max-width: 800px) {
+  .markdown-content .fig-w100,
+  .markdown-content .fig-w80,
+  .markdown-content .fig-w60 {
+    width: 100%;
   }
 
   .markdown-content table {
     display: block;
     overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .markdown-content th,
-  .markdown-content td {
-    padding: 0.4em;
-  }
-
-  .markdown-content pre {
-    padding: 0.75em;
   }
 }
