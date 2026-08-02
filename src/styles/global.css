@@ -46,55 +46,54 @@
 
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
+html[data-theme="dark"] {
+  color-scheme: dark;
 
-    /* Page */
-    --bg-color: rgb(24, 26, 27);
-    --header-title-text: rgb(230, 227, 220);
-    --default-text: rgb(230, 227, 220);
-    --navbar-rule: rgb(56, 59, 61);
+  /* Page */
+  --bg-color: rgb(24, 26, 27);
+  --header-title-text: rgb(230, 227, 220);
+  --default-text: rgb(230, 227, 220);
+  --navbar-rule: rgb(56, 59, 61);
 
-    /* Links */
-    --link-color: rgb(126, 177, 229);
-    --link-hover: rgb(158, 193, 219);
+  /* Links */
+  --link-color: rgb(126, 177, 229);
+  --link-hover: rgb(158, 193, 219);
 
-    /* Footer and cards */
-    --footer-bg: rgb(39, 41, 42);
-    --card-header: rgb(39, 41, 42);
-    --card-bg: rgb(24, 26, 27);
-    --card-border: rgb(69, 72, 74);
-    --card-footer: rgb(39, 41, 42);
+  /* Footer and cards */
+  --footer-bg: rgb(39, 41, 42);
+  --card-header: rgb(39, 41, 42);
+  --card-bg: rgb(24, 26, 27);
+  --card-border: rgb(69, 72, 74);
+  --card-footer: rgb(39, 41, 42);
 
-    /* Tags */
-    --tag-default-bg: rgb(128, 129, 126);
-    --tag-default-color: rgb(250, 248, 243);
+  /* Tags */
+  --tag-default-bg: rgb(128, 129, 126);
+  --tag-default-color: rgb(250, 248, 243);
 
-    /* Table of contents */
-    --toc-bg: rgb(35, 37, 38);
+  /* Table of contents */
+  --toc-bg: rgb(35, 37, 38);
 
-    /* Blockquotes */
-    --blockquote-bg: rgb(27, 36, 42);
-    --blockquote-border: rgb(48, 82, 103);
+  /* Blockquotes */
+  --blockquote-bg: rgb(27, 36, 42);
+  --blockquote-border: rgb(48, 82, 103);
 
-    /* Code */
-    --code-bg: rgb(39, 41, 42);
-    --code-border: rgb(74, 77, 79);
+  /* Code */
+  --code-bg: rgb(39, 41, 42);
+  --code-border: rgb(74, 77, 79);
 
-    /* Figures */
-    --fig-bg: rgb(29, 31, 32);
-    --fig-border: rgb(39, 41, 42);
+  /* Figures */
+  --fig-bg: rgb(29, 31, 32);
+  --fig-border: rgb(39, 41, 42);
 
-    /* Tables */
-    --table-bold-line: rgb(242, 239, 232);
-    --table-midrule: rgb(84, 87, 89);
-    --table-hover: rgb(34, 36, 37);
+  /* Tables */
+  --table-bold-line: rgb(242, 239, 232);
+  --table-midrule: rgb(84, 87, 89);
+  --table-hover: rgb(34, 36, 37);
 
-    --invert: 1;
+  --invert: 1;
 
   }
-}
+
 
 html {
   position:relative;
@@ -106,7 +105,6 @@ body {
   background-color: var(--bg-color);
   margin:0 0 calc(1em + 10px);
   font-family: serif;
-  color: var(--default-text); 
 }
 
 /* header styles */
@@ -118,6 +116,28 @@ header h1 {
   font-size: 3em;
   font-weight: 400;
   color: var(--header-title-text);
+}
+
+.header-title-row {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr) 4rem;
+  align-items: center;
+
+  margin-inline: 5%;
+  padding-block: 1rem;
+}
+
+.header-title-row h1 {
+  grid-column: 2;
+  margin: 0;
+  text-align: center;
+}
+
+.header-theme-toggle {
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 header hr {
@@ -161,24 +181,27 @@ header nav a:hover {
 }
 
 
-/* bullshit */
 
-@media screen and (min-width: 636px) {
-  .nav-links {
-    margin-left: 5em;
-    display: block;
-    position: static;
-    width: auto;
-    background: none;
-  }
+/* main */
 
-  .nav-links a {
-    display: inline-block;
-    padding: 15px 20px;
-  }
+BaseLayout {
+  width: 90%;
+  margin: auto;
+  margin-bottom: 4em;
+  color: var(--default-text);
 }
+
+
+/* Footer */
 
 footer {
   position: absolute;
   bottom: 0;
+
+  left: 5%;
+  width: 90%;
+}
+
+footer p {
+  color: var(--default-text);
 }

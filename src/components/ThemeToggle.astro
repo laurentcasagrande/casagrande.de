@@ -1,0 +1,188 @@
+<!--
+  Theme toggle design adapted from work by Jon Kantner.
+  Original source:
+  https://freefrontend.com/css-theme-switches/
+
+  Licensed under the MIT License.
+  See /THIRD_PARTY_LICENSES.md for the full license notice.
+-->
+
+
+<label class="theme-toggle">
+  <input
+    class="theme-toggle__input"
+    type="checkbox"
+    role="switch"
+    aria-label="Switch to dark mode"
+  />
+
+  <span class="theme-toggle__track" aria-hidden="true">
+    <span class="theme-toggle__thumb">
+      <span class="theme-toggle__sun">☀</span>
+      <span class="theme-toggle__moon">☾</span>
+    </span>
+  </span>
+</label>
+
+<script is:inline>
+  (() => {
+    const currentScript = document.currentScript;
+    const component = currentScript?.previousElementSibling;
+
+    if (!(component instanceof HTMLLabelElement)) {
+      return;
+    }
+
+    const toggle = component.querySelector('.theme-toggle__input');
+
+    if (!(toggle instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const systemTheme = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    );
+
+    function getInitialTheme() {
+      const savedTheme = localStorage.getItem('theme');
+
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme;
+      }
+
+      return systemTheme.matches ? 'dark' : 'light';
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+
+      toggle.checked = theme === 'dark';
+
+      toggle.setAttribute(
+        'aria-label',
+        theme === 'dark'
+          ? 'Switch to light mode'
+          : 'Switch to dark mode'
+      );
+    }
+
+    applyTheme(getInitialTheme());
+
+    toggle.addEventListener('change', () => {
+      const selectedTheme = toggle.checked ? 'dark' : 'light';
+
+      localStorage.setItem('theme', selectedTheme);
+      applyTheme(selectedTheme);
+    });
+
+    systemTheme.addEventListener('change', (event) => {
+      /*
+       * Only follow OS changes when the user has not manually
+       * selected and saved a theme.
+       */
+      if (localStorage.getItem('theme') === null) {
+        applyTheme(event.matches ? 'dark' : 'light');
+      }
+    });
+  })();
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    cursor: pointer;
+  }
+
+  .theme-toggle__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .theme-toggle__track {
+    position: relative;
+    display: block;
+    width: 3rem;
+    height: 1.5rem;
+    border: 1px solid var(--navbar-rule);
+    border-radius: 999px;
+    background-color: var(--card-header);
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .theme-toggle__thumb {
+    position: absolute;
+    top: 0.125rem;
+    left: 0.125rem;
+
+    display: grid;
+    width: 1.125rem;
+    height: 1.125rem;
+    place-items: center;
+
+    border-radius: 50%;
+    background-color: var(--header-title-text);
+    color: var(--bg-color);
+
+    transition: transform 200ms ease;
+  }
+
+  .theme-toggle__sun,
+  .theme-toggle__moon {
+    position: absolute;
+    font-size: 0.8rem;
+    line-height: 1;
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease;
+  }
+
+  .theme-toggle__sun {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .theme-toggle__moon {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  .theme-toggle__input:checked
+    + .theme-toggle__track
+    .theme-toggle__thumb {
+    transform: translateX(1.5rem);
+  }
+
+  .theme-toggle__input:checked
+    + .theme-toggle__track
+    .theme-toggle__sun {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  .theme-toggle__input:checked
+    + .theme-toggle__track
+    .theme-toggle__moon {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .theme-toggle__input:focus-visible
+    + .theme-toggle__track {
+    outline: 2px solid var(--link-color);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-toggle__track,
+    .theme-toggle__thumb,
+    .theme-toggle__sun,
+    .theme-toggle__moon {
+      transition: none;
+    }
+  }
+</style>

@@ -1,8 +1,15 @@
 ---
 import Navigation from './Navigation.astro';
+import ThemeToggle from './ThemeToggle.astro';
 ---
 <header>
-  <h1>Laurent Casagrande</h1>
+  <div class="header-title-row">
+    <span aria-hidden="true"></span>
+
+    <h1>Laurent Casagrande</h1>
+
+    <ThemeToggle />
+  </div>
 
   <hr class="no-vertical-margin">
 
