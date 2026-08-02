@@ -41,10 +41,10 @@
 
   /* Footer and cards */
   --footer-bg: rgb(246, 244, 239);
-  --card-header: rgb(238, 235, 228);
-  --card-bg: rgb(251, 250, 247);
+  --card-header: rgb(230, 230, 230);
+  --card-bg: rgb(246, 244, 239);
   --card-border: rgb(207, 203, 194);
-  --card-footer: rgb(238, 235, 228);
+  --card-footer: rgb(230, 230, 230);
 
   /* Tags */
   --tag-default-bg: rgb(112, 112, 108);

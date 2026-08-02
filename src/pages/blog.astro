@@ -1,27 +1,171 @@
 ---
-import '../styles/global.css';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface PostFrontmatter {
+  title: string;
+  description: string;
+  pubDate: string | Date;
+  image?: {
+    url: string;
+    alt: string;
+  };
+  tags?: string[];
+}
+
+interface PostModule {
+  frontmatter: PostFrontmatter;
+  url: string;
+}
+
+const postModules = import.meta.glob('./posts/*.md', { eager: true });
+
+const posts = (Object.values(postModules) as PostModule[])
+  .filter((post) => post.frontmatter && post.url)
+  .sort(
+    (a, b) =>
+      new Date(b.frontmatter.pubDate).getTime() -
+      new Date(a.frontmatter.pubDate).getTime()
+  )
+  .map((post) => ({
+    ...post,
+    url: post.url.endsWith('/') ? post.url : `${post.url}/`,
+    dateTime: new Date(post.frontmatter.pubDate).toISOString().slice(0, 10),
+    formattedDate: new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(new Date(post.frontmatter.pubDate)),
+  }));
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Blog</title>
-	</head>
-	<body>
-		<Header />
-		<h1>Blog</h1>
-        <ul>
-        <li><a href="/posts/post-1/">Post 1</a></li>
-		<li><a href="/posts/post-2/">Post 2</a></li>
-      	<li><a href="/posts/post-3/">Post 3</a></li>
-        </ul>
-        <p>This is where I will post about my journey learning Astro.</p>
-		<Footer />
-	</body>
-</html>
+<BaseLayout>
+    <main class="cards" id="content">
+      <div class="card-deck">
+        {
+          posts.map((post) => (
+            <article class="card">
+              <header class="card-header">
+                <h3>{post.frontmatter.title}</h3>
+              </header>
+
+              <div class="card-main">
+                <div
+                  class="card-image"
+                  role="img"
+                  aria-label={post.frontmatter.image?.alt ?? ''}
+                  style={`background-image: url('${post.frontmatter.image?.url ?? ''}')`}
+                />
+                <p>{post.frontmatter.description}</p>
+              </div>
+
+              <div class="card-link">
+                <time datetime={post.dateTime}>{post.formattedDate}</time>
+                <a href={post.url}>read post…</a>
+              </div>
+
+              <div class="card-footer">
+                {(post.frontmatter.tags ?? []).map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </main>
+</BaseLayout>
+
+<style>
+  .cards {
+    width: 90%;
+    margin: auto auto 4em;
+    color: var(--default-text);
+  }
+
+  .card-deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px 20px;
+    justify-content: space-evenly;
+    grid-auto-flow: row;
+  }
+
+  .card {
+    display: grid;
+    grid-template-rows: 3em 1fr 2em 3em;
+    border: 1px solid var(--card-border);
+  }
+
+  .card-header {
+    padding: 10px;
+    background-color: var(--card-header);
+  }
+
+  .card-header h3 {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 1.2em;
+    font-weight: 400;
+    line-height: 1.5em;
+    text-decoration: none;
+  }
+
+  .card-main {
+    padding: 10px;
+    background-color: var(--card-bg);
+  }
+
+  .card-main p {
+    line-height: 1.5em;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 200px;
+    margin: 0 auto;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .card-link {
+    display: flex;
+    margin: 0 20px;
+    align-items: start;
+    justify-content: space-between;
+    justify-self: stretch;
+    width: auto;
+  }
+
+  .card-link time {
+    color: var(--default-text);
+  }
+
+  .card-link a {
+    color: var(--link-color);
+    text-decoration: none;
+  }
+
+  .card-link a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+
+  .card-footer {
+    padding: 10px;
+    overflow: hidden;
+    background-color: var(--card-footer);
+    line-height: 2em;
+  }
+
+  .tag {
+    margin: 0 2px;
+    padding: 4px;
+    border-radius: 4px;
+    background-color: var(--tag-default-bg);
+    color: var(--tag-default-color);
+    font-family: sans-serif;
+    font-size: 0.7em;
+    font-weight: 600;
+  }
+</style>
