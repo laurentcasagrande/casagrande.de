@@ -65,7 +65,7 @@ jobs:
           set net:timeout 30
           set sftp:connect-program "ssh -a -x -i $HOME/.ssh/strato -o BatchMode=yes -o IdentitiesOnly=yes -o UpdateHostKeys=no -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
           open -u "$STRATO_USER," "sftp://$STRATO_HOST:22"
-          mirror --reverse --verbose --parallel=4 dist/ public/
+          mirror --reverse --delete --verbose --parallel=4 dist/ public/
           bye
           LFTP
 
