@@ -253,13 +253,11 @@ footer p {
 .markdown-content h2 {
   margin-bottom: 0.5em;
   font-size: 1.8em;
-  text-decoration: underline;
 }
 
 .markdown-content h3 {
   margin-bottom: 0;
   font-size: 1.5em;
-  text-decoration: underline;
 }
 
 .markdown-content h4 {
