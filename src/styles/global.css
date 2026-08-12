@@ -122,6 +122,7 @@ html[data-theme="dark"] {
 
   }
 
+/* Header */
 
 html {
   position:relative;
@@ -135,7 +136,76 @@ body {
   font-family: "Crimson", serif;
 }
 
+header h1 {
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  font-size: 3em;
+  font-weight: 400;
+  color: var(--header-title-text);
+}
 
+.header-title-row {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr) 4rem;
+  align-items: center;
+
+  margin-inline: 5%;
+  padding-block: 1rem;
+}
+
+.header-title-row h1 {
+  grid-column: 2;
+  margin: 0;
+  text-align: center;
+}
+
+.header-theme-toggle {
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+header hr {
+  width: 90%;
+  margin: auto;
+    margin-bottom: auto;
+  margin-bottom: 20px;
+  border: none;
+    border-bottom-width: medium;
+    border-bottom-style: none;
+    border-bottom-color: currentcolor;
+  border-bottom: 1px solid var(--navbar-rule);
+}
+
+header hr.no-vertical-margin {
+  margin-bottom: 0;
+}
+
+header nav {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+header nav a {
+  min-width: 80px;
+  height: 50px;
+  line-height: 50px;
+  padding: 10px;
+  text-align: center;
+  flex-grow: 1;
+  font-size: 1.5em;
+  font-weight: 400;
+  text-decoration: none;
+  color: var(--default-text);
+}
+
+header nav a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
 
 /* Footer */
 
