@@ -4,7 +4,7 @@ Testtestest
 <svg width="600" height="500"
      xmlns="http://www.w3.org/2000/svg">
 
-  <rect  width="100%" height="100%" fill="grey"/>
+  <rect  width="100%" height="100%" fill="white" fill-opacity="5%"/>
 
   <circle id="VerdraengerKolben" r="80" fill="green">
     <animate
@@ -16,7 +16,13 @@ Testtestest
   </circle>
 
   <line x1="2%" y1="98%" x2="43.75%" y2="98%" stroke="red" /> <!-- Heater Left -->
-  <line x1="56.25%" y1="98%" x2="98%" y2="98%" stroke="red" /> <!-- Heater Left -->
+  <line x1="56.25%" y1="98%" x2="98%" y2="98%" stroke="red" /> <!-- Heater Right -->
+
+  <line x1="2%" y1="82%" x2="43.75%" y2="82%" stroke="blue" /> <!-- Cooler Left -->
+  <line x1="56.25%" y1="82%" x2="98%" y2="82%" stroke="blue" /> <!-- Cooler Right -->
+
+  <rect  id = "DisplacerLeft" width="39.75%" height="8%" x="3%" fill="grey"/> <!-- Displacer Left -->
+  <rect  id = "DisplacerRight" width="39.75%" height="8%" x="57.25%" fill="grey"/> <!-- Displacer Right -->
 
   <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
 
@@ -24,16 +30,35 @@ Testtestest
 
 <script>
   const rect = document.getElementById("VerdraengerKolben");
+  const DisplacerLeft = document.getElementById("DisplacerLeft");
+  const DisplacerRight = document.getElementById("DisplacerRight");
+
+  const w = 1
+
+  const r=4
+  const liste=0.03
+  const A_hub=0.0002
+  const A=0.0007
+
+  const T_k = 293
+  const T_w = 373
+
+  const n=0.0025
+  const R=8.314
 
   function animate(time) {
     const t = time / 1000;
+    const theta = w * t
 
     const cx = 2.5 + 25 * Math.sin(t);
-
     rect.setAttribute("cx", cx);
+
+    const h_Displacer = Math.sin(theta) * r
+    DisplacerLeft.setAttribute("y", `${h_Displacer+86}%`)
+    DisplacerRight.setAttribute("y", `${h_Displacer+86}%`)
 
     requestAnimationFrame(animate);
   }
-
   requestAnimationFrame(animate);
+  
 </script>
