@@ -1,64 +1,209 @@
-Testtestest
+Testtestest2
 
+<canvas id="canvas" width="1000" height="1500"></canvas>
 
-<svg width="600" height="500"
-     xmlns="http://www.w3.org/2000/svg">
+<button id="downloadGif"> Download GIF </button>
 
-  <rect  width="100%" height="100%" fill="white" fill-opacity="5%"/>
-
-  <circle id="VerdraengerKolben" r="80" fill="green">
-    <animate
-        attributeName="cy" 
-        values="50;150"
-        dur="3s"
-        repeatCount="indefinite" />
-    />
-  </circle>
-
-  <line x1="2%" y1="98%" x2="43.75%" y2="98%" stroke="red" /> <!-- Heater Left -->
-  <line x1="56.25%" y1="98%" x2="98%" y2="98%" stroke="red" /> <!-- Heater Right -->
-
-  <line x1="2%" y1="82%" x2="43.75%" y2="82%" stroke="blue" /> <!-- Cooler Left -->
-  <line x1="56.25%" y1="82%" x2="98%" y2="82%" stroke="blue" /> <!-- Cooler Right -->
-
-  <rect  id = "DisplacerLeft" width="39.75%" height="8%" x="3%" fill="grey"/> <!-- Displacer Left -->
-  <rect  id = "DisplacerRight" width="39.75%" height="8%" x="57.25%" fill="grey"/> <!-- Displacer Right -->
-
-  <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
-
-</svg>
+<p id="gifStatus"></p>
 
 <script>
-  const rect = document.getElementById("VerdraengerKolben");
-  const DisplacerLeft = document.getElementById("DisplacerLeft");
-  const DisplacerRight = document.getElementById("DisplacerRight");
+  import { encode } from "modern-gif";
+  import workerUrl from "modern-gif/worker?url";
 
-  const w = 1
+  //Canvas
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
 
-  const r=4
-  const liste=0.03
-  const A_hub=0.0002
-  const A=0.0007
+  //Physics Constants
+  const omega = 1;
+  const radius = 40;
 
-  const T_k = 293
-  const T_w = 373
+  function drawFrame(t) {
+    const theta = (omega * t) % (2 * Math.PI);
+    const alpha = (theta - Math.PI / 2) % (2 * Math.PI);
+    const cy = Math.sin(theta) * 30;
+    const h_Displacer = Math.sin(theta) * radius;
+    const h_Work = Math.sin(alpha) * radius;
 
-  const n=0.0025
-  const R=8.314
+    ctx.fillStyle = "rgb(255 255 255)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  function animate(time) {
-    const t = time / 1000;
-    const theta = w * t
+    //Hot Air
+    ctx.fillStyle = "lightCoral";
 
-    const cx = 2.5 + 25 * Math.sin(t);
-    rect.setAttribute("cx", cx);
+    ctx.fillRect(20, 980 - radius + h_Displacer -20, 417.5, radius - h_Displacer +20); //+ and - 20 so the areas overlapp to fix flickering
 
-    const h_Displacer = Math.sin(theta) * r
-    DisplacerLeft.setAttribute("y", `${h_Displacer+86}%`)
-    DisplacerRight.setAttribute("y", `${h_Displacer+86}%`)
+    ctx.fillRect(562.5, 980 - radius + h_Displacer -20, 417.5, radius - h_Displacer +20);
 
-    requestAnimationFrame(animate);
+    //Cold Air
+    ctx.fillStyle = "lightBlue";
+
+    ctx.fillRect(20, 820, 417.5, radius + h_Displacer +20);
+
+    ctx.fillRect(562.5, 820, 417.5, radius + h_Displacer +20); 
+
+
+    //Gradient
+    const grad = ctx.createLinearGradient(20, h_Displacer + 860, 20, h_Displacer + 860 + 2*radius);
+    grad.addColorStop(0, "lightblue");
+    grad.addColorStop(1, "lightCoral");
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(20, h_Displacer + 860, 417.5, 80);
+
+    ctx.fillRect(562.5, h_Displacer + 860, 417.5, 80);
+
+    //Displacer
+    ctx.beginPath();
+    ctx.fillStyle = "Grey";
+
+    ctx.rect(30, h_Displacer + 860, 397.5, 80);
+
+    ctx.rect(572.5, h_Displacer + 860, 397.5, 80);
+
+    ctx.fill();
+
+    //Work Piston
+    ctx.beginPath();
+    ctx.fillStyle = "Grey";
+
+    ctx.rect(80, h_Work + 700, 50, 80);
+
+    ctx.rect(746.25, h_Work + 700, 50, 80);
+
+    ctx.fill();
+
+        //Cooler
+    ctx.beginPath();
+    ctx.strokeStyle = "blue";
+
+    ctx.moveTo(20, 820);
+    ctx.lineTo(437.5, 820);
+
+    ctx.moveTo(562.5, 820);
+    ctx.lineTo(980, 820);
+
+    ctx.stroke();
+
+    //Heater
+    ctx.beginPath();
+    ctx.strokeStyle = "DarkRed";
+
+    ctx.moveTo(20, 980);
+    ctx.lineTo(437.5, 980);
+
+    ctx.moveTo(562.5, 980);
+    ctx.lineTo(980, 980);
+
+    ctx.stroke();
+
+    //Walls
+    ctx.beginPath();
+    ctx.strokeStyle = "Black";
+
+    ctx.moveTo(20, 820);
+    ctx.lineTo(20, 980);
+    ctx.moveTo(437.5, 820);
+    ctx.lineTo(437.5, 980);
+
+    ctx.moveTo(562.5, 820);
+    ctx.lineTo(562.5, 980);
+    ctx.moveTo(980, 820);
+    ctx.lineTo(980, 980);
+
+    ctx.stroke();
+
   }
-  requestAnimationFrame(animate);
-  
+
+
+  //Displayed animation
+
+  function animateCanvas(time) {
+    const t = time / 1000;
+
+    drawFrame(t);
+
+    requestAnimationFrame(animateCanvas);
+  }
+
+  requestAnimationFrame(animateCanvas);
+
+  //Gif Settings
+
+  const fps = 10;
+  const duration = 3;
+
+  //Create GIF
+
+  async function makeGIF() {
+    const frameCount = fps * duration;
+    const delay = 1000 / fps;
+    const frames = [];
+
+    // Create every GIF frame
+    for (let frame = 0; frame < frameCount; frame++) {
+      const t = frame / fps;
+
+      drawFrame(t);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      frames.push({
+        data: imageData.data,
+        delay: delay,
+      });
+    }
+
+    // Encode frames into GIF
+    const output = await encode({
+      workerUrl,
+      width: canvas.width,
+      height: canvas.height,
+      frames: frames,
+    });
+
+    // Turn GIF bytes into a Blob
+    const blob = new Blob([output], {
+      type: "image/gif",
+    });
+
+    // Create temporary browser URL
+    return URL.createObjectURL(blob);
+  }
+
+  // Download Button
+  const downloadButton = document.getElementById("downloadGif");
+  const gifStatus = document.getElementById("gifStatus");
+
+  downloadButton.addEventListener("click", async () => {
+    downloadButton.disabled = true;
+    downloadButton.textContent = "Creating GIF...";
+    gifStatus.textContent = "Encoding GIF...";
+
+    try {
+      // Generate GIF
+      const gifURL = await makeGIF();
+      // Create temporary download link
+      const link = document.createElement("a");
+
+      link.href = gifURL;
+      link.download = "stirling-animation.gif";
+      document.body.appendChild(link);
+      // Start download
+      link.click();
+      // Remove temporary link
+      link.remove();
+      // Remove temporary Blob URL later
+      setTimeout(() => {
+        URL.revokeObjectURL(gifURL);
+      }, 1000);
+
+      gifStatus.textContent = "Finished.";
+    } catch (error) {
+      console.error(error);
+      gifStatus.textContent = "GIF creation failed.";
+    } finally {
+      downloadButton.disabled = false;
+      downloadButton.textContent = "Download GIF";
+    }
+  });
 </script>
