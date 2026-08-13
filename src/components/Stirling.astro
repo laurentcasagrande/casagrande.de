@@ -28,6 +28,29 @@ Testtestest2
     ctx.fillStyle = "rgb(255 255 255)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    //Connecting rod Left
+    ctx.strokeStyle = "Black";
+
+    ctx.beginPath();
+
+    ctx.moveTo(223.75, 220 - radius + h_Displacer);
+
+    ctx.lineTo(223.75, h_Displacer + 860 );
+
+    ctx.stroke()
+
+    //Flywheel Left
+    ctx.fillStyle = "lightBlue";
+    ctx.fillRect(190, 20, 20, 400);
+    ctx.strokeStyle = "blue";
+    ctx.strokeRect(190, 20, 20, 400);
+
+    //Mast
+    ctx.fillStyle = "Grey";
+
+    ctx.fillRect(150, 170, 30, 650);
+
+
     //Hot Air
     ctx.fillStyle = "lightCoral";
 
@@ -73,7 +96,7 @@ Testtestest2
 
     ctx.fill();
 
-        //Cooler
+    //Cooler
     ctx.beginPath();
     ctx.strokeStyle = "blue";
 
@@ -112,6 +135,17 @@ Testtestest2
     ctx.lineTo(980, 980);
 
     ctx.stroke();
+
+    //Connecting rod Left
+    ctx.strokeStyle = "Black";
+
+    ctx.beginPath();
+
+    ctx.moveTo(223.75, 220 - radius + h_Displacer);
+
+    ctx.lineTo(223.75, h_Displacer + 860 );
+
+    ctx.stroke()
 
   }
 
