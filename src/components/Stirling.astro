@@ -21,7 +21,6 @@ Testtestest2
   function drawFrame(t) {
     const theta = (omega * t) % (2 * Math.PI);
     const alpha = (theta - Math.PI / 2) % (2 * Math.PI);
-    const cy = Math.sin(theta) * 30;
     const h_Displacer = Math.sin(theta) * radius;
     const h_Work = Math.sin(alpha) * radius;
 
@@ -34,8 +33,10 @@ Testtestest2
     ctx.beginPath();
 
     ctx.moveTo(223.75, 220 - radius + h_Displacer);
-
     ctx.lineTo(223.75, h_Displacer + 860 );
+
+    ctx.moveTo(105, 220 - radius + h_Work);
+    ctx.lineTo(105, h_Work + 700 );
 
     ctx.stroke()
 
@@ -45,10 +46,107 @@ Testtestest2
     ctx.strokeStyle = "blue";
     ctx.strokeRect(190, 20, 20, 400);
 
-    //Mast
-    ctx.fillStyle = "Grey";
+    //Arrow Left
+    ctx.strokeStyle = "Black";
 
-    ctx.fillRect(150, 170, 30, 650);
+    ctx.moveTo(200, 30);
+    ctx.lineTo(200, 60);
+    ctx.lineTo(195, 55);
+    ctx.moveTo(200, 60);
+    ctx.lineTo(205, 55);
+
+    ctx.moveTo(200, 30+350);
+    ctx.lineTo(200, 60+350);
+    ctx.lineTo(195, 55+350);
+    ctx.moveTo(200, 60+350);
+    ctx.lineTo(205, 55+350);
+
+    ctx.stroke()
+
+    
+    //Connector Flywheel-rod Left
+    ctx.strokeStyle = "Black";
+
+    ctx.beginPath();
+
+    ctx.moveTo(210, 220 - radius + h_Displacer);
+    ctx.lineTo(223.75, 220 - radius + h_Displacer);
+
+    ctx.stroke()
+
+    ctx.beginPath();
+
+    ctx.moveTo(190, 220 - radius + h_Work);
+    ctx.lineTo(130-25, 220 - radius + h_Work);
+
+    ctx.stroke()
+
+
+    //Flywheel Right
+    ctx.strokeStyle = "blue";
+    ctx.fillStyle = "lightBlue";
+
+    ctx.beginPath();
+    ctx.arc(771.25, 220, 200, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(771.25, 220, 180, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+
+    //Arrow Right
+
+    ctx.strokeStyle = "Black";
+
+    ctx.beginPath();
+    ctx.arc(771.25, 220, 190, theta, theta +0.15);
+    ctx.moveTo(771.25 + Math.cos(theta +0.15) * 190, 220 + Math.sin(theta +0.15) * 190)
+    ctx.lineTo(771.25 + Math.cos(theta +0.1) * 185, 220 + Math.sin(theta +0.1) * 185)
+
+    ctx.moveTo(771.25 + Math.cos(theta +0.15) * 190, 220 + Math.sin(theta +0.15) * 190)
+    ctx.lineTo(771.25 + Math.cos(theta +0.1) * 195, 220 + Math.sin(theta +0.1) * 195)
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(771.25, 220, 190, theta + Math.PI, theta + Math.PI + 0.15);
+    ctx.moveTo(771.25 + Math.cos(theta + Math.PI +0.15) * 190, 220 + Math.sin(theta + Math.PI +0.15) * 190)
+    ctx.lineTo(771.25 + Math.cos(theta + Math.PI +0.1) * 185, 220 + Math.sin(theta + Math.PI +0.1) * 185)
+
+    ctx.moveTo(771.25 + Math.cos(theta + Math.PI +0.15) * 190, 220 + Math.sin(theta + Math.PI +0.15) * 190)
+    ctx.lineTo(771.25 + Math.cos(theta + Math.PI +0.1) * 195, 220 + Math.sin(theta + Math.PI +0.1) * 195)
+
+    ctx.stroke();
+
+
+
+    //Connector Flywheel-rod Right
+    ctx.strokeStyle = "Red";
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+
+    ctx.moveTo(771.2, 220);
+    ctx.lineTo(771.25 + Math.cos(theta) * radius, 220 + Math.sin(theta) * radius);
+
+    ctx.stroke()
+
+    ctx.strokeStyle = "Green";
+    ctx.setLineDash([]);
+    ctx.beginPath();
+
+    ctx.moveTo(771.2, 220);
+    ctx.lineTo(771.25 + Math.cos(alpha) * radius, 220 + Math.sin(alpha) * radius);
+
+    ctx.stroke()
+
+
+
+
+    //Mast Left
+    ctx.fillStyle = "#404040";
+
+    ctx.fillRect(192.5, 420, 15, 650-250);
 
 
     //Hot Air
@@ -83,16 +181,6 @@ Testtestest2
     ctx.rect(30, h_Displacer + 860, 397.5, 80);
 
     ctx.rect(572.5, h_Displacer + 860, 397.5, 80);
-
-    ctx.fill();
-
-    //Work Piston
-    ctx.beginPath();
-    ctx.fillStyle = "Grey";
-
-    ctx.rect(80, h_Work + 700, 50, 80);
-
-    ctx.rect(746.25, h_Work + 700, 50, 80);
 
     ctx.fill();
 
@@ -136,6 +224,93 @@ Testtestest2
 
     ctx.stroke();
 
+    //Connecting rod Rigt I
+
+    const rodStartX = 771.25 + Math.cos(theta) * radius;
+    const rodStartY = 220 + Math.sin(theta) * radius;
+    const rodEndX = 572.5 + 397.5 / 2;
+    const rodEndY = h_Displacer + 860;
+    const flywheelX = 771.25;
+    const flywheelY = 220;
+    const flywheelRadius = 200;
+
+    const rodDX = rodEndX - rodStartX;
+    const rodDY = rodEndY - rodStartY;
+    const relativeX = rodStartX - flywheelX;
+    const relativeY = rodStartY - flywheelY;
+
+    const a = rodDX ** 2 + rodDY ** 2;
+    const b = 2 * (relativeX * rodDX + relativeY * rodDY);
+    const c =
+      relativeX ** 2 +
+      relativeY ** 2 -
+      flywheelRadius ** 2;
+
+    const intersectionValues = [
+    (-b - Math.sqrt(b ** 2 - 4 * a * c)) / (2 * a),
+    (-b + Math.sqrt(b ** 2 - 4 * a * c)) / (2 * a),
+    ];
+
+    const intersectionT = intersectionValues.find(
+      (value) => value >= 0 && value <= 1
+    );
+
+    const intersectionX = rodStartX + intersectionT * rodDX;
+    const intersectionY = rodStartY + intersectionT * rodDY;
+
+    ctx.strokeStyle = "red";
+
+    ctx.beginPath();
+    ctx.setLineDash([4, 4]);
+    ctx.moveTo(rodStartX, rodStartY);
+    ctx.lineTo(intersectionX, intersectionY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.setLineDash([]);
+    ctx.moveTo(intersectionX, intersectionY);
+    ctx.lineTo(rodEndX, rodEndY);
+    ctx.stroke();
+
+    //Mast Right
+    ctx.fillStyle = "#404040";
+    ctx.fillRect(771.25-7.5, 420, 15, 650-250);
+
+    ctx.strokeStyle = "#404040";
+    ctx.fillStyle = "#404040";
+    ctx.beginPath();
+    ctx.arc(771.25, 220, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+
+    //Work Piston
+    ctx.beginPath();
+    ctx.fillStyle = "Grey";
+
+    ctx.rect(80, h_Work + 700, 50, 80);
+
+    ctx.rect(746.25, h_Work + 700, 50, 80);
+
+    ctx.fill();
+
+    //Walls Work Piston
+    ctx.strokeStyle = "Black";
+    ctx.beginPath();
+
+    ctx.moveTo(80, 820);
+    ctx.lineTo(80, 820- 4 * radius);
+
+    ctx.moveTo(130, 820);
+    ctx.lineTo(130, 820- 4 * radius);
+
+    ctx.moveTo(746.25, 820);
+    ctx.lineTo(746.25, 820- 4 * radius);
+
+    ctx.moveTo(746.25+50, 820);
+    ctx.lineTo(746.25+50, 820- 4 * radius);
+
+    ctx.stroke();
+
     //Connecting rod Left
     ctx.strokeStyle = "Black";
 
@@ -146,6 +321,23 @@ Testtestest2
     ctx.lineTo(223.75, h_Displacer + 860 );
 
     ctx.stroke()
+
+    //Connecting rod Right II
+    ctx.strokeStyle = "Green";
+
+    ctx.beginPath();
+
+    ctx.moveTo(771.25 + Math.cos(alpha) * radius, 220 + Math.sin(alpha) * radius);
+    ctx.lineTo(746.25+25,  h_Work + 700);
+
+    ctx.stroke()
+
+
+
+
+    //
+
+
 
   }
 
@@ -164,8 +356,8 @@ Testtestest2
 
   //Gif Settings
 
-  const fps = 10;
-  const duration = 3;
+  const fps = 15;
+  const duration = 2*Math.PI/omega;
 
   //Create GIF
 
