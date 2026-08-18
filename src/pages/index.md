@@ -22,4 +22,4 @@ My non-technical interests include reading, skiing, scouting, escape rooms, puzz
 - GitHub: [laurentcasagrande](https://github.com/laurentcasagrande)
 - LinkedIn: [Laurent Casagrande](https://www.linkedin.com/in/laurent-casagrande-42a60b124/)
 - Matura thesis: [Project page and thesis download](https://maturitaetsarbeiten.ch/cms/archiv/a-z-namen-26.html?view=article&id=396:casagrande-laurent&catid=15)
-- CV: Available upon request.
+- CV: Email me.
