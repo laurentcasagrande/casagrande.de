@@ -10,15 +10,59 @@ Testtestest2
   import { encode } from "modern-gif";
   import workerUrl from "modern-gif/worker?url";
 
+  //Physics Constants
+
+  const radius = 40;
+  //======================
+  //Physics Engine
+  //======================
+  const V_sweep_displacer = 20;
+  const V_sweep_Work = 1;
+  const V_dead_h = 0;
+  const V_dead_c = 0;
+
+  const frequency = 0.15;
+  const omega = frequency * (2* Math.PI);
+  const R = 8.31446261815324;
+  const n = 0.005;
+  const T_h = 400;
+  const T_c = 300;
+
+  function Volume(DisplacerAngle, WorkAngle) {
+    const V_Work = V_sweep_Work * (1+Math.sin(WorkAngle)) / 2;
+
+    const V_h = V_dead_h + V_sweep_displacer * (1+Math.sin(DisplacerAngle)) / 2;
+    const V_c = V_dead_c + V_Work + V_sweep_displacer * (1-(1+Math.sin(DisplacerAngle)) / 2);
+    const V = V_h+V_c;
+    return V;
+  }
+
+  function Pressure(DisplacerAngle, WorkAngle) {
+    const V_Work = V_sweep_Work * (1+Math.sin(WorkAngle)) / 2;
+
+    const V_h = V_dead_h + V_sweep_displacer * (1+Math.sin(DisplacerAngle)) / 2;
+    const V_c = V_dead_c + V_Work + V_sweep_displacer * (1-(1+Math.sin(DisplacerAngle)) / 2);
+
+    const p = n * R / ((V_c/T_c)+(V_h/T_h));
+    return p;
+  }
+  
+  const Volumes = [];
+  const Pressures = [];
+
+  for (let i = 0; i < 180; i++) {
+    const DisplacerAngle = i*2/360*2*Math.PI;
+    const WorkAngle = DisplacerAngle - Math.PI / 2;
+
+    Volumes.push(Volume(DisplacerAngle, WorkAngle));
+    Pressures.push(Pressure(DisplacerAngle, WorkAngle));
+  }
+
   //======================
   //Animation
   //======================
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
-
-  //Physics Constants
-  const omega = 1;
-  const radius = 40;
 
   function drawFrame(t) {
     const theta = (omega * t) % (2 * Math.PI);
@@ -371,19 +415,12 @@ Testtestest2
     ctx.stroke();
 
     //======================
-    //Physics Engine
-    //======================
-    const V_sweep = 0;
-    const V_dead = 0;
-
-
-
-    //======================
     //p-V diagramm
     //======================
     const PlotWidth = 360;
     const PlotX = 77.5;
     const PlotY = 1062.5;
+
     ctx.strokeStyle = "Black";
     ctx.beginPath();
     ctx.moveTo(PlotX, PlotY);
@@ -398,7 +435,7 @@ Testtestest2
     ctx.font = "18px Helvetica";
 
     ctx.save();
-    ctx.translate(20, PlotY + PlotWidth / 2);
+    ctx.translate(15, PlotY + PlotWidth / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.textBaseline = "top";
     ctx.textAlign = "center";
@@ -411,6 +448,50 @@ Testtestest2
     ctx.textAlign = "center";
     ctx.fillText("Volume V/m³", 0, 0);
     ctx.restore();
+
+    //Draw Diagramm
+    const dp = Math.max(...Pressures) - Math.min(...Pressures);
+    const dV = Math.max(...Volumes) - Math.min(...Volumes);
+
+    ctx.fillStyle = "black";
+    ctx.font = "12px Helvetica";
+    const numLabels = 6;
+
+    for (let i = 0; i<(numLabels+1); i++){
+      const label = Math.min(...Pressures) + i/(numLabels) * dp;
+      ctx.fillText(label.toExponential(2), 35, PlotY + 14 + (PlotWidth - 20) * (1-i/(numLabels)));
+      }
+    
+    ctx.strokeStyle = "Grey";
+    ctx.beginPath();
+    for (let i = 0; i<(numLabels+1); i++){
+      ctx.moveTo(PlotX, PlotY + 10 + (PlotWidth - 20) * (1-i/(numLabels)));
+      ctx.lineTo(PlotX+PlotWidth, PlotY + 10 + (PlotWidth - 20) * (1-i/(numLabels)));
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle = "Red";
+    ctx.fillStyle = "rgba(255, 0, 0, 0.2)"
+    ctx.beginPath();
+
+    ctx.moveTo(PlotX + 10 + (PlotWidth - 20) * (Volumes[0]- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Math.min(...Pressures))/dp)));
+
+    for (let i = 1; i < Volumes.length; i++) {
+        ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * (Volumes[i]- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[i]- Math.min(...Pressures))/dp)));
+    }
+
+    ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * (Volumes[0]- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Math.min(...Pressures))/dp)));
+    
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = "blue";
+    ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(PlotX + 10 + (PlotWidth - 20) * (Volume(theta, alpha)- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressure(theta,alpha)- Math.min(...Pressures))/dp)), 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+
   }
 
   //Displayed animation
