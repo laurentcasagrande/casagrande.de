@@ -7,4 +7,4 @@ npm install
 npm run dev
 ```
 
-Create a production build with `npm run build`.
+Create a production build with `npm run build`..
