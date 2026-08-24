@@ -29,19 +29,19 @@ Testtestest2
   const T_c = 300;
 
   function Volume(DisplacerAngle, WorkAngle) {
-    const V_Work = V_sweep_Work * (1+Math.sin(WorkAngle)) / 2;
+    const V_Work = V_sweep_Work * (1-Math.sin(WorkAngle)) / 2;
 
-    const V_h = V_dead_h + V_sweep_displacer * (1+Math.sin(DisplacerAngle)) / 2;
-    const V_c = V_dead_c + V_Work + V_sweep_displacer * (1-(1+Math.sin(DisplacerAngle)) / 2);
+    const V_h = V_dead_h + V_sweep_displacer * (1-Math.sin(DisplacerAngle)) / 2;
+    const V_c = V_dead_c + V_Work + V_sweep_displacer * ((1+Math.sin(DisplacerAngle)) / 2);
     const V = V_h+V_c;
     return V;
   }
 
   function Pressure(DisplacerAngle, WorkAngle) {
-    const V_Work = V_sweep_Work * (1+Math.sin(WorkAngle)) / 2;
+    const V_Work = V_sweep_Work * (1-Math.sin(WorkAngle)) / 2;
 
-    const V_h = V_dead_h + V_sweep_displacer * (1+Math.sin(DisplacerAngle)) / 2;
-    const V_c = V_dead_c + V_Work + V_sweep_displacer * (1-(1+Math.sin(DisplacerAngle)) / 2);
+    const V_h = V_dead_h + V_sweep_displacer * (1-Math.sin(DisplacerAngle)) / 2;
+    const V_c = V_dead_c + V_Work + V_sweep_displacer * ((1+Math.sin(DisplacerAngle)) / 2);
 
     const p = n * R / ((V_c/T_c)+(V_h/T_h));
     return p;
@@ -70,27 +70,31 @@ Testtestest2
     const h_Displacer = Math.sin(theta) * radius;
     const h_Work = Math.sin(alpha) * radius;
 
+    ctx.lineWidth = 5;
+
     ctx.fillStyle = "rgb(255 255 255)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     //Connecting rod Left
-    ctx.strokeStyle = "Black";
+    ctx.lineWidth = 5;
 
+    ctx.strokeStyle = "DarkMagenta";
     ctx.beginPath();
-
-    ctx.moveTo(223.75, 220 - radius + h_Displacer);
-    ctx.lineTo(223.75, h_Displacer + 860);
 
     ctx.moveTo(105, 220 - radius + h_Work);
     ctx.lineTo(105, h_Work + 700);
 
     ctx.stroke();
 
+    ctx.lineWidth = 3;
+
     //Flywheel Left
     ctx.fillStyle = "lightBlue";
     ctx.fillRect(190, 20, 20, 400);
     ctx.strokeStyle = "blue";
     ctx.strokeRect(190, 20, 20, 400);
+
+    ctx.lineWidth = 1;
 
     //Arrow Left
     ctx.strokeStyle = "Black";
@@ -109,8 +113,10 @@ Testtestest2
 
     ctx.stroke();
 
+    ctx.lineWidth = 5;
+
     //Connector Flywheel-rod Left
-    ctx.strokeStyle = "Black";
+    ctx.strokeStyle = "DarkGreen";
 
     ctx.beginPath();
 
@@ -119,12 +125,15 @@ Testtestest2
 
     ctx.stroke();
 
+    ctx.strokeStyle = "DarkMagenta";
     ctx.beginPath();
 
     ctx.moveTo(190, 220 - radius + h_Work);
     ctx.lineTo(130 - 25, 220 - radius + h_Work);
 
     ctx.stroke();
+
+    ctx.lineWidth = 3;
 
     //Flywheel Right
     ctx.strokeStyle = "blue";
@@ -139,6 +148,8 @@ Testtestest2
     ctx.arc(771.25, 220, 180, 0, 2 * Math.PI);
     ctx.fill();
     ctx.stroke();
+
+    ctx.lineWidth = 1;
 
     //Arrow Right
 
@@ -187,8 +198,10 @@ Testtestest2
 
     ctx.stroke();
 
+    ctx.lineWidth = 5;
+
     //Connector Flywheel-rod Right
-    ctx.strokeStyle = "Red";
+    ctx.strokeStyle = "DarkGreen";
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
 
@@ -199,25 +212,28 @@ Testtestest2
     );
 
     ctx.stroke();
-
-    ctx.strokeStyle = "Green";
     ctx.setLineDash([]);
+
+    //Angle
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "rgba(0, 100, 0, 0.5)";
+
     ctx.beginPath();
-
-    ctx.moveTo(771.2, 220);
-    ctx.lineTo(
-      771.25 + Math.cos(alpha) * radius,
-      220 + Math.sin(alpha) * radius,
-    );
-
+    ctx.moveTo(771.2, 220)
+    ctx.arc(771.2, 220, radius, 0, theta)
     ctx.stroke();
+    ctx.fill();
+
+
 
     //Mast Left
+    ctx.lineWidth = 5;
     ctx.fillStyle = "#404040";
 
     ctx.fillRect(192.5, 420, 15, 650 - 250);
 
     //Hot Air
+    ctx.lineWidth = 8;
     ctx.fillStyle = "lightCoral";
 
     ctx.fillRect(
@@ -242,6 +258,7 @@ Testtestest2
     ctx.fillRect(562.5, 820, 417.5, radius + h_Displacer + 20);
 
     //Gradient
+    ctx.lineWidth = 1;
     const grad = ctx.createLinearGradient(
       20,
       h_Displacer + 860,
@@ -257,8 +274,9 @@ Testtestest2
     ctx.fillRect(562.5, h_Displacer + 860, 417.5, 80);
 
     //Displacer
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.fillStyle = "Grey";
+    ctx.fillStyle = "DarkGreen";
 
     ctx.rect(30, h_Displacer + 860, 397.5, 80);
 
@@ -267,6 +285,7 @@ Testtestest2
     ctx.fill();
 
     //Cooler
+    ctx.lineWidth = 8;
     ctx.beginPath();
     ctx.strokeStyle = "blue";
 
@@ -291,6 +310,7 @@ Testtestest2
     ctx.stroke();
 
     //Walls
+    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.strokeStyle = "Black";
 
@@ -307,6 +327,7 @@ Testtestest2
     ctx.stroke();
 
     //Connecting rod Rigt I
+    ctx.lineWidth = 5;
 
     const rodStartX = 771.25 + Math.cos(theta) * radius;
     const rodStartY = 220 + Math.sin(theta) * radius;
@@ -337,7 +358,7 @@ Testtestest2
     const intersectionX = rodStartX + intersectionT * rodDX;
     const intersectionY = rodStartY + intersectionT * rodDY;
 
-    ctx.strokeStyle = "red";
+    ctx.strokeStyle = "DarkGreen";
 
     ctx.beginPath();
     ctx.setLineDash([4, 4]);
@@ -351,7 +372,10 @@ Testtestest2
     ctx.lineTo(rodEndX, rodEndY);
     ctx.stroke();
 
+    ctx.setLineDash([]);
+
     //Mast Right
+    ctx.lineWidth = 1;
     ctx.fillStyle = "#404040";
     ctx.fillRect(771.25 - 7.5, 420, 15, 650 - 250);
 
@@ -363,8 +387,9 @@ Testtestest2
     ctx.stroke();
 
     //Work Piston
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.fillStyle = "Grey";
+    ctx.fillStyle = "DarkMagenta";
 
     ctx.rect(80, h_Work + 700, 50, 80);
 
@@ -373,6 +398,7 @@ Testtestest2
     ctx.fill();
 
     //Walls Work Piston
+    ctx.lineWidth = 1;
     ctx.strokeStyle = "Black";
     ctx.beginPath();
 
@@ -391,7 +417,8 @@ Testtestest2
     ctx.stroke();
 
     //Connecting rod Left
-    ctx.strokeStyle = "Black";
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "DarkGreen";
 
     ctx.beginPath();
 
@@ -402,7 +429,8 @@ Testtestest2
     ctx.stroke();
 
     //Connecting rod Right II
-    ctx.strokeStyle = "Green";
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "DarkMagenta";
 
     ctx.beginPath();
 
@@ -411,6 +439,19 @@ Testtestest2
       220 + Math.sin(alpha) * radius,
     );
     ctx.lineTo(746.25 + 25, h_Work + 700);
+
+    ctx.stroke();
+    
+
+    //Connector Flywheel rod Rigt II
+    ctx.strokeStyle = "DarkMagenta";
+    ctx.beginPath();
+
+    ctx.moveTo(771.2, 220);
+    ctx.lineTo(
+      771.25 + Math.cos(alpha) * radius,
+      220 + Math.sin(alpha) * radius,
+    );
 
     ctx.stroke();
 
@@ -422,6 +463,7 @@ Testtestest2
     const PlotY = 1062.5;
 
     ctx.strokeStyle = "Black";
+    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(PlotX, PlotY);
     ctx.lineTo(PlotX + PlotWidth, PlotY);
@@ -435,7 +477,7 @@ Testtestest2
     ctx.font = "18px Helvetica";
 
     ctx.save();
-    ctx.translate(15, PlotY + PlotWidth / 2);
+    ctx.translate(10, PlotY + PlotWidth / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.textBaseline = "top";
     ctx.textAlign = "center";
@@ -443,7 +485,7 @@ Testtestest2
     ctx.restore();
 
     ctx.save();
-    ctx.translate(PlotX + PlotWidth / 2, 1480);
+    ctx.translate(PlotX + PlotWidth / 2, 1490);
     ctx.textBaseline = "bottom";
     ctx.textAlign = "center";
     ctx.fillText("Volume V/m³", 0, 0);
@@ -457,9 +499,29 @@ Testtestest2
     ctx.font = "12px Helvetica";
     const numLabels = 6;
 
+    //Volumes labels
+
+      for (let i = 0; i<(numLabels+1); i++){
+      const label = Math.min(...Volumes) + i/(numLabels) * dV;
+      ctx.save();
+      ctx.translate(PlotX + 2 + (PlotWidth - 20) * (i/(numLabels)), PlotY + PlotWidth + 45);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(label.toExponential(2), 0, 0);
+      ctx.restore();
+      }
+    
+    ctx.strokeStyle = "Grey";
+    ctx.beginPath();
+    for (let i = 0; i<(numLabels+1); i++){
+      ctx.moveTo(PlotX + 10 + (PlotWidth - 20) * (1-i/(numLabels)), PlotY);
+      ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * (1-i/(numLabels)), PlotY + PlotWidth);
+    }
+    ctx.stroke();
+
+    //Pressure labels
     for (let i = 0; i<(numLabels+1); i++){
       const label = Math.min(...Pressures) + i/(numLabels) * dp;
-      ctx.fillText(label.toExponential(2), 35, PlotY + 14 + (PlotWidth - 20) * (1-i/(numLabels)));
+      ctx.fillText(label.toExponential(2), 35, PlotY + 2 + (PlotWidth - 20) * (1-i/(numLabels)));
       }
     
     ctx.strokeStyle = "Grey";
@@ -470,6 +532,8 @@ Testtestest2
     }
     ctx.stroke();
 
+
+    //Graph
     ctx.strokeStyle = "Red";
     ctx.fillStyle = "rgba(255, 0, 0, 0.2)"
     ctx.beginPath();
@@ -485,12 +549,28 @@ Testtestest2
     ctx.fill();
     ctx.stroke();
 
+
+    //Current Position
     ctx.strokeStyle = "blue";
     ctx.fillStyle = "blue";
     ctx.beginPath();
     ctx.arc(PlotX + 10 + (PlotWidth - 20) * (Volume(theta, alpha)- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressure(theta,alpha)- Math.min(...Pressures))/dp)), 5, 0, 2 * Math.PI);
     ctx.fill();
     ctx.stroke();
+
+    //Data
+    ctx.fillStyle = "black";
+    ctx.font = "18px Helvetica";
+    ctx.textBaseline = "top";
+    
+    
+
+    const TextX = 1000-PlotX-PlotWidth;
+    const TextY = PlotY;
+    const dText = 23;
+
+    ctx.fillText("Crank angle (theta):", TextX, TextY)
+    ctx.fillText("Crank angle (alpha):", TextX, TextY + dText)
 
   }
 
