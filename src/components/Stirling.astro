@@ -1,5 +1,3 @@
-Testtestest2
-
 <canvas id="canvas" width="1000" height="1500"></canvas>
 
 <button id="downloadGif"> Download GIF </button>
@@ -46,6 +44,59 @@ Testtestest2
     const p = n * R / ((V_c/T_c)+(V_h/T_h));
     return p;
   }
+
+  function WorkPerCycle(numSteps = 1000) {
+    let work = 0;
+
+    let theta1 = 0;
+    let alpha1 = theta1 - Math.PI / 2;
+
+    let V1 = Volume(theta1, alpha1);
+    let p1 = Pressure(theta1, alpha1);
+
+    for (let i = 1; i <= numSteps; i++) {
+      const theta2 = (2 * Math.PI * i) / numSteps;
+      const alpha2 = theta2 - Math.PI / 2;
+
+      const V2 = Volume(theta2, alpha2);
+      const p2 = Pressure(theta2, alpha2);
+
+      const dV = V2 - V1;
+      const pAverage = (p1 + p2) / 2;
+
+      work += pAverage * dV;
+
+      V1 = V2;
+      p1 = p2;
+    }
+
+    return work;
+  }
+
+    function MeanPressure(numSteps = 1000) {
+    let Integral = 0;
+    const dtheta = (2 * Math.PI) / numSteps;
+
+
+    for (let i = 0; i <= numSteps; i++) {
+      const theta = dtheta*i;
+      const alpha = theta - Math.PI / 2;
+
+      const p = Pressure(theta, alpha);
+
+      Integral += p * dtheta;
+    }
+
+    return Integral / (2 * Math.PI);
+  }
+
+  function CurrentPower(DisplacerAngle, WorkAngle, omega) {
+    const p = Pressure(DisplacerAngle, WorkAngle);
+
+    const dVdt = -V_sweep_Work / 2 * Math.cos(WorkAngle) * omega;
+
+    return p * dVdt;
+}
   
   const Volumes = [];
   const Pressures = [];
@@ -532,6 +583,12 @@ Testtestest2
     }
     ctx.stroke();
 
+    const meanp = MeanPressure()
+    ctx.strokeStyle = "black©";
+    ctx.beginPath();
+    ctx.moveTo(PlotX, PlotY + 10 + (PlotWidth - 20) * (1-((meanp- Math.min(...Pressures))/dp)));
+    ctx.lineTo(PlotX+PlotWidth, PlotY + 10 + (PlotWidth - 20) * (1-((meanp- Math.min(...Pressures))/dp)));
+    ctx.stroke();
 
     //Graph
     ctx.strokeStyle = "Red";
@@ -589,21 +646,21 @@ Testtestest2
     const TextY = PlotY;
     const dText = 23;
 
-    drawValue("Crank angle (θ)", theta/2/Math.PI*360, "°", TextX, TextY + 0 * dText, false)
-    drawValue("Work piston angle (α)", alpha/2/Math.PI*360, "°", TextX, TextY + 1 * dText, false)
-    drawValue("Rotational frequency (f)", frequency, "Hz", TextX, TextY + 2 * dText, false)
-    drawValue("Angular velocity (ω)", omega, "rad·s⁻¹", TextX, TextY + 3 * dText, false)
-    drawValue("Pressure (p)", Pressure(theta, alpha), "Pa", TextX, TextY + 4 * dText, false)
-    drawValue("Volume (V)", Volume(theta, alpha), "m³", TextX, TextY + 5 * dText, false)
-    drawValue("Hot-side temperature (Tₕ)", T_h, "K", TextX, TextY + 6 * dText, false)
-    drawValue("Cold-side temperature (T꜀)", T_c, "K", TextX, TextY + 7 * dText, false)
-    drawValue("Work per cycle (W)", NaN, "J", TextX, TextY + 8 * dText, true)
-    drawValue("Power output (P)", NaN, "W", TextX, TextY + 9 * dText, true)
-    drawValue("Thermal efficiency (η)", NaN, "%", TextX, TextY + 10 * dText, false)
-    drawValue("Swept volume (Vₛ)", V_sweep_Work, "m³", TextX, TextY + 11 * dText, false)
-    drawValue("Dead volume (Vᴅ)", V_dead_h+V_dead_c, "m³", TextX, TextY + 12 * dText, false)
-    drawValue("Compression ratio (Vₘₐₓ / Vₘᵢₙ)", Math.max(...Volumes)/Math.min(...Volumes), "", TextX, TextY + 13 * dText, false)
-    drawValue("Mean pressure (p̄)", NaN, "Pa", TextX, TextY + 14 * dText, false)
+    drawValue("Crank angle (θ)", theta/2/Math.PI*360, "°", TextX, TextY + 0 * dText, false);
+    drawValue("Work piston angle (α)", alpha/2/Math.PI*360, "°", TextX, TextY + 1 * dText, false);
+    drawValue("Rotational frequency (f)", frequency, "Hz", TextX, TextY + 2 * dText, false);
+    drawValue("Angular velocity (ω)", omega, "rad·s⁻¹", TextX, TextY + 3 * dText, false);
+    drawValue("Pressure (p)", Pressure(theta, alpha), "Pa", TextX, TextY + 4 * dText, false);
+    drawValue("Volume (V)", Volume(theta, alpha), "m³", TextX, TextY + 5 * dText, false);
+    drawValue("Hot-side temperature (Tₕ)", T_h, "K", TextX, TextY + 6 * dText, false);
+    drawValue("Cold-side temperature (T꜀)", T_c, "K", TextX, TextY + 7 * dText, false);
+    drawValue("Work per cycle (W)", WorkPerCycle(), "J", TextX, TextY + 8 * dText, true);
+    drawValue("Power output (P)", CurrentPower(theta, alpha, omega), "W", TextX, TextY + 9 * dText, true);
+    drawValue("Thermal efficiency (η)", NaN, "%", TextX, TextY + 10 * dText, false);
+    drawValue("Swept volume (Vₛ)", V_sweep_Work, "m³", TextX, TextY + 11 * dText, false);
+    drawValue("Dead volume (Vᴅ)", V_dead_h+V_dead_c+V_sweep_displacer, "m³", TextX, TextY + 12 * dText, false);
+    drawValue("Compression ratio (Vₘₐₓ / Vₘᵢₙ)", Math.max(...Volumes)/Math.min(...Volumes), "", TextX, TextY + 13 * dText, false);
+    drawValue("Mean pressure (p̄)", meanp, "Pa", TextX, TextY + 14 * dText, false);
 
 
 
