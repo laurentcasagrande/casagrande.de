@@ -84,7 +84,12 @@
   const T_h_input = document.getElementById("T_h");
   T_h_input.value = T_h
   T_h_input.addEventListener("input", () => {
-  T_h = T_h_input.value;
+    const newTemperature = T_h_input.valueAsNumber;
+
+    if (Number.isFinite(newTemperature) && newTemperature > 0) {
+      T_h = newTemperature;
+    }
+
   });
 
 
