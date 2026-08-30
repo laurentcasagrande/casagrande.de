@@ -3,58 +3,88 @@
 <div class="fields">
 
   <div class="field">
-    <label for="T_h">Tₕ</label>
+    <label for="T_c">Cold-side temperature (T꜀) [K]</label>
+    <input
+      id="T_c"
+      type="number"
+      placeholder="300"
+    >
+  </div>
+
+  <div class="field">
+    <label for="T_h">Hot-side temperature (Tₕ) [K]</label>
     <input
       id="T_h"
       type="number"
-      placeholder="400 K"
+      placeholder="400"
     >
   </div>
 
-  <div class="field">
-    <label for="age">Age</label>
-    <input
-      id="age"
-      type="number"
-      placeholder="Enter age"
-    >
-  </div>
+ <div class="field">
+  <label for="n">Amount of gas (n) [mol]</label>
+  <input
+    id="n"
+    type="number"
+    placeholder="0.0007"
+  >
+</div>
 
-  <div class="field">
-    <label for="city">City</label>
-    <input
-      id="city"
-      type="text"
-      placeholder="Enter city"
-    >
-  </div>
+<div class="field">
+  <label for="frequency_input">Rotational frequency (f) [Hz]</label>
+  <input
+    id="frequency_input"
+    type="number"
+    placeholder="0.15"
+  >
+</div>
 
-  <div class="field">
-    <label for="country">Country</label>
-    <input
-      id="country"
-      type="text"
-      placeholder="Enter country"
-    >
-  </div>
+<div class="field">
+  <label for="V_sweep_displacer_input">
+    Displacer swept volume (Vₛ,d) [m³]
+  </label>
+  <input
+    id="V_sweep_displacer_input"
+    type="number"
+    min="0"
+    step="0.1"
+  >
+</div>
 
-  <div class="field">
-    <label for="email">Email</label>
-    <input
-      id="email"
-      type="email"
-      placeholder="Enter email"
-    >
-  </div>
+<div class="field">
+  <label for="V_sweep_Work_input">
+    Work-piston swept volume (Vₛ,w) [m³]
+  </label>
+  <input
+    id="V_sweep_Work_input"
+    type="number"
+    min="0"
+    step="0.1"
+  >
+</div>
 
-  <div class="field">
-    <label for="phone">Phone</label>
-    <input
-      id="phone"
-      type="tel"
-      placeholder="Enter phone number"
-    >
-  </div>
+<div class="field">
+  <label for="V_dead_h_input">
+    Hot-side dead volume (Vᴅ,h) [m³]
+  </label>
+  <input
+    id="V_dead_h_input"
+    type="number"
+    min="0"
+    step="0.1"
+  >
+</div>
+
+<div class="field">
+  <label for="V_dead_c_input">
+    Cold-side dead volume (Vᴅ,c) [m³]
+  </label>
+  <input
+    id="V_dead_c_input"
+    type="number"
+    min="0"
+    step="0.1"
+  >
+</div>
 
 </div>
 
@@ -68,28 +98,67 @@
 
   //Input Form
 
-  const radius = 40;
-  const V_sweep_displacer = 20;
-  const V_sweep_Work = 1;
-  const V_dead_h = 0;
-  const V_dead_c = 0;
+  const radius = 40; //idk why i did radius and only radius with a constant for the simulation but it is to late to fix now also the correct way would be to convert more magic numbers into constants but i cant be bothered rn also this is just a personal project and i dont know why i decided to open source my code cuz its not great
 
-  const frequency = 0.15;
-  const omega = frequency * (2* Math.PI);
+
+  const V_sweep_displacer = 0.00002;
+  const V_sweep_Work = 0.000003;
+  const V_dead_h = 0.000002;
+  const V_dead_c = 0.000002;
+
+  let frequency = 0.15;
+  let omega = frequency * (2* Math.PI);
   const R = 8.31446261815324;
-  const n = 0.005;
+  let n = 0.0007;
   let T_h = 400;
-  const T_c = 300;
+  let T_c = 300;
 
   const T_h_input = document.getElementById("T_h");
-  T_h_input.value = T_h
   T_h_input.addEventListener("input", () => {
     const newTemperature = T_h_input.valueAsNumber;
-
-    if (Number.isFinite(newTemperature) && newTemperature > 0) {
+    if (Number.isFinite(newTemperature) && newTemperature > 0 && newTemperature > T_c) {
       T_h = newTemperature;
+    } else {
+      T_h = 400;
     }
+    UpdatePV();
+    T_c_input.dispatchEvent(new Event("input"));
+  });
 
+  const T_c_input = document.getElementById("T_c");
+  T_c_input.addEventListener("input", () => {
+    const newTemperature = T_c_input.valueAsNumber;
+    if (Number.isFinite(newTemperature) && newTemperature > 0 && newTemperature < T_h) {
+      T_c = newTemperature;
+    } else {
+      T_c = 300;
+    }
+    UpdatePV();
+    T_h_input.dispatchEvent(new Event("input"));
+  });
+
+  const n_input = document.getElementById("n");
+  n_input.addEventListener("input", () => {
+    const newn = n_input.valueAsNumber;
+    if (Number.isFinite(newn) && newn > 0) {
+      n = newn;
+    } else {
+      n = 0.0007;
+    }
+    UpdatePV();
+  });
+
+  const f_input = document.getElementById("frequency_input");
+  f_input.addEventListener("input", () => {
+  const newf = f_input.valueAsNumber;
+  if (Number.isFinite(newf) && newf > 0) {
+    frequency = newf;
+    omega = frequency * (2* Math.PI);
+  } else {
+    frequency = 0.15;
+    omega = frequency * (2* Math.PI);
+  }
+  UpdatePV();
   });
 
 
@@ -168,17 +237,24 @@
 
     return p * dVdt;
 }
-  
+
   const Volumes = [];
   const Pressures = [];
 
-  for (let i = 0; i < 180; i++) {
-    const DisplacerAngle = i*2/360*2*Math.PI;
-    const WorkAngle = DisplacerAngle - Math.PI / 2;
+  function UpdatePV() {
+    Volumes.length = 0;
+    Pressures.length = 0;
 
-    Volumes.push(Volume(DisplacerAngle, WorkAngle));
-    Pressures.push(Pressure(DisplacerAngle, WorkAngle));
+    for (let i = 0; i < 180; i++) {
+      const DisplacerAngle = i*2/360*2*Math.PI;
+      const WorkAngle = DisplacerAngle - Math.PI / 2;
+
+      Volumes.push(Volume(DisplacerAngle, WorkAngle));
+      Pressures.push(Pressure(DisplacerAngle, WorkAngle));
+    }
   }
+  
+  UpdatePV();
 
   //======================
   //Animation
@@ -659,13 +735,13 @@
     ctx.fillStyle = "rgba(255, 0, 0, 0.2)"
     ctx.beginPath();
 
-    ctx.moveTo(PlotX + 10 + (PlotWidth - 20) * (Volumes[0]- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Math.min(...Pressures))/dp)));
+    ctx.moveTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[0]- Math.min(...Volumes))/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Math.min(...Pressures))/dp)));
 
     for (let i = 1; i < Volumes.length; i++) {
-        ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * (Volumes[i]- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[i]- Math.min(...Pressures))/dp)));
+        ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[i]- Math.min(...Volumes))/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[i]- Math.min(...Pressures))/dp)));
     }
 
-    ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * (Volumes[0]- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Math.min(...Pressures))/dp)));
+    ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[0]- Math.min(...Volumes))/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Math.min(...Pressures))/dp)));
     
     ctx.fill();
     ctx.stroke();
@@ -675,7 +751,7 @@
     ctx.strokeStyle = "blue";
     ctx.fillStyle = "blue";
     ctx.beginPath();
-    ctx.arc(PlotX + 10 + (PlotWidth - 20) * (Volume(theta, alpha)- Math.min(...Volumes)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressure(theta,alpha)- Math.min(...Pressures))/dp)), 5, 0, 2 * Math.PI);
+    ctx.arc(PlotX + 10 + (PlotWidth - 20) * ((Volume(theta, alpha)- Math.min(...Volumes))/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressure(theta,alpha)- Math.min(...Pressures))/dp)), 5, 0, 2 * Math.PI);
     ctx.fill();
     ctx.stroke();
 
@@ -720,7 +796,7 @@
     drawValue("Cold-side temperature (T꜀)", T_c, "K", TextX, TextY + 7 * dText, false);
     drawValue("Work per cycle (W)", WorkPerCycle(), "J", TextX, TextY + 8 * dText, true);
     drawValue("Power output (P)", CurrentPower(theta, alpha, omega), "W", TextX, TextY + 9 * dText, true);
-    drawValue("Thermal efficiency (η)", NaN, "%", TextX, TextY + 10 * dText, false);
+    drawValue("Average power (P̄)", WorkPerCycle()*frequency, "W", TextX, TextY + 10 * dText, true);
     drawValue("Swept volume (Vₛ)", V_sweep_Work, "m³", TextX, TextY + 11 * dText, false);
     drawValue("Dead volume (Vᴅ)", V_dead_h+V_dead_c+V_sweep_displacer, "m³", TextX, TextY + 12 * dText, false);
     drawValue("Compression ratio (Vₘₐₓ / Vₘᵢₙ)", Math.max(...Volumes)/Math.min(...Volumes), "", TextX, TextY + 13 * dText, false);
