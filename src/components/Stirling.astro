@@ -39,26 +39,24 @@
 </div>
 
 <div class="field">
-  <label for="V_sweep_displacer_input">
-    Displacer swept volume (Vₛ,d) [m³]
+  <label for="V_sweep_displacer">
+    Displacer swept volume (V<sub>s,d</sub>) [m³]
   </label>
   <input
-    id="V_sweep_displacer_input"
+    id="V_sweep_displacer"
     type="number"
-    min="0"
-    step="0.1"
+    placeholder="0.00002"
   >
 </div>
 
 <div class="field">
-  <label for="V_sweep_Work_input">
-    Work-piston swept volume (Vₛ,w) [m³]
+  <label for="V_sweep_Work">
+    Work-piston swept volume (V<sub>s,w</sub>) [m³]
   </label>
   <input
-    id="V_sweep_Work_input"
+    id="V_sweep_Work"
     type="number"
-    min="0"
-    step="0.1"
+    placeholder="0.000003"
   >
 </div>
 
@@ -101,8 +99,8 @@
   const radius = 40; //idk why i did radius and only radius with a constant for the simulation but it is to late to fix now also the correct way would be to convert more magic numbers into constants but i cant be bothered rn also this is just a personal project and i dont know why i decided to open source my code cuz its not great
 
 
-  const V_sweep_displacer = 0.00002;
-  const V_sweep_Work = 0.000003;
+  let V_sweep_displacer = 0.00002;
+  let V_sweep_Work = 0.000003;
   const V_dead_h = 0.000002;
   const V_dead_c = 0.000002;
 
@@ -157,6 +155,28 @@
   } else {
     frequency = 0.15;
     omega = frequency * (2* Math.PI);
+  }
+  UpdatePV();
+  });
+
+  const VSD_input = document.getElementById("V_sweep_displacer");
+  VSD_input.addEventListener("input", () => {
+  const newVSD = VSD_input.valueAsNumber;
+  if (Number.isFinite(newVSD) && newVSD > 0) {
+    V_sweep_displacer = newVSD;
+  } else {
+    V_sweep_displacer = 0.00002;
+  }
+  UpdatePV();
+  });
+
+  const VSW_input = document.getElementById("V_sweep_Work");
+  VSW_input.addEventListener("input", () => {
+  const newVSW = VSW_input.valueAsNumber;
+  if (Number.isFinite(newVSW) && newVSW > 0) {
+    V_sweep_Work = newVSW;
+  } else {
+    V_sweep_Work = 0.00002;
   }
   UpdatePV();
   });
@@ -756,7 +776,7 @@
     ctx.stroke();
 
     //Data
-    function drawValue(label, value, unit, x, y, iscolored) {
+    function drawValue(label, value, unit, x, y, iscolored, komma = 3) {
       ctx.fillStyle = "black";
       ctx.font = "18px Helvetica";
       ctx.textBaseline = "top";
@@ -768,13 +788,11 @@
         ctx.fillStyle = value >= 0 ? "green" : "red";
       }
 
-      const valueText = value.toFixed(3);
+      const valueText = value.toFixed(komma);
 
         ctx.fillText(valueText, x + labelWidth, y);
 
         const valueWidth = ctx.measureText(valueText).width;
-
-        // Unit
 
         ctx.fillText(" " + unit, x + labelWidth + valueWidth, y);
 
@@ -797,8 +815,8 @@
     drawValue("Work per cycle (W)", WorkPerCycle(), "J", TextX, TextY + 8 * dText, true);
     drawValue("Power output (P)", CurrentPower(theta, alpha, omega), "W", TextX, TextY + 9 * dText, true);
     drawValue("Average power (P̄)", WorkPerCycle()*frequency, "W", TextX, TextY + 10 * dText, true);
-    drawValue("Swept volume (Vₛ)", V_sweep_Work, "m³", TextX, TextY + 11 * dText, false);
-    drawValue("Dead volume (Vᴅ)", V_dead_h+V_dead_c+V_sweep_displacer, "m³", TextX, TextY + 12 * dText, false);
+    drawValue("Swept volume (Vₛ)", V_sweep_Work, "m³", TextX, TextY + 11 * dText, false, 8);
+    drawValue("Dead volume (Vᴅ)", V_dead_h+V_dead_c+V_sweep_displacer, "m³", TextX, TextY + 12 * dText, false, 8);
     drawValue("Compression ratio (Vₘₐₓ / Vₘᵢₙ)", Math.max(...Volumes)/Math.min(...Volumes), "", TextX, TextY + 13 * dText, false);
     drawValue("Mean pressure (p̄)", MeanPressure(), "Pa", TextX, TextY + 14 * dText, false);
 
