@@ -61,26 +61,26 @@
 </div>
 
 <div class="field">
-  <label for="V_dead_h_input">
+  <label for="V_dead_h">
     Hot-side dead volume (Vᴅ,h) [m³]
   </label>
   <input
-    id="V_dead_h_input"
+    id="V_dead_h"
     type="number"
     min="0"
-    step="0.1"
+    placeholder="0.000002"
   >
 </div>
 
 <div class="field">
-  <label for="V_dead_c_input">
+  <label for="V_dead_c">
     Cold-side dead volume (Vᴅ,c) [m³]
   </label>
   <input
-    id="V_dead_c_input"
+    id="V_dead_c"
     type="number"
     min="0"
-    step="0.1"
+    placeholder="0.000002"
   >
 </div>
 
@@ -101,8 +101,8 @@
 
   let V_sweep_displacer = 0.00002;
   let V_sweep_Work = 0.000003;
-  const V_dead_h = 0.000002;
-  const V_dead_c = 0.000002;
+  let V_dead_h = 0.000002;
+  let V_dead_c = 0.000002;
 
   let frequency = 0.15;
   let omega = frequency * (2* Math.PI);
@@ -181,6 +181,28 @@
   UpdatePV();
   });
 
+  const VDH_input = document.getElementById("V_dead_h");
+  VDH_input.addEventListener("input", () => {
+  const newVDH = VDH_input.valueAsNumber;
+  if (Number.isFinite(newVDH) && newVDH > 0) {
+    V_dead_h = newVDH;
+  } else {
+    V_dead_h = 0.00002;
+  }
+  UpdatePV();
+  });
+  
+  
+  const VDC_input = document.getElementById("V_dead_c");
+  VDC_input.addEventListener("input", () => {
+  const newVDC = VDC_input.valueAsNumber;
+  if (Number.isFinite(newVDC) && newVDC > 0) {
+    V_dead_c = newVDC;
+  } else {
+    V_dead_c = 0.00002;
+  }
+  UpdatePV();
+  });
 
   //======================
   //Physics Engine
@@ -809,7 +831,7 @@
     drawValue("Rotational frequency (f)", frequency, "Hz", TextX, TextY + 2 * dText, false);
     drawValue("Angular velocity (ω)", omega, "rad·s⁻¹", TextX, TextY + 3 * dText, false);
     drawValue("Pressure (p)", Pressure(theta, alpha), "Pa", TextX, TextY + 4 * dText, false);
-    drawValue("Volume (V)", Volume(theta, alpha), "m³", TextX, TextY + 5 * dText, false);
+    drawValue("Volume (V)", Volume(theta, alpha), "m³", TextX, TextY + 5 * dText, false, 8);
     drawValue("Hot-side temperature (Tₕ)", T_h, "K", TextX, TextY + 6 * dText, false);
     drawValue("Cold-side temperature (T꜀)", T_c, "K", TextX, TextY + 7 * dText, false);
     drawValue("Work per cycle (W)", WorkPerCycle(), "J", TextX, TextY + 8 * dText, true);
