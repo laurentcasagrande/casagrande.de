@@ -1,6 +1,6 @@
 ---
 layout: ../../layouts/MarkdownPostLayout.astro
-title: 'Stirling Simulation'
+title: 'Stirling Engine Simulation'
 pubDate: 2022-08-29
 description: 'This is a Simulation.'
 image:
@@ -10,10 +10,71 @@ tags: ["astro", "blogging", "learning in public"]
 ---
 import StirlingSimulation from "../../components/Stirling.astro";
 
-# My Stirling Engine
 
-This part is normal Markdown.
+## Summary
+    
+## Introduction
 
-<StirlingSimulation />
+When I was studying for my exit exams, I couldn’t find a good Stirling engine simulation online. There were plenty of simplified diagrams showing the four stages of the cycle and their corresponding positions on a p–V diagram, but I couldn’t find one that showed the engine and its thermodynamic cycle moving continuously.
 
-And now back to normal Markdown.
+So I decided to make one myself, partly because it helped me understand how the engine works, and partly in the hope that it might help future students understand it a little better.
+
+The engine shown here is best described as a beta-type Stirling engine. The design is based on a small low-temperature tabletop Stirling engine I got for Christmas a few years ago. A displacer moves the working gas between a hot and a cold space, while a separate work piston changes the total volume. The two move 90° out of phase.
+
+For the thermodynamics I use the ideal Schmidt model.
+
+## Model and Assumptions
+
+Model and Assumptions
+
+The Schmidt model makes the Stirling engine sufficiently simple that its pressure can be calculated directly from the crank position.
+
+For this simulation I assume that:
+
+- the working gas is an ideal gas
+- the amount of working gas is constant
+- pressure is uniform throughout the engine at any instant
+- the hot space remains at a constant temperature T~h
+- the cold space remains at a constant temperature T~c
+- piston and displacer motion is sinusoidal
+- the engine runs at constant angular velocity
+- pressure losses and mechanical losses are ignored
+
+These assumptions make the model analytically and computationally convenient. They also make it considerably nicer than a real Stirling engine.
+
+In particular, the model effectively assumes that gas moved from one side of the engine to the other can reach the appropriate temperature as required. At sufficiently high engine speeds this becomes an increasingly questionable description of reality.
+
+This is why increasing the frequency in the simulation increases average power linearly:
+
+$$ P=Wf $$
+
+The work per cycle is independent of frequency in this model, so running twice as many identical cycles per second gives twice the power.
+
+A real engine obviously cannot continue doing this indefinitely. Heat transfer takes time, flow produces pressure losses, friction increases, and eventually something mechanical will object rather strongly.
+
+## Simulation
+
+The simulation below is interactive. Change any of the inputs to see how they affect the engine and its p–V cycle.
+
+<StirlingSimulation /> 
+
+## Physics
+
+I described the state of the engine as a function of two angles. The crank angle θ and the work piston angle α. α is simply given by α = θ
+### Geometry
+### Pressure
+### p–V Diagram
+### Work
+### Power
+### Mean Pressure
+### Compression Ratio
+
+
+##Limitations
+
+##Implementation
+
+###Animation
+###GIF Export
+###Code
+
