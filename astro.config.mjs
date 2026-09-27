@@ -15,13 +15,17 @@ export default defineConfig({
   markdown: {
 
     processor: unified({
-
       remarkPlugins: [remarkMath],
-
       rehypePlugins: [rehypeKatex],
-
     }),
 
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
   },
 
+  },
+  
 });
