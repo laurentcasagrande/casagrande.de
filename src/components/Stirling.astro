@@ -524,47 +524,7 @@
 
     ctx.fill();
 
-    //Cooler
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.strokeStyle = "blue";
 
-    ctx.moveTo(20, 820);
-    ctx.lineTo(437.5, 820);
-
-    ctx.moveTo(562.5, 820);
-    ctx.lineTo(980, 820);
-
-    ctx.stroke();
-
-    //Heater
-    ctx.beginPath();
-    ctx.strokeStyle = "DarkRed";
-
-    ctx.moveTo(20, 980);
-    ctx.lineTo(437.5, 980);
-
-    ctx.moveTo(562.5, 980);
-    ctx.lineTo(980, 980);
-
-    ctx.stroke();
-
-    //Walls
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.strokeStyle = "Black";
-
-    ctx.moveTo(20, 820);
-    ctx.lineTo(20, 980);
-    ctx.moveTo(437.5, 820);
-    ctx.lineTo(437.5, 980);
-
-    ctx.moveTo(562.5, 820);
-    ctx.lineTo(562.5, 980);
-    ctx.moveTo(980, 820);
-    ctx.lineTo(980, 980);
-
-    ctx.stroke();
 
     //Connecting rod Rigt I
     ctx.lineWidth = 5;
@@ -624,6 +584,48 @@
     ctx.beginPath();
     ctx.arc(771.25, 220, 5, 0, 2 * Math.PI);
     ctx.fill();
+    ctx.stroke();
+
+        //Cooler
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.strokeStyle = "blue";
+
+    ctx.moveTo(20, 820);
+    ctx.lineTo(437.5, 820);
+
+    ctx.moveTo(562.5, 820);
+    ctx.lineTo(980, 820);
+
+    ctx.stroke();
+
+    //Heater
+    ctx.beginPath();
+    ctx.strokeStyle = "DarkRed";
+
+    ctx.moveTo(20, 980);
+    ctx.lineTo(437.5, 980);
+
+    ctx.moveTo(562.5, 980);
+    ctx.lineTo(980, 980);
+
+    ctx.stroke();
+
+    //Walls
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.strokeStyle = "Black";
+
+    ctx.moveTo(20, 820);
+    ctx.lineTo(20, 980);
+    ctx.moveTo(437.5, 820);
+    ctx.lineTo(437.5, 980);
+
+    ctx.moveTo(562.5, 820);
+    ctx.lineTo(562.5, 980);
+    ctx.moveTo(980, 820);
+    ctx.lineTo(980, 980);
+
     ctx.stroke();
 
     //Work Piston

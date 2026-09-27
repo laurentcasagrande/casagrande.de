@@ -19,7 +19,7 @@ When I was studying for my exit exams, I couldn’t find a good Stirling engine 
 
 So I decided to make one myself, partly because it helped me understand how the engine works, and partly in the hope that it might help future students understand it a little better.
 
-The engine shown here is best described as a beta-type Stirling engine. The design is based on a small low-temperature tabletop Stirling engine I got for Christmas a few years ago. A displacer moves the working gas between a hot and a cold space, while a separate work piston changes the total volume. The two move 90° out of phase.
+[The engine](#Simulation) shown here is best described as a beta-type Stirling engine. The design is based on a small low-temperature tabletop Stirling engine I got for Christmas a few years ago. A displacer moves the working gas between a hot and a cold space, while a separate work piston changes the total volume. The two move 90° out of phase.
 
 For the thermodynamics I use the ideal Schmidt model.
 
@@ -31,22 +31,20 @@ The Schmidt model makes the Stirling engine sufficiently simple that its pressur
 
 For this simulation I assume that:
 
-- the working gas is an ideal gas
-- the amount of working gas is constant
-- pressure is uniform throughout the engine at any instant
-- the hot space remains at a constant temperature T~h
-- the cold space remains at a constant temperature T~c
-- piston and displacer motion is sinusoidal
-- the engine runs at constant angular velocity
-- pressure losses and mechanical losses are ignored
+> - the working gas is an ideal gas
+> - the amount of working gas is constant
+> - pressure is uniform throughout the engine at any instant
+> - the hot space remains at a constant temperature T~h
+> - the cold space remains at a constant temperature T~c
+> - piston and displacer motion is sinusoidal
+> - the engine runs at constant angular velocity
+> - pressure losses and mechanical losses are ignored
 
 These assumptions make the model analytically and computationally convenient. They also make it considerably nicer than a real Stirling engine.
 
 In particular, the model effectively assumes that gas moved from one side of the engine to the other can reach the appropriate temperature as required. At sufficiently high engine speeds this becomes an increasingly questionable description of reality.
 
-This is why increasing the frequency in the simulation increases average power linearly:
-
-$$ P=Wf $$
+This is why increasing the frequency in the simulation increases average power linearly: $ P=Wf $
 
 The work per cycle is independent of frequency in this model, so running twice as many identical cycles per second gives twice the power.
 
@@ -60,9 +58,90 @@ The simulation below is interactive. Change any of the inputs to see how they af
 
 ## Physics
 
-I described the state of the engine as a function of two angles. The crank angle θ and the work piston angle α. α is simply given by α = θ
+I described the state of the engine in terms of two angles: the crank angle $ \theta $ (shown in green in the simulation) and the work piston angle $ \alpha $.
+
+The crank angle is defined as $ \theta = \omega t $, where $ \omega $ is the angular velocity and $ t $ is time. Since the work piston lags behind the crank by 90°, its angle is given by $ \alpha = \theta - 90° $.
+
+All other physical quantities describing the engine, including the positions of its components, pressure, and volume, can then be expressed as functions of these two angles.
+
 ### Geometry
+
+I model the motion of both the work piston (purple) and the displacer piston (green) as sinusoidal, rather than reproducing the exact geometry of the connecting rods. Since the crank radius is much smaller than the connecting rod length, the resulting deviation from the sinusoidal approximation is negligible.
+
+The volume displaced by the work piston is given by
+
+$$ 
+V_w(\alpha) = \frac{V_{s,w}}{2} (1-\sin{\alpha}). 
+$$
+
+The hot-side gas volume is
+
+$$ 
+V_h(\theta) = V_{d,h} + \frac{V_{s,d}}{2}(1-\sin\theta) 
+$$
+
+while the cold-side gas volume is
+
+$$
+V_c(\theta, \alpha) = V_{d,c} + V_w(\alpha) + \frac{V_{s,d}}{2}(1+\sin\theta).
+$$
+
+Here, $ V_{s,w} $ and $ V_{s,d} $ are the swept volumes of the work piston and displacer piston, respectively, while $ V_{d,h} $ and $ V_{d,c} $ are the hot- and cold-side dead volumes.
+
+Adding the hot- and cold-side volumes gives the total gas volume:
+
+$$
+\begin{aligned}
+V(\alpha) &= V_h(\theta) + V_c(\theta,\alpha)\\
+&= V_{s,d} + V_{d,c} + V_{d,h} + V_w(\alpha).
+\end{aligned}
+$$
+
+As you can see the displacer piston does not change the total gas volume; it merely redistributes the gas between the hot and cold regions. Since all other terms are constant, the total gas volume depends only on the position of the work piston, described by $ \alpha $.
+
+
 ### Pressure
+
+The pressure calculation is the main thermodynamic part of the simulation.
+
+For an ideal gas, $ pV=nRT. $
+
+That equation cannot quite be applied to the entire engine using a single temperature, because part of the gas is assumed to be at $T_h$ and another part at $T_c$.
+
+The model instead assumes that the pressure is uniform throughout the engine. The amount of gas in each space can therefore be written as
+
+$$
+n_h=\frac{pV_h}{RT_h}
+$$
+
+and
+
+$$
+n_c=\frac{pV_c}{RT_c}.
+$$
+
+The total amount of gas is fixed:
+
+$$
+n=n_h+n_c.
+$$
+
+Substituting the previous expressions gives
+
+$$
+n = \frac{p}{R} (\dfrac{V_h}{T_h} + \dfrac{V_c}{T_c})
+$$
+
+Rearranging for pressure gives the equation used in the simulation:
+
+$$
+p = \frac{nR}{\dfrac{V_h}{T_h} + \dfrac{V_c}{T_c}}
+$$
+
+As the displacer moves gas towards the hot end, the effective temperature of the working gas increases and so does its pressure. Moving it towards the cold end does the opposite.
+
+The 90° phase difference between this pressure variation and the motion of the work piston is what produces the p–V loop.
+
 ### p–V Diagram
 ### Work
 ### Power
@@ -70,11 +149,11 @@ I described the state of the engine as a function of two angles. The crank angle
 ### Compression Ratio
 
 
-##Limitations
+## Limitations
 
-##Implementation
+## Implementation
 
-###Animation
-###GIF Export
-###Code
+### Animation
+### GIF Export
+### Code
 
