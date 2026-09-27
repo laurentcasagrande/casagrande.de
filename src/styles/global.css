@@ -328,22 +328,10 @@ footer p {
   background: transparent;
 }
 
-/* Light mode */
-.markdown-content pre.astro-code {
-  color: var(--shiki-light, var(--default-text)) !important;
-}
-
-.markdown-content pre.astro-code span {
-  color: var(--shiki-light, inherit) !important;
-}
-
 /* Dark mode */
-html[data-theme="dark"] .markdown-content pre.astro-code {
-  color: var(--shiki-dark, var(--default-text)) !important;
-}
-
+html[data-theme="dark"] .markdown-content pre.astro-code,
 html[data-theme="dark"] .markdown-content pre.astro-code span {
-  color: var(--shiki-dark, inherit) !important;
+  color: var(--shiki-dark) !important;
 }
 
 .markdown-content blockquote {
