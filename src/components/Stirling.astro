@@ -7,7 +7,7 @@
     <input
       id="T_c"
       type="number"
-      placeholder="300"
+      value="300"
     >
   </div>
 
@@ -16,7 +16,7 @@
     <input
       id="T_h"
       type="number"
-      placeholder="400"
+      value="400"
     >
   </div>
 
@@ -25,7 +25,7 @@
   <input
     id="n"
     type="number"
-    placeholder="0.0007"
+    value="0.0007"
   >
 </div>
 
@@ -34,7 +34,7 @@
   <input
     id="frequency_input"
     type="number"
-    placeholder="0.15"
+    value="0.15"
   >
 </div>
 
@@ -45,7 +45,7 @@
   <input
     id="V_sweep_displacer"
     type="number"
-    placeholder="0.00002"
+    value="0.00002"
   >
 </div>
 
@@ -56,7 +56,7 @@
   <input
     id="V_sweep_Work"
     type="number"
-    placeholder="0.000003"
+    value="0.000003"
   >
 </div>
 
@@ -68,7 +68,7 @@
     id="V_dead_h"
     type="number"
     min="0"
-    placeholder="0.000002"
+    value="0.000002"
   >
 </div>
 
@@ -80,7 +80,7 @@
     id="V_dead_c"
     type="number"
     min="0"
-    placeholder="0.000002"
+    value="0.000002"
   >
 </div>
 
@@ -93,7 +93,7 @@
     type="number"
     min="0"
     max="120"
-    placeholder="15"
+    value="15"
   >
 </div>
 
@@ -132,39 +132,38 @@
   let T_c = 300;
   let fps = 15;
 
-  const T_h_input = document.getElementById("T_h");
-  T_h_input.addEventListener("input", () => {
-    const newTemperature = T_h_input.valueAsNumber;
-    if (Number.isFinite(newTemperature) && newTemperature > 0 && newTemperature > T_c) {
-      T_h = newTemperature;
-    } else {
-      T_h = 400;
-    }
-    UpdatePV();
-    T_c_input.dispatchEvent(new Event("input"));
-  });
+function updateTemperatures() {
+  const newTh = T_h_input.valueAsNumber;
+  const newTc = T_c_input.valueAsNumber;
 
-  const T_c_input = document.getElementById("T_c");
-  T_c_input.addEventListener("input", () => {
-    const newTemperature = T_c_input.valueAsNumber;
-    if (Number.isFinite(newTemperature) && newTemperature > 0 && newTemperature < T_h) {
-      T_c = newTemperature;
-    } else {
-      T_c = 300;
-    }
+  if (
+    Number.isFinite(newTh) &&
+    Number.isFinite(newTc) &&
+    newTh > 0 &&
+    newTc > 0 &&
+    newTh > newTc
+  ) {
+    T_h = newTh;
+    T_c = newTc;
+
     UpdatePV();
-    T_h_input.dispatchEvent(new Event("input"));
-  });
+  }
+}
+
+const T_h_input = document.getElementById("T_h");
+const T_c_input = document.getElementById("T_c");
+
+T_h_input.addEventListener("input", updateTemperatures);
+T_c_input.addEventListener("input", updateTemperatures);
 
   const n_input = document.getElementById("n");
   n_input.addEventListener("input", () => {
     const newn = n_input.valueAsNumber;
     if (Number.isFinite(newn) && newn > 0) {
       n = newn;
-    } else {
-      n = 0.0007;
+      UpdatePV();
     }
-    UpdatePV();
+    
   });
 
   const f_input = document.getElementById("frequency_input");
@@ -172,9 +171,6 @@
   const newf = f_input.valueAsNumber;
   if (Number.isFinite(newf) && newf > 0) {
     frequency = newf;
-    omega = frequency * (2* Math.PI);
-  } else {
-    frequency = 0.15;
     omega = frequency * (2* Math.PI);
   }
   });
@@ -184,10 +180,8 @@
   const newVSD = VSD_input.valueAsNumber;
   if (Number.isFinite(newVSD) && newVSD > 0) {
     V_sweep_displacer = newVSD;
-  } else {
-    V_sweep_displacer = 0.00002;
-  }
-  UpdatePV();
+    UpdatePV();
+  } 
   });
 
   const VSW_input = document.getElementById("V_sweep_Work");
@@ -195,10 +189,8 @@
   const newVSW = VSW_input.valueAsNumber;
   if (Number.isFinite(newVSW) && newVSW > 0) {
     V_sweep_Work = newVSW;
-  } else {
-    V_sweep_Work = 0.000003;
+    UpdatePV();
   }
-  UpdatePV();
   });
 
   const VDH_input = document.getElementById("V_dead_h");
@@ -206,10 +198,9 @@
   const newVDH = VDH_input.valueAsNumber;
   if (Number.isFinite(newVDH) && newVDH >= 0) {
     V_dead_h = newVDH;
-  } else {
-    V_dead_h = 0.000002;
-  }
-  UpdatePV();
+    UpdatePV();
+  } 
+
   });
   
   
@@ -218,10 +209,8 @@
   const newVDC = VDC_input.valueAsNumber;
   if (Number.isFinite(newVDC) && newVDC >= 0) {
     V_dead_c = newVDC;
-  } else {
-    V_dead_c = 0.000002;
-  }
-  UpdatePV();
+    UpdatePV();
+  } 
   });
 
 
@@ -230,14 +219,22 @@
   const newFPS = FPS_input.valueAsNumber;
   if (Number.isFinite(newFPS) && newFPS > 0 && newFPS <= 120) {
     fps = newFPS;
-  } else {
-    fps = 15;
-  }
+  } 
   });
 
   //======================
   //Physics Engine
   //======================
+
+  let workPerCycle = 0;
+  let meanPressure = 0;
+
+  let Vmin = 0;
+  let Vmax = 0;
+  let Pmin = 0;
+  let Pmax = 0;
+  let dV = 0;
+  let dp = 0;
 
   function Volume(DisplacerAngle, WorkAngle) {
     const V_Work = V_sweep_Work * (1-Math.sin(WorkAngle)) / 2;
@@ -325,6 +322,16 @@
       Volumes.push(Volume(DisplacerAngle, WorkAngle));
       Pressures.push(Pressure(DisplacerAngle, WorkAngle));
     }
+    workPerCycle = WorkPerCycle();
+    meanPressure = MeanPressure();
+
+    Vmin = Math.min(...Volumes);
+    Vmax = Math.max(...Volumes);
+    Pmin = Math.min(...Pressures);
+    Pmax = Math.max(...Pressures);
+
+    dV = Vmax - Vmin;
+    dp = Pmax - Pmin;
   }
   
   UpdatePV();
@@ -369,6 +376,7 @@
 
     //Arrow Left
     ctx.strokeStyle = "Black";
+    ctx.beginPath();
 
     ctx.moveTo(200, 30);
     ctx.lineTo(200, 60);
@@ -765,9 +773,6 @@
     ctx.restore();
 
     //Draw Diagramm
-    const dp = Math.max(...Pressures) - Math.min(...Pressures);
-    const dV = Math.max(...Volumes) - Math.min(...Volumes);
-
     ctx.fillStyle = "black";
     ctx.font = "12px Helvetica";
     const numLabels = 6;
@@ -775,7 +780,7 @@
     //Volumes labels
 
       for (let i = 0; i<(numLabels+1); i++){
-      const label = Math.min(...Volumes) + i/(numLabels) * dV;
+      const label = Vmin + i/(numLabels) * dV;
       ctx.save();
       ctx.translate(PlotX + 2 + (PlotWidth - 20) * (i/(numLabels)), PlotY + PlotWidth + 45);
       ctx.rotate(-Math.PI / 2);
@@ -793,7 +798,7 @@
 
     //Pressure labels
     for (let i = 0; i<(numLabels+1); i++){
-      const label = Math.min(...Pressures) + i/(numLabels) * dp;
+      const label = Pmin + i/(numLabels) * dp;
       ctx.fillText(label.toExponential(2), 35, PlotY + 2 + (PlotWidth - 20) * (1-i/(numLabels)));
       }
     
@@ -810,13 +815,13 @@
     ctx.fillStyle = "rgba(255, 0, 0, 0.2)"
     ctx.beginPath();
 
-    ctx.moveTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[0]- Math.min(...Volumes))/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Math.min(...Pressures))/dp)));
+    ctx.moveTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[0]- Vmin)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Pmin)/dp)));
 
     for (let i = 1; i < Volumes.length; i++) {
-        ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[i]- Math.min(...Volumes))/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[i]- Math.min(...Pressures))/dp)));
+        ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[i]- Vmin)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[i]- Pmin)/dp)));
     }
 
-    ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[0]- Math.min(...Volumes))/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Math.min(...Pressures))/dp)));
+    ctx.lineTo(PlotX + 10 + (PlotWidth - 20) * ((Volumes[0]- Vmin)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressures[0]- Pmin)/dp)));
     
     ctx.fill();
     ctx.stroke();
@@ -826,7 +831,7 @@
     ctx.strokeStyle = "blue";
     ctx.fillStyle = "blue";
     ctx.beginPath();
-    ctx.arc(PlotX + 10 + (PlotWidth - 20) * ((Volume(theta, alpha)- Math.min(...Volumes))/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressure(theta,alpha)- Math.min(...Pressures))/dp)), 5, 0, 2 * Math.PI);
+    ctx.arc(PlotX + 10 + (PlotWidth - 20) * ((Volume(theta, alpha)- Vmin)/dV), PlotY + 10 + (PlotWidth - 20) * (1-((Pressure(theta,alpha)- Pmin)/dp)), 5, 0, 2 * Math.PI);
     ctx.fill();
     ctx.stroke();
 
@@ -852,8 +857,7 @@
         ctx.fillText(" " + unit, x + labelWidth + valueWidth, y);
 
     }
-    
-    
+      
 
     const TextX = 1000-PlotX-PlotWidth;
     const TextY = PlotY;
@@ -867,14 +871,14 @@
     drawValue("Volume (V)", Volume(theta, alpha), "m³", TextX, TextY + 5 * dText, false, 8);
     drawValue("Hot-side temperature (Tₕ)", T_h, "K", TextX, TextY + 6 * dText, false);
     drawValue("Cold-side temperature (T꜀)", T_c, "K", TextX, TextY + 7 * dText, false);
-    drawValue("Work per cycle (W)", WorkPerCycle(), "J", TextX, TextY + 8 * dText, true);
+    drawValue("Work per cycle (W)", workPerCycle, "J", TextX, TextY + 8 * dText, true);
     drawValue("Instantaneous power (P)", CurrentPower(theta, alpha, omega), "W", TextX, TextY + 9 * dText, true);
-    drawValue("Average power (P̄)", WorkPerCycle()*frequency, "W", TextX, TextY + 10 * dText, true);
+    drawValue("Average power (P̄)", workPerCycle*frequency, "W", TextX, TextY + 10 * dText, true);
     drawValue("Swept volume (Vₛ)", V_sweep_Work, "m³", TextX, TextY + 11 * dText, false, 8);
     drawValue("Dead volume (Vᴅ)", V_dead_h+V_dead_c, "m³", TextX, TextY + 12 * dText, false, 8);
     drawValue("Minimum gas volume (Vₘᵢₙ)", V_dead_h+V_dead_c+V_sweep_displacer, "m³", TextX, TextY + 13 * dText, false, 8);
     drawValue("Compression ratio (Vₘₐₓ / Vₘᵢₙ)", (V_dead_h+V_dead_c+V_sweep_displacer+V_sweep_Work)/(V_dead_h+V_dead_c+V_sweep_displacer), "", TextX, TextY + 14 * dText, false);
-    drawValue("Mean pressure (p̄)", MeanPressure(), "Pa", TextX, TextY + 15 * dText, false);
+    drawValue("Mean pressure (p̄)", meanPressure, "Pa", TextX, TextY + 15 * dText, false);
 
 
 
@@ -897,9 +901,19 @@
 
   async function makeGIF() {
     const duration = (2 * Math.PI) / omega;
-    const frameCount = fps * duration;
+    const frameCount = Math.round(fps * duration);
     const delay = 1000 / fps;
     const frames = [];
+    const MAX_GIF_FRAMES = 300;
+
+    if (frameCount > MAX_GIF_FRAMES) {
+      const gifStatus = document.getElementById("gifStatus");
+      gifStatus.textContent = 
+        `GIF would contain ${frameCount} frames. Maximum is ${MAX_GIF_FRAMES}.`;
+      throw new Error(
+        `GIF would contain ${frameCount} frames. Maximum is ${MAX_GIF_FRAMES}.`
+    );
+    }
 
     // Create every GIF frame
     for (let frame = 0; frame < frameCount; frame++) {
@@ -961,7 +975,7 @@
       gifStatus.textContent = "Finished.";
     } catch (error) {
       console.error(error);
-      gifStatus.textContent = "GIF creation failed.";
+      gifStatus.textContent = error;
     } finally {
       downloadButton.disabled = false;
       downloadButton.textContent = "Download GIF";
