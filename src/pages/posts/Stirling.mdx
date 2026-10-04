@@ -25,7 +25,6 @@ For the thermodynamics I use the ideal Schmidt model.
 
 ## Model and Assumptions
 
-Model and Assumptions
 
 The Schmidt model makes the Stirling engine sufficiently simple that its pressure can be calculated directly from the crank position.
 
@@ -142,18 +141,138 @@ As the displacer moves gas towards the hot end, the effective temperature of the
 
 The 90° phase difference between this pressure variation and the motion of the work piston is what produces the p–V loop.
 
-### p–V Diagram
-### Work
-### Power
-### Mean Pressure
-### Compression Ratio
+### p–V Diagram and Work
 
+The p–V diagram is probably the most useful part of the simulation.
+
+The code loops through one complete cycle, calculates the volume and pressure every 2 degrees, and plots the resulting data.
+
+The work performed by the gas is
+
+$$
+dW=p,dV.
+$$
+
+Over one complete cycle, work is
+
+$$
+
+\boxed{
+W=\oint p\,dV.
+}
+
+$$
+
+This is visualised in the p–V diagram as the area enclosed by the loop. Since the simulation only calculates pressure and volume at discrete crank angles, this integral is evaluated numerically from 1000 calculated points rather than analytically.
+
+### Power
+
+Once the work per cycle is known, the average indicated power is straightforward:
+
+$$
+
+\bar P=Wf
+
+$$
+
+where $f$ is the rotational frequency.
+
+The instantaneous power follows from
+
+$$
+P = \frac{dW}{dt}
+= p\frac{dV}{dt}.
+$$
+
+Only the work piston changes the total volume. Its volume is
+
+$$
+V_w =
+\frac{V_{s,w}}{2}(1-\sin\alpha),
+$$
+
+with
+
+$$
+\alpha = \omega t - 90^\circ.
+$$
+
+Differentiating with respect to time gives
+
+$$
+\frac{dV}{dt}
+=
+-\frac{V_{s,w}}{2}\cos(\alpha)\omega.
+$$
+
+The instantaneous power is therefore
+
+$$
+\boxed{
+P=
+-p\frac{V_{s,w}}{2}\cos(\alpha)\omega
+}.
+$$
+
+### Other Calculations
+
+The simulation also displays a few other quantities, including the mean pressure, compression ratio, swept volume, and dead volume. These remaining calculations are mostly straightforward or performed numerically. You can find their implementations, along with the rest of the simulation’s source code, on [GitHub](https://github.com/laurentcasagrande/casagrande.de).
 
 ## Limitations
 
+As listed above the simulation relies on quite a few [assumptions](##Model-and-Assumptions) most notably that cold and hot spaces remain at constant temperature.  This is obviously not the case in the real world as heat transfer takes time and the working gas can not reach the temperature of the hot or cold side instantly. 
+
+This becomes particularly important as the engine speed increases. In the model, frequency does not affect the thermodynamic state of the gas: the same pressure and volume are calculated at a given crank angle regardless of how quickly the engine is rotating. The p–V loop, and therefore the work per cycle, consequently remains unchanged with frequency.
+
+Since
+
+$$
+\bar P = Wf,
+$$
+
+the predicted power therefore increases linearly with frequency. A real Stirling engine does not behave this way. At higher speeds, finite heat-transfer rates, flow restrictions, pressure losses, friction, leakage, and other effects become increasingly important.
+
+The model also does not attempt to describe the detailed behaviour of a regenerator or other non-ideal processes within the engine.
+
+For these reasons, the simulation is not an an accurate predictor of the performance of a real Stirling engine. Instead, it should be used to help understand how these engines work and to accomplish my original goal of visualising the different stages of a Stirling engine cycle. A more realistic simulation would require a considerably more complicated thermodynamic model.
+
 ## Implementation
 
+I wrote the entire simulation in JavaScript and used the HTML Canvas API for both the animation and the p–V diagram. This means that it can run entirely in the frontend. The calculations required by the thermodynamic model are computationally inexpensive; drawing, updating, and exporting the animation are considerably more demanding.
+
 ### Animation
+
+The animation is implemented using ```requestAnimationFrame()```, which calls the drawing function before each browser repaint.
+
+Rather than incrementing the crank angle by a fixed amount every frame, I calculate it from the elapsed time and angular velocity:
+
+```javascript
+const theta = (omega * t) % (2 * Math.PI);
+const alpha = (theta - Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI);
+```
+
+This allows the animation to run at approximately the correct speed regardless of the browser’s frame rate.
+
+For each frame, the canvas is cleared and the entire engine is redrawn.
+
+The p–V diagram is generated separately by calculating the pressure and volume at 180 equally spaced positions over a complete revolution. These values are only recalculated whenever an engine parameter changes.
+
+This isn’t how I would structure a serious thermodynamic simulation program, but it has the significant advantage that it works.
+
 ### GIF Export
+
+I also added a button to export the animation as a GIF, mostly because I wanted an easy way to use it elsewhere, for example in a PowerPoint presentation.
+
+For this, I used the JavaScript library modern-gif. The export function renders the animation at a user-defined frame rate and collects the resulting canvas frames. Instead of recording the animation in real time, it calculates the engine’s position separately for each frame.
+
+The collected frames are then passed to modern-gif, which encodes them into a GIF. The resulting file is made available through a temporary browser URL.
+
+One disadvantage is that GIF encoding can be rather slow, particularly because the canvas has a (hard-coded) resolution of 1000 × 1500 pixels. At the default rotational frequency of 0.15 Hz, a complete revolution takes approximately 6.7 seconds, requiring about 100 frames at 15 FPS.
+
 ### Code
 
+The complete source code is available on [GitHub](https://github.com/laurentcasagrande/casagrande.de).
+
+There are certainly cleaner ways of implementing quite a lot of it. In particular, the drawing code contains a somewhat excessive number of hard-coded coordinates, and several calculations could probably be consolidated into fewer functions.
+
+I could refactor all of this, but the simulation does what I originally wanted it to do, and I have other things I’d rather spend my time on.
