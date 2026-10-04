@@ -7,7 +7,8 @@
     <input
       id="T_c"
       type="number"
-      value="300"
+      placeholder="300"
+      step="any"
     >
   </div>
 
@@ -16,7 +17,8 @@
     <input
       id="T_h"
       type="number"
-      value="400"
+      placeholder="400"
+      step="any"
     >
   </div>
 
@@ -25,7 +27,8 @@
   <input
     id="n"
     type="number"
-    value="0.0007"
+    placeholder="0.0007"
+    step="any"
   >
 </div>
 
@@ -34,7 +37,8 @@
   <input
     id="frequency_input"
     type="number"
-    value="0.15"
+    placeholder="0.15"
+    step="any"
   >
 </div>
 
@@ -45,7 +49,8 @@
   <input
     id="V_sweep_displacer"
     type="number"
-    value="0.00002"
+    placeholder="0.00002"
+    step="any"
   >
 </div>
 
@@ -56,7 +61,8 @@
   <input
     id="V_sweep_Work"
     type="number"
-    value="0.000003"
+    placeholder="0.000003"
+    step="any"
   >
 </div>
 
@@ -68,7 +74,8 @@
     id="V_dead_h"
     type="number"
     min="0"
-    value="0.000002"
+    placeholder="0.000002"
+    step="any"
   >
 </div>
 
@@ -80,7 +87,8 @@
     id="V_dead_c"
     type="number"
     min="0"
-    value="0.000002"
+    placeholder="0.000002"
+    step="any"
   >
 </div>
 
@@ -93,7 +101,8 @@
     type="number"
     min="0"
     max="120"
-    value="15"
+    placeholder="15"
+    step="1"
   >
 </div>
 
@@ -917,7 +926,7 @@ T_c_input.addEventListener("input", updateTemperatures);
 
     // Create every GIF frame
     for (let frame = 0; frame < frameCount; frame++) {
-      const t = frame / fps;
+      const t = frame / frameCount * duration;
 
       drawFrame(t);
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
