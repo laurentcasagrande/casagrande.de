@@ -9,9 +9,6 @@ image:
 tags: ["astro", "blogging", "learning in public"]
 ---
 import StirlingSimulation from "../../components/Stirling.astro";
-
-
-## Summary
     
 ## Introduction
 
@@ -19,7 +16,7 @@ When I was studying for my exit exams, I couldn’t find a good Stirling engine 
 
 So I decided to make one myself, partly because it helped me understand how the engine works, and partly in the hope that it might help future students understand it a little better.
 
-[The engine](#Simulation) shown here is best described as a beta-type Stirling engine. The design is based on a small low-temperature tabletop Stirling engine I got for Christmas a few years ago. A displacer moves the working gas between a hot and a cold space, while a separate work piston changes the total volume. The two move 90° out of phase.
+[The engine](#canvas) shown here is best described as a beta-type Stirling engine. The design is based on a small low-temperature tabletop Stirling engine I got for Christmas a few years ago. A displacer moves the working gas between a hot and a cold space, while a separate work piston changes the total volume. The two move 90° out of phase.
 
 For the thermodynamics I use the ideal Schmidt model.
 
@@ -157,9 +154,7 @@ Over one complete cycle, work is
 
 $$
 
-\boxed{
 W=\oint p\,dV.
-}
 
 $$
 
@@ -208,10 +203,8 @@ $$
 The instantaneous power is therefore
 
 $$
-\boxed{
 P=
 -p\frac{V_{s,w}}{2}\cos(\alpha)\omega
-}.
 $$
 
 ### Other Calculations
@@ -220,7 +213,7 @@ The simulation also displays a few other quantities, including the mean pressure
 
 ## Limitations
 
-As listed above the simulation relies on quite a few [assumptions](##Model-and-Assumptions) most notably that cold and hot spaces remain at constant temperature.  This is obviously not the case in the real world as heat transfer takes time and the working gas can not reach the temperature of the hot or cold side instantly. 
+As listed above the simulation relies on quite a few [assumptions](#model-and-assumptions) most notably that cold and hot spaces remain at constant temperature.  This is obviously not the case in the real world as heat transfer takes time and the working gas can not reach the temperature of the hot or cold side instantly. 
 
 This becomes particularly important as the engine speed increases. In the model, frequency does not affect the thermodynamic state of the gas: the same pressure and volume are calculated at a given crank angle regardless of how quickly the engine is rotating. The p–V loop, and therefore the work per cycle, consequently remains unchanged with frequency.
 
