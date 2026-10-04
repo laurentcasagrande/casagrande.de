@@ -901,8 +901,8 @@ T_c_input.addEventListener("input", updateTemperatures);
 
   async function makeGIF() {
     const duration = (2 * Math.PI) / omega;
-    const frameCount = Math.round(fps * duration);
-    const delay = 1000 / fps;
+    const frameCount = Math.max(1,Math.round(fps * duration));
+    const delay = duration * 1000 / frameCount;
     const frames = [];
     const MAX_GIF_FRAMES = 300;
 
