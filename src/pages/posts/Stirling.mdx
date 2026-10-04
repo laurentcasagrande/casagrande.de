@@ -23,7 +23,7 @@ For the thermodynamics I use the ideal Schmidt model.
 ## Model and Assumptions
 
 
-The Schmidt model makes the Stirling engine sufficiently simple that its pressure can be calculated directly from the crank position.
+The simulation uses the ideal Schmidt model of a Stirling engine. This model simplifies the thermodynamics enough that the pressure can be calculated directly from the positions of the displacer and work piston.
 
 For this simulation I assume that:
 
@@ -36,15 +36,9 @@ For this simulation I assume that:
 > - the engine runs at constant angular velocity
 > - pressure losses and mechanical losses are ignored
 
-These assumptions make the model analytically and computationally convenient. They also make it considerably nicer than a real Stirling engine.
+These assumptions reduce the engine to two gas spaces: a hot space and a cold space. Their volumes change with the crank position, but each space is assigned a fixed temperature and both are assumed to have the same instantaneous pressure.
 
-In particular, the model effectively assumes that gas moved from one side of the engine to the other can reach the appropriate temperature as required. At sufficiently high engine speeds this becomes an increasingly questionable description of reality.
-
-This is why increasing the frequency in the simulation increases average power linearly: $ P=Wf $
-
-The work per cycle is independent of frequency in this model, so running twice as many identical cycles per second gives twice the power.
-
-A real engine obviously cannot continue doing this indefinitely. Heat transfer takes time, flow produces pressure losses, friction increases, and eventually something mechanical will object rather strongly.
+This also means that gas transferred between the two spaces is effectively assumed to reach the temperature of its new space immediately. R
 
 ## Simulation
 
