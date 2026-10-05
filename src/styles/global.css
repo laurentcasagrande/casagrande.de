@@ -108,6 +108,7 @@ html[data-theme="dark"] {
   /* Code */
   --code-bg: rgb(39, 41, 42);
   --code-border: rgb(74, 77, 79);
+  --code-text: var(--shiki-dark);
 
   /* Figures */
   --fig-bg: rgb(29, 31, 32);
@@ -325,6 +326,12 @@ footer p {
 .markdown-content pre code {
   padding: 0;
   background: transparent;
+}
+
+/* Dark mode */
+html[data-theme="dark"] .markdown-content pre.astro-code,
+html[data-theme="dark"] .markdown-content pre.astro-code span {
+  color: var(--shiki-dark) !important;
 }
 
 .markdown-content blockquote {

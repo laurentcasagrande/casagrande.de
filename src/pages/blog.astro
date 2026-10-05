@@ -17,7 +17,7 @@ interface PostModule {
   url: string;
 }
 
-const postModules = import.meta.glob('./posts/*.md', { eager: true });
+const postModules = import.meta.glob('./posts/*.{md,mdx}', { eager: true });
 
 const posts = (Object.values(postModules) as PostModule[])
   .filter((post) => post.frontmatter && post.url)
