@@ -11,20 +11,38 @@ tags: ["astro", "blogging", "learning in public"]
 
 
 <div style="width: 100%; overflow: hidden;">
+
   <iframe
+    class="plot-light"
     src="/plots/MCDPlotWhite.html"
-    style="width: 100%; height: 600px; border: 0;"
+    title="Minimum cost diet plot"
     loading="lazy"
   ></iframe>
+
+  <iframe
+    class="plot-dark"
+    src="/plots/MCDPlotDark.html"
+    title="Minimum cost diet plot"
+    loading="lazy"
+  ></iframe>
+
 </div>
 
-<div style="width: 100%; overflow: hidden;">
-  <iframe
-    src="/plots/MCDPlotDark.html"
-    style="width: 100%; height: 600px; border: 0;"
-    loading="lazy"
-  ></iframe>
-</div>
+<style>{`
+.plot-light,
+.plot-dark {
+  width: 100%;
+  height: 600px;
+  border: 0;
+}
+
+.plot-light { display: block; }
+.plot-dark { display: none; }
+
+html[data-theme="dark"] .plot-light { display: none; }
+html[data-theme="dark"] .plot-dark { display: block; }
+`}</style>
+
 
 ## Stigler
 | Nutrient              |       min |   max |
