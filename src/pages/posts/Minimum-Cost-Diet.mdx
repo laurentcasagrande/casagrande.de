@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/MarkdownPostLayout.astro
 title: 'Test Article'
-pubDate: 2022-10-09
+pubDate: 2022-10-11
 description: 'This is the first post of my new Astro blog.'
 image:
     url: 'https://docs.astro.build/assets/rose.webp'
@@ -9,40 +9,13 @@ image:
 tags: ["astro", "blogging", "learning in public"]
 ---
 
+## Introduction
 
-<div style="width: 100%; overflow: hidden;">
+With everything becomin more expenmsive many look to a way of saving some of their money somehow. As food at home and in restaurants is rising [above average inflation rate](https://www.aei.org/economics/chart-of-the-day-or-century-8/) It seams a logical field to take a closer look at. In a much less practical thought experiment later laureat of the Nobel Memorial Prize in Economic Sciences [George Stigler](https://en.wikipedia.org/wiki/George_Stigler) proposed a problem more or less in the following phrasing (not an actual quote):
 
-  <iframe
-    class="plot-light"
-    src="/plots/MCDPlotWhite.html"
-    title="Minimum cost diet plot"
-    loading="lazy"
-  ></iframe>
-
-  <iframe
-    class="plot-dark"
-    src="/plots/MCDPlotDark.html"
-    title="Minimum cost diet plot"
-    loading="lazy"
-  ></iframe>
-
-</div>
-
-<style>{`
-.plot-light,
-.plot-dark {
-  width: 100%;
-  height: 600px;
-  border: 0;
-}
-
-.plot-light { display: block; }
-.plot-dark { display: none; }
-
-html[data-theme="dark"] .plot-light { display: none; }
-html[data-theme="dark"] .plot-dark { display: block; }
-`}</style>
-
+>
+> For a moderately active man weighing 154 pounds, how much of each of 77 foods should be eaten on a daily basis so that the man’s intake of nine nutrients will be at least equal to the recommended dietary allowances (RDAs) suggested by the National Research Council in 1943, with the cost of the diet being minimal?
+> https://data.bls.gov/cgi-bin/cpicalc.pl?cost1=39.93&year1=1939&year2=2016
 
 ## Stigler
 | Nutrient              |       min |   max |
@@ -104,16 +77,16 @@ html[data-theme="dark"] .plot-dark { display: block; }
 | Niacin[Gram]                            |    0.0154  |     0.12 |
 | Vitamin C[Gram]                         |    0.11    | 10000    |
 
-| Food                                                      |      grams |   Price[CHF] |   Energie[kcal] |   Gesamtkohlenhydrate[Gram] |   Proteine[Gram] |   Nahrungsfasern[Gram] |   Fett, davon gesättigte Fettsäuren[Gram] |   Lipide insgesamt[Gram] |   Natrium[Gram] |   Eisen[Gram] |   Calcium[Gram] |   Vitamin A[Gram] |   Thiamin[Gram] |   Riboflavin (B2)[Gram] |   Niacin[Gram] |   Vitamin C[Gram] |
-|:----------------------------------------------------------|-----------:|-------------:|----------------:|----------------------------:|-----------------:|-----------------------:|------------------------------------------:|-------------------------:|----------------:|--------------:|----------------:|------------------:|----------------:|------------------------:|---------------:|------------------:|
-| Migros · Hörnli · aus Hartweizengriess [100024965]        | 337.457    |  0.337457    |   1177.73       |                236.22       |          40.4949 |            12.8234     |                               1.34983     |               5.06186    |      0.00674915 |     0         |        0        |           0       |      0          |              0          |         0      |         0         |
-| M-Classic · Vollkorn-Haferflöckli · fein [100041823]      | 230.624    |  0.322873    |    860.226      |                140.68       |          29.9811 |            16.1437     |                               2.30624     |              16.1437     |      0.0184499  |     0         |        0        |           0       |      0          |              0          |         0      |         0         |
-| M-Budget · Rapsöl  [100158988]                            |  29.4139   |  0.111901    |    264.725      |                  0          |           0      |             0          |                               2.23801     |              29.4139     |      0          |     0         |        0        |           0       |      0          |              0          |         0      |         0         |
-| Actilife · All in One Depot Tabletten [100122598]         |   2.8125   |  0.164063    |      0.9375     |                  0.234375   |           0      |             0.46875    |                               0.046875    |               0.234375   |      0          |     0.0039375 |        0.225    |           0.00075 |      0.00103125 |              0.0013125  |         0.015  |         0.15      |
-| Actilife · Calcium 600 Tabletten [100181112]              |   1.30804  |  0.114816    |      0.872024   |                  0.218006   |           0      |             0.436012   |                               0.0436012   |               0.218006   |      0.00174405 |     0         |        0.523214 |           0       |      0          |              0          |         0      |         0         |
-| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |   0.756696 |  0.0924851   |      0.504464   |                  0.126116   |           0      |             0.126116   |                               0.0252232   |               0.126116   |      0          |     0.0070625 |        0.201786 |           0       |      0          |              0.00070625 |         0      |         0.0201786 |
-| Actilife · Vitamin B Komplex Tabletten [100100180]        |   0.0125   |  0.000902778 |      0.00833333 |                  0.00208333 |           0      |             0.00208333 |                               0.000416667 |               0.00208333 |      0          |     0         |        0        |           0       |      2.75e-05   |              3.5e-05    |         0.0004 |         0         |
-| Total                                                     | 602.385    |  1.1445      |   2305          |                377.481      |          70.476  |            30          |                               6.0102      |              51.2        |      0.0269431  |     0.011     |        0.95     |           0.00075 |      0.00105875 |              0.00205375 |         0.0154 |         0.170179  |
+| Food                                                      |   Amount [grams] |   Price [CHF] |   Energy [kcal] |   Total carbohydrates [grams] |   Protein [grams] |   Dietary fibre [grams] |   Fat of which saturated fatty acids [grams] |   Total Fat [grams] |   Sodium [grams] |   Iron [grams] |   Calcium [grams] |   Vitamin A [grams] |   Thiamine (B1) [grams] |   Riboflavin (B2) [grams] |   Niacin (B3) [grams] |   Vitamin C [grams] |
+|:----------------------------------------------------------|-----------------:|--------------:|----------------:|------------------------------:|------------------:|------------------------:|---------------------------------------------:|--------------------:|-----------------:|---------------:|------------------:|--------------------:|------------------------:|--------------------------:|----------------------:|--------------------:|
+| Migros · Hörnli · aus Hartweizengriess [100024965]        |       337.62     |     0.33762   |     1178.3      |                    236.334    |           40.5145 |               12.8296   |                                    1.35048   |            5.06431  |       0.00675241 |      0         |          0        |             0       |              0          |                0          |                0      |           0         |
+| M-Classic · Vollkorn-Haferflöckli · fein [100041823]      |       230.449    |     0.322628  |      859.574    |                    140.574    |           29.9583 |               16.1314   |                                    2.30449   |           16.1314   |       0.0184359  |      0         |          0        |             0       |              0          |                0          |                0      |           0         |
+| M-Budget · Rapsöl  [100158988]                            |        29.4227   |     0.111934  |      264.804    |                      0        |            0      |                0        |                                    2.23868   |           29.4227   |       0          |      0         |          0        |             0       |              0          |                0          |                0      |           0         |
+| Actilife · All in One Depot Tabletten [100122598]         |         2.8875   |     0.168438  |        0.9625   |                      0.240625 |            0      |                0.48125  |                                    0.048125  |            0.240625 |       0          |      0.0040425 |          0.231    |             0.00077 |              0.00105875 |                0.0013475  |                0.0154 |           0.154     |
+| Actilife · Calcium 600 Tabletten [100181112]              |         1.30054  |     0.114158  |        0.867024 |                      0.216756 |            0      |                0.433512 |                                    0.0433512 |            0.216756 |       0.00173405 |      0         |          0.520214 |             0       |              0          |                0          |                0      |           0         |
+| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |         0.745446 |     0.0911101 |        0.496964 |                      0.124241 |            0      |                0.124241 |                                    0.0248482 |            0.124241 |       0          |      0.0069575 |          0.198786 |             0       |              0          |                0.00069575 |                0      |           0.0198786 |
+| Total                                                     |       602.425    |     1.14589   |     2305        |                    377.49     |           70.4728 |               30        |                                    6.00997   |           51.2      |       0.0269224  |      0.011     |          0.95     |             0.00077 |              0.00105875 |                0.00204325 |                0.0154 |           0.173879  |                                                 |       602.385    |   1.1445      |   2305          |                  377.481      |           70.476  |             30          |                                  6.0102      |         51.2        |       0.0269431  |      0.011     |          0.95     |             0.00075 |              0.00105875 |                0.00205375 |                0.0154 |           0.170179  |
+
 
 ## All
 
@@ -230,3 +203,36 @@ html[data-theme="dark"] .plot-dark { display: block; }
 | Thiamin[Gram]                                              | 312   |
 | Vitamin D[Gram]                                            | 250   |
 | Vitamin A[Gram]                                            | 141   |
+
+<div client:idle style="width: 100%; overflow: hidden;">
+
+  <iframe
+    class="plot-light"
+    src="/plots/MCDPlotWhite.html"
+    title="Minimum cost diet plot"
+    loading="lazy"
+  ></iframe>
+
+  <iframe
+    class="plot-dark"
+    src="/plots/MCDPlotDark.html"
+    title="Minimum cost diet plot"
+    loading="lazy"
+  ></iframe>
+
+</div>
+
+<style>{`
+.plot-light,
+.plot-dark {
+  width: 100%;
+  height: 600px;
+  border: 0;
+}
+
+.plot-light { display: block; }
+.plot-dark { display: none; }
+
+html[data-theme="dark"] .plot-light { display: none; }
+html[data-theme="dark"] .plot-dark { display: block; }
+`}</style>
