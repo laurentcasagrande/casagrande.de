@@ -1,0 +1,35 @@
+---
+const { lightPath, darkPath } = Astro.props;
+---
+<div style="width: 100%; overflow: hidden;">
+
+  <iframe
+    class="plot-light"
+    src={lightPath}
+    title="Minimum cost diet plot"
+  ></iframe>
+
+  <iframe
+    class="plot-dark"
+    src={darkPath}
+    title="Minimum cost diet plot"
+  ></iframe>
+
+</div>
+
+<style>
+
+.plot-light,
+.plot-dark {
+  width: 100%;
+  height: 600px;
+  border: 0;
+}
+
+.plot-light { display: block; }
+.plot-dark { display: none; }
+
+html[data-theme="dark"] .plot-light { display: none; }
+html[data-theme="dark"] .plot-dark { display: block; }
+
+</style>
