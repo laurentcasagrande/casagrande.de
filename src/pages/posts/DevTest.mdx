@@ -10,8 +10,9 @@ tags: ["Test"]
 devOnly : true
 ---
 import FigureBox from "../../components/FigureBox.astro";
+import Figure1 from "../../images/StarryNight.jpg";
 
-<FigureBox/>
+
 
 This article is designed to test how different **Markdown elements** are rendered on the website.
 
@@ -38,6 +39,17 @@ This is a fifth-level heading.
 ###### Heading Level 6
 
 This is a sixth-level heading.
+
+---
+## Images
+
+This is my custom image component.
+
+<FigureBox
+figure = {Figure1} 
+alt = "Starry Night" 
+caption = "The Starry Night, one of Vincent van Gogh's most celebrated works, is a moderately abstract landscape painting of an expressive night sky over a hillside village. He painted it in 1889 during his 12-month stay at the Saint-Paul-de-Mausole asylum near Saint-Rémy-de-Provence, France." 
+/>
 
 ---
 
