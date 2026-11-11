@@ -1,8 +1,9 @@
 ---
-const { lightPath, darkPath } = Astro.props;
+const { lightPath, darkPath, id } = Astro.props;
 ---
 
 <div
+  id = {id}
   class="plotly-chart"
   data-light={lightPath}
   data-dark={darkPath}

@@ -64,7 +64,7 @@ So i decided i would recalculate the Stigler diet but with a Modern Dataset.
 
 For this I got my hands on a dataset of every product listed on migros.com (The online storefront of one of the biggest retasilers in switzerland). 
 I then cleaned the dataset so only eddible products with listed nutritional information remain listed. 
-I then further edited the dataset so that each nutrient was linked to one of the nutrients in the [Swiss reference values for nutrient intake](https://www.blv.admin.ch/en/swiss-reference-values-for-nutrient-intake) 
+I then further edited the dataset so that each nutrient was linked to one of the 39 nutrients in the [Swiss reference values for nutrient intake](https://www.blv.admin.ch/en/swiss-reference-values-for-nutrient-intake) 
 set out by the Federal Food Safety and Veterinary Office. This was needed as the same nutrients were listed under diffrent names on diffrent product pages. 
 At the end i ended up with a dataset of 14834 Foods, each with price. But as not every food item has every nutrient listed i compiled below list of which attribute exist how often.
 
@@ -80,29 +80,7 @@ At the end i ended up with a dataset of 14834 Foods, each with price. But as not
 | Fat of which saturated fatty acids [grams]                         |    9801 |  66.2767    |
 | Dietary fibre [grams]                                              |    7155 |  48.3838    |
 | Calcium [grams]                                                    |     408 |   2.75899   |
-| Pyridoxine (B6) [grams]                                            |     321 |   2.17068   |
-| Thiamine (B1) [grams]                                              |     312 |   2.10982   |
-| Cobalamin (B12) [grams]                                            |     289 |   1.95429   |
-| Vitamin C [grams]                                                  |     284 |   1.92048   |
-| Niacin (B3) [grams]                                                |     270 |   1.8258    |
-| Magnesium [grams]                                                  |     255 |   1.72437   |
-| Vitamin D [grams]                                                  |     250 |   1.69056   |
-| Vitamin E [grams]                                                  |     226 |   1.52827   |
-| Pantothenic acid (B5) [grams]                                      |     226 |   1.52827   |
-| Riboflavin (B2) [grams]                                            |     222 |   1.50122   |
-| Biotin (B7) [grams]                                                |     193 |   1.30511   |
-| Iron [grams]                                                       |     189 |   1.27806   |
-| Fat of which monounsaturated fatty acids [grams]                   |     142 |   0.960238  |
-| Vitamin A [grams]                                                  |     141 |   0.953476  |
-| Potassium [grams]                                                  |     139 |   0.939951  |
-| Iodine [grams]                                                     |     119 |   0.804707  |
-| Zinc [grams]                                                       |     112 |   0.757371  |
-| Selenium [grams]                                                   |     109 |   0.737084  |
-| Copper [grams]                                                     |     103 |   0.696511  |
-| Chloride [grams]                                                   |      99 |   0.669462  |
-| Phosphorus [grams]                                                 |      98 |   0.662699  |
-| Vitamin K [grams]                                                  |      93 |   0.628888  |
-| Folate (B9) [DFE-grams]                                            |      74 |   0.500406  |
+| ⋮                                                                   |        ⋮ |         ⋮  |
 | Fluoride [grams]                                                   |      71 |   0.480119  |
 | Manganese [grams]                                                  |      56 |   0.378685  |
 | Eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) [grams] |      50 |   0.338112  |
@@ -205,19 +183,14 @@ Each additional constraint further restricts the solution space, narrowing it do
 where each dimension represents the quantity of a particular food.
 
 Dantzig showed that if an optimal solution exists, it is either located at a vertex or on an edge of the feasible region. 
-Furthermore, because the cost function is linear, he showed that any local minimum on such an edge must also be the global minimum.
+Furthermore, because the cost function is linear, he showed that any local minimum/maximum on such an edge must also be the global minimum/maximum.
 
-<FigureBox
-figure = {Figure1} 
-alt = "The graph illustrates the Simplex algorithm solving a linear programming problem with two variables." 
-caption = "Visual representation of the simplex algorithm solving a linear programming problem." 
-copyright = "Lorepenoten, CC0, via Wikimedia Commons"
-id = "fig-1"
-/>
-<JSONPlot lightPath="/plots/SimplexPlotWhite.json" darkPath="/plots/SimplexPlotDark.json" /> 
+<JSONPlot lightPath="/plots/SimplexPlotWhite.json" darkPath="/plots/SimplexPlotDark.json" id="visualise" /> 
 
 Dantzig exploited these results to develop the [simplex algorithm](https://en.wikipedia.org/wiki/Simplex_algorithm) which jumps from one vertex to another 
 until there is no better adjacent vertex and the optimal solution has been found.
+
+The interactive [visualisation above](#visualise) demonstrates how the Simplex method determines the lowest-cost gym meal using two food variables while satisfying nutritional constraints.
 
 ## Implementation
 
@@ -322,7 +295,7 @@ $$
 
 This ensures that the final diet contains no more than $K$ different food products.
 
-
+## Graph
 
 
 | Food                                                      |      grams |  CHF |   kcal |   protein |   Fe |   Calcium |   A |   B1 |   B2 |   B3 |   C |
