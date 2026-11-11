@@ -49,6 +49,8 @@ This is my custom image component.
 figure = {Figure1} 
 alt = "Starry Night" 
 caption = "The Starry Night, one of Vincent van Gogh's most celebrated works, is a moderately abstract landscape painting of an expressive night sky over a hillside village. He painted it in 1889 during his 12-month stay at the Saint-Paul-de-Mausole asylum near Saint-Rémy-de-Provence, France." 
+copyright = "Public domain i think"
+id = "Figure1"
 />
 
 ---
@@ -171,9 +173,11 @@ You can also display small pieces of code inline, such as `const message = "Hell
 
 Here is a link to the [Markdown Guide](https://www.markdownguide.org).
 
-Here is a link to the [Astro documentation](https://docs.astro.build).
+Here is a link to the [Task List](#task-list).
 
 You can also write an automatic URL such as https://astro.build.
+
+If a id is included in a [image component](#Figure1) it can also be linked to.
 
 ---
 
@@ -208,7 +212,7 @@ The article continues below the horizontal rule.
 ### Alignment Table
 
 | Left aligned | Center aligned | Right aligned |
-| ------------ | -------------- | ------------- |
+| :----------- | :------------: | ------------: |
 | Apple        | Red            | 3             |
 | Banana       | Yellow         | 12            |
 | Pear         | Green          | 7             |

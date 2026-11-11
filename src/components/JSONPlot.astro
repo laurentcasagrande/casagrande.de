@@ -36,7 +36,13 @@ const { lightPath, darkPath } = Astro.props;
             const response = await fetch(path);
             const fig = await response.json();
 
-            await window.Plotly.react(plot, fig.data, fig.layout);
+            await window.Plotly.newPlot(plot, fig.data, fig.layout, {
+              responsive: true,
+            });
+
+            if (fig.frames?.length) {
+              await window.Plotly.addFrames(plot, fig.frames);
+}
       }
     }
 

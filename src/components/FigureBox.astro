@@ -1,12 +1,12 @@
 ---
-const { figure, alt, caption } = Astro.props;
+const { figure, alt, caption, copyright, id } = Astro.props;
 
 
 import { Image } from 'astro:assets';
 
 ---
 
-<figure>
+<figure id={id}>
 
   <Image 
   src={figure} 
@@ -16,6 +16,24 @@ import { Image } from 'astro:assets';
 
   <figcaption>
   {caption}
+
+  {copyright && (
+      <small class="copyright">
+        © {copyright}
+      </small>
+    )}
   </figcaption>
 
 </figure>
+
+
+
+<style>
+.copyright {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--default-text);
+  opacity: 0.65;
+}
+</style>
