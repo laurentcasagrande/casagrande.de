@@ -10,6 +10,7 @@ interface PostFrontmatter {
     alt: string;
   };
   tags?: string[];
+  devOnly?: boolean;
 }
 
 interface PostModule {
@@ -20,7 +21,10 @@ interface PostModule {
 const postModules = import.meta.glob('./posts/*.{md,mdx}', { eager: true });
 
 const posts = (Object.values(postModules) as PostModule[])
-  .filter((post) => post.frontmatter && post.url)
+  .filter((post) => 
+    post.frontmatter && 
+    post.url &&
+  (import.meta.env.DEV || !post.frontmatter.devOnly)) // Only show if either devOnly is false or dev mode is on
   .sort(
     (a, b) =>
       new Date(b.frontmatter.pubDate).getTime() -

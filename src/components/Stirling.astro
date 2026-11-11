@@ -622,6 +622,13 @@ T_c_input.addEventListener("input", updateTemperatures);
 
     ctx.setLineDash([]);
 
+    //Cold Air Work Piston
+    ctx.fillStyle = "lightBlue";
+    
+    ctx.fillRect(80, h_Work + 770, 50, 820 - (h_Work + 770));
+
+    ctx.fillRect(746.25, h_Work + 770, 50, 820 - (h_Work + 770));
+
     //Mast Right
     ctx.lineWidth = 1;
     ctx.fillStyle = "#404040";
@@ -634,15 +641,21 @@ T_c_input.addEventListener("input", updateTemperatures);
     ctx.fill();
     ctx.stroke();
 
-        //Cooler
+    //Cooler
     ctx.lineWidth = 8;
     ctx.beginPath();
     ctx.strokeStyle = "blue";
 
     ctx.moveTo(20, 820);
+    ctx.lineTo(80, 820);
+
+    ctx.moveTo(80+50, 820);
     ctx.lineTo(437.5, 820);
 
     ctx.moveTo(562.5, 820);
+    ctx.lineTo(746.25, 820);
+
+    ctx.moveTo(746.25+50, 820);
     ctx.lineTo(980, 820);
 
     ctx.stroke();
@@ -999,6 +1012,7 @@ T_c_input.addEventListener("input", updateTemperatures);
   width: 100%;
   height: auto;
   display: block;
+  margin-bottom: 1.5em;
 }
 
 

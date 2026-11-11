@@ -1,0 +1,21 @@
+---
+const { figure, alt, caption } = Astro.props;
+
+
+import { Image } from 'astro:assets';
+
+---
+
+<figure>
+
+  <Image 
+  src={figure} 
+  alt={alt} 
+  loading="lazy"
+  />
+
+  <figcaption>
+  {caption}
+  </figcaption>
+
+</figure>

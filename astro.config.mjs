@@ -14,12 +14,12 @@ export default defineConfig({
 
   markdown: {
 
-    processor: unified({
+    processor: unified({ // for LaTeX rendering
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],
     }),
 
-    shikiConfig: {
+    shikiConfig: { //For codeblocks styling
       themes: {
         light: "github-light",
         dark: "github-dark",
