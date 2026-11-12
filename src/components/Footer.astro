@@ -5,3 +5,25 @@ const year = new Date().getFullYear();
 <footer>
   <p>&copy; {year} LNC</p>
 </footer>
+
+<style>
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  width: 90%;
+  box-sizing: border-box;
+  height: 1em;
+  padding: 5px;
+  overflow: hidden;
+  background-color: var(--footer-bg);
+  color: var(--default-text);
+}
+
+footer p {
+  margin: 0;
+  line-height: 1em;
+}
+
+</style>
