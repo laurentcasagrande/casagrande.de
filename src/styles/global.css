@@ -277,67 +277,11 @@ html[data-theme="dark"] .markdown-content pre.astro-code span {
   background-color: var(--table-hover);
 }
 
-/* Figure */
-.markdown-content figure {
-  margin: 1em auto;
-  padding: 0.5em;
-  border: 1px solid var(--fig-border);
-  background-color: var(--fig-bg);
-}
-
-.markdown-content figcaption {
-  padding: 0.5em;
-  text-align: justify;
-}
-
-.markdown-content figcaption p {
-  margin: 0;
-}
-
-.markdown-content figure img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.markdown-content .fig-w100 {
-  width: 100%;
-}
-
-.markdown-content .fig-w80 {
-  width: 80%;
-}
-
-.markdown-content .fig-w60 {
-  width: 60%;
-}
-
-.markdown-content .fig-h50 {
-  max-height: 50vh;
-}
-
-.markdown-content .fig-h25 {
-  max-height: 25vh;
-}
-
-.markdown-content figure.invertible img,
-.markdown-content img.invertible {
-  filter: invert(var(--invert));
-}
-
-.markdown-content figure.invertible img:hover,
-.markdown-content img.invertible:hover {
-  filter: invert(calc(1 - var(--invert)));
-}
 
 /* smaller screens */
 
 @media only screen and (max-width: 800px) {
-  .markdown-content .fig-w100,
-  .markdown-content .fig-w80,
-  .markdown-content .fig-w60 {
-    width: 100%;
-  }
+
 
   .markdown-content table {
     display: block;
