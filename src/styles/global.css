@@ -51,7 +51,7 @@
   --tag-default-color: rgb(255, 255, 255);
 
   /* Table of contents */
-  --toc-bg: rgb(239, 236, 229);
+  --toc-bg: rgb(236, 233, 226);
 
   /* Blockquotes */
   --blockquote-bg: rgb(236, 241, 243);
@@ -99,7 +99,7 @@ html[data-theme="dark"] {
   --tag-default-color: rgb(250, 248, 243);
 
   /* Table of contents */
-  --toc-bg: rgb(35, 37, 38);
+  --toc-bg: rgb(34, 36, 37);
 
   /* Blockquotes */
   --blockquote-bg: rgb(27, 36, 42);
@@ -361,6 +361,7 @@ html[data-theme="dark"] .markdown-content pre.astro-code span {
   background-color: var(--table-hover);
 }
 
+/* Figure */
 .markdown-content figure {
   margin: 1em auto;
   padding: 0.5em;
