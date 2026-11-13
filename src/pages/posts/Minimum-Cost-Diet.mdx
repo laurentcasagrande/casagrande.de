@@ -1,0 +1,690 @@
+---
+layout: ../../layouts/MarkdownPostLayout.astro
+title: Eating on a Budget (Mathematically)
+pubDate: 2022-10-11
+description: How cheap can a diet get? I revisit a famous optimisation problem from 1945, using modern supermarket prices and linear optimisation to find out just how cheap you can get.
+image:
+    url: /thumbnails/Minimum-Cost-Diet.jpg
+    alt: Historical USDA nutrition chart from 1943 showing the seven basic food groups.
+tags: ["Maths", "Data", "Optimisation"]
+---
+
+import JSONPlot from "../../components/JSONPlot.astro";
+import Details from "../../components/Details.astro";
+import FigureBox from "../../components/FigureBox.astro";
+
+import Ingredients from "../../images/MCD_Ingredients.jpeg";
+import Cake from "../../images/MCD_Cake.jpeg";
+
+## Introduction
+
+How little could you spend on food while still getting all the nutrients your body needs?
+
+In *The Matrix* (1999) and *Snowpiercer* (2013), the characters eat a rather unappetising substance that supposedly provides everything the human body needs. 
+While this might seem like a strange science-fiction idea, the question behind it is actually quite interesting: What would the cheapest nutritionally complete diet look like if taste and variety didn't matter?
+
+Similar questions have also been explored in the real world, particularly by military planners trying to feed their soldiers during wartime. 
+
+In 1945, economist and future Nobel laureate [George Stigler](https://en.wikipedia.org/wiki/George_Stigler) investigated this problem in his paper *The Cost of Subsistence*. 
+His goal was simple: find the cheapest combination of foods that would satisfy a person's daily nutritional requirements.
+
+But finding that combination turned out to be a surprisingly difficult mathematical problem.
+
+More than 80 years later, I wanted to revisit Stigler's question. 
+With modern nutritional data, supermarket prices from Switzerland, and considerably more computing power, how cheaply could someone theoretically eat today?
+
+And perhaps more importantly: What would such a diet actually look like?
+
+
+## From Stigler to Migros
+
+### The Original Diet Problem
+
+Stigler considered the following nutritional requirements in 1945:
+
+
+| Nutrient              |       min |
+|:----------------------|----------:|
+| Calories [kcal]       | 3000      |
+| Protein [gram]        |   70      |
+| Iron [gram]           |    0.012  |
+| Calcium [gram]        |    0.8    |
+| Vitamin A [gram]      |    0.0015 |
+| Thiamine (B1) [gram]  |    0.0018 |
+| Riboflavin (B2) [gram]|    0.0027 |
+| Niacin (B3) [gram]    |    0.018  |
+| Vitamin C [gram]      |    0.075  |
+
+Lacking the mathematical tools to find the exact solution, he used heuristic methods, including trial and error, to give a well-informed estimate for the solution of his problem.
+
+| Food              | Annual Quantities | Annual Cost |
+| ----------------- | ----------------- | ----------- |
+| Wheat Flour       | 370 lb (170 kg)   | $ 13.33     |
+| Evaporated Milk   | 57 cans           | $ 3.84      |
+| Cabbage           | 111 lb (50 kg)    | $ 4.11      |
+| Spinach           | 23 lb (10 kg)     | $ 1.85      |
+| Dried Navy Beans  | 285 lb (129 kg)   | $ 16.80     |
+| Total Annual Cost |                   | $ 39.93     |
+
+Two years later, after the second George in this short story, [George Dantzig](https://en.wikipedia.org/wiki/George_Dantzig), 
+formulated his simplex algorithm for solving linear programming models, in one of the first instances of large-scale computation in optimisation, 
+the optimal solution was found to be $39.69 (off only by 24 cents).
+
+### Bringing the Problem to Switzerland
+
+But a lot of things have changed since 1945 and processed foods have become much cheaper.
+
+For instance, the price of sugar has decreased from 11.4 cents per kilogram (1939 dollars, or 2.79 USD today) to 1.9 USD per kilogram in the USA.
+
+So one would think that the minimal cost diet has gotten quite a bit different and perhaps even cheaper in this time. 
+So I decided I would recalculate the Stigler diet but with a modern dataset, and one from Switzerland instead of the United States. 
+
+For this I got my hands on a dataset of every product listed on migros.com (The online storefront of one of the biggest retailers in Switzerland). 
+I then cleaned the dataset so only edible products with listed nutritional information remain listed. 
+I then further edited the dataset so that each nutrient was linked to one of the 39 nutrients in the [Swiss reference values for nutrient intake](https://www.blv.admin.ch/en/swiss-reference-values-for-nutrient-intake) 
+set out by the Federal Food Safety and Veterinary Office. This was needed as the same nutrients were listed under different names on different product pages. 
+At the end I ended up with a dataset of 14788 Foods, each with price. But as not every food item has every nutrient listed i compiled below list of which attribute exist how often.
+
+| Food                                                               |   Count |           % |
+|:-------------------------------------------------------------------|--------:|------------:|
+| Price [CHF]                                                        |   14788 | 100         |
+| Weight [g]                                                     |   14788 | 100         |
+| Energy [kcal]                                                      |   11847 |  80.1123    |
+| Protein [g]                                                    |   10957 |  74.0939    |
+| Total carbohydrates [g]                                        |   10952 |  74.06      |
+| Total fat [g]                                                  |   10744 |  72.6535    |
+| Sodium [g]                                                     |   10660 |  72.0855    |
+| Fat of which saturated fatty acids [g]                         |    9801 |  66.2767    |
+| Dietary fibre [g]                                              |    7155 |  48.3838    |
+| Calcium [g]                                                    |     408 |   2.75899   |
+| ⋮                                                                   |        ⋮ |         ⋮  |
+| Fluoride [g]                                                   |      71 |   0.480119  |
+| Manganese [g]                                                  |      56 |   0.378685  |
+| Eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) [g] |      50 |   0.338112  |
+| Molybdenum [g]                                                 |      25 |   0.169056  |
+| Alpha-linolenic acid [g]                                       |      24 |   0.162294  |
+| Linoleic acid [g]                                              |      13 |   0.0879091 |
+| Water [g]                                                      |       4 |   0.027049  |
+| Free sugars (including added sugars) [g]                       |       0 |   0         |
+
+
+So, while all items have a listed price, energy vitamins and minerals are listed much less often. This isn't surprising, 
+as listing vitamins and minerals is voluntary and it just doesn't make sense for certain items, plus it costs money to measure.
+This is an issue for our optimisation, as items with lots of minerals or vitamins, like [oranges](https://www.migros.ch/de/product/263330108400), 
+won't be used in the final recipe, even if they have loads of good nutrients, because they're not listed. I've decided to ignore this problem for now, 
+as I'm more interested in the process than the solution.
+
+
+
+## Turning Food into Equations
+
+### Linear Programming
+
+To solve the problem, I started with essentially the same linear programming approach as [George Dantzig in 1947](https://www.researchgate.net/publication/300717166_Simplex_Method).
+
+Suppose we have $n$ different foods in our dataset and $m$ nutrients. 
+Let $i$ be the index of a food product, where $i = 1, 2, \ldots, n$, and $j$ the index of a nutrient, where $j = 1, 2, \ldots, m$.
+
+For each food product $i$, $x_i$ denotes the quantity of that food consumed per day, measured in grams. 
+
+For each nutrient $j$, $l_j$ is the minimum required daily intake and $u_j$ the upper intake limit.
+
+Additionally, for each food product $i$, we know its cost per gram $c_i$, and for every nutrient $j$, we ideally know the amount $a_{ji}$ contained in one gram of that food product.
+
+Our objective is to minimise the total daily cost of the diet, which is a linear combination of the food quantities $x$ with coefficients $c$.
+
+$$
+C = c_1 x_1 + \ldots + c_n x_n = \sum_{i=1}^{n} c_i x_i
+$$
+
+The goal is therefore to find a vector $x$ that minimises this cost $C$, while satisfying all nutritional requirements.
+
+For each nutrient $j$, the total amount consumed is the sum of that nutrient's contribution from every food product:
+
+$$
+N_j = a_{j1} x_1 + \ldots + a_{jn} x_n = \sum_{i=1}^{n} a_{ji}x_i 
+$$
+
+To ensure that the diet provides sufficient nutrients without exceeding recommended upper limits, we introduce the following constraints:
+
+$$
+l_j \leq N_j \leq u_j
+$$
+
+In other words, the total intake of each nutrient must lie between its minimum and maximum allowed values.
+
+We also need to ensure that the quantities of food are non-negative, since consuming a negative amount of a food product would not make sense:
+
+$$
+x_i \geq 0
+$$
+
+Combining everything, we get the following linear optimisation problem in its standard form:
+
+- Find a vector 
+
+  $$
+  x
+  $$
+
+
+- that minimises
+
+  $$
+  C = c_1x_1 + c_2x_2 + \ldots + c_nx_n
+  $$
+
+- subject to
+
+  $$
+  \begin{aligned}
+  l_1 &\leq a_{11}x_1 + a_{12}x_2 + \ldots + a_{1n}x_n \leq u_1 \\
+  l_2 &\leq a_{21}x_1 + a_{22}x_2 + \ldots + a_{2n}x_n \leq u_2 \\
+  &\vdots \\
+  l_m &\leq a_{m1}x_1 + a_{m2}x_2 + \ldots + a_{mn}x_n \leq u_m
+  \end{aligned}
+  $$
+
+- and
+
+  $$
+  \begin{aligned}
+  x_1 &\geq 0 \\
+  x_2 &\geq 0 \\
+  &\vdots \\
+  x_n &\geq 0
+  \end{aligned}
+  $$
+
+Now we also see why this problem is called a linear optimisation problem, as all parts above are linear combinations of the food quantity vector $x$.
+
+
+### The Simplex Algorithm
+
+The system of linear inequalities from above has multiple (infinite even!) solutions that satisfy all constraints. 
+Each additional constraint further restricts the solution space, narrowing it down to a feasible region in an $n$-dimensional space, 
+where each dimension represents the quantity of a particular food.
+
+Dantzig showed that if a linear programme has a finite optimal solution and its feasible region contains a vertex, at least one optimal solution is attained at a vertex.
+Furthermore, because the cost function is linear, he showed that any local minimum/maximum on such an edge must also be the global minimum/maximum.
+
+<JSONPlot lightPath="/plots/SimplexPlotWhite.json" darkPath="/plots/SimplexPlotDark.json" id="visualise" /> 
+
+Dantzig exploited these results to develop the [simplex algorithm](https://en.wikipedia.org/wiki/Simplex_algorithm) which jumps from one vertex to another 
+until there is no better adjacent vertex and the optimal solution has been found.
+
+The interactive [visualisation above](#visualise) demonstrates how the Simplex method determines the lowest-cost gym meal using two food variables while satisfying nutritional constraints.
+
+### Implementing the Solver
+
+To do this efficently even with over 14000 foods/dimensions and a lot more constraints i used HiGHS, an open-source solver for linear optimisation via its Python interface highspy. 
+It allows adding many constraints and variables easily while still staying fast. 
+
+I used pandas to handle and clean the food and nutrient data and NumPy for numerical operations.
+
+The following is simplified and not the complete program.
+
+First, I prepare the data and create one decision variable for each food product.
+
+```python
+# c: cost vector (price per gram of each food)
+cost = foods["Price [CHF]_per_g"].to_numpy()
+
+# A: nutrient matrix (rows = nutrients, columns = foods)
+A = foods.iloc[:, 1:].to_numpy().T
+
+# l, u: lower and upper nutrient bounds
+lower = nutrients["Min"].to_numpy()
+upper = nutrients["Max"].to_numpy()
+
+h = highspy.Highs()
+
+# x: decision vector (amount of each food in grams)
+x = [
+    h.addVariable(lb=0)
+    for i in range(len(foods))
+]
+```
+
+Next, I add the nutritional constraints by iterating over all nutrients and their corresponding minimum and maximum values.
+
+```python
+# Add l <= Nj <= u, one row at a time
+for j in range(len(nutrients)):
+    nutrient_amount = sum(
+        A[j, i] * x[i]
+        for i in range(len(foods))
+    )
+
+    h.addConstr(
+        lower[j] <= nutrient_amount <= upper[j]
+    )
+```
+
+Finally, I define the cost function and let HiGHS find the optimal solution.
+
+```python
+h.minimize(
+    sum(cost[i] * x[i] for i in range(len(foods)))
+)
+
+h.run()
+```
+
+
+The resulting food quantities can then be extracted from the solver and converted into a pandas DataFrame containing the optimised diet. 
+However, with more than 14000 products in my dataset, the mathematically optimal solution involves a large number of different food items, 
+making it rather impractical as an actual diet. 
+
+The final calculated solution includes 13 foods one of which only accounts for just 32 milligrams.
+
+### Limiting the Number of Ingredients
+
+To address this issue, I introduced an additional vector $y$ of binary decision variables. 
+For each food product $i$, the variable $y_i$ indicates whether that food is included in the final diet:
+
+$$
+y_i =
+\begin{cases}
+1 & \text{if food } i \text{ is included} \\
+0 & \text{otherwise}
+\end{cases}
+$$
+
+We now need to establish a connection between the food quantities $x_i$ and the binary variables $y_i$. To achieve this, I introduced the following constraint:
+
+$$
+x_i \leq y_i M
+$$
+
+Here, $M$ is a sufficiently large constant that represents the maximum allowed quantity of any individual food product. In my case, I chose $M = 10000$ grams.
+
+This constraint ensures that if $y_i = 0$, the corresponding food quantity $x_i$ must also be zero. On the other hand, if $y_i = 1$, the food product can be included in the diet with a quantity of up to $M$ grams.
+
+Since each $y_i$ is either zero or one, we can calculate the number of selected food products by summing all binary decision variables:
+
+$$
+q = y_1 + \ldots + y_n = \sum_{i=1}^{n} y_i
+$$
+
+To limit the number of different foods in the final diet, we introduce an additional parameter $K$, which represents the maximum allowed number of food products.
+
+We can then add the third and last constraint:
+
+$$
+q \leq K
+$$
+
+
+This ensures that the final diet contains no more than $K$ different food products.
+
+## Putting the Model to the Test
+
+### Four Sets of Nutritional Requirements
+
+Now that I had a way to limit the number of different ingredients in the final diet, I wanted to see how much this restriction actually affects the price.
+
+I wanted to find out if and at what point diminishing returns set in.
+
+I also thought I'd try out different nutritional constraints. As some vitamins and minerals are only listed for a few products in my dataset, including all of them
+leads to the solver picking certain foods just because they're the only ones with the info you're looking for.
+
+To do this i created four subsets of the Nutrients in my dataset. One of these was the original requirements used by Stigler in 1945. 
+I did this to see how his original problem (with the old recommended intake levels) would perform with modern supermarket prices.
+
+
+| Set | Nutrients | Description |
+|---|---:|---|
+| **Stigler** | 9 | The original 9 nutrients and their recommended intake levels used by Stigler in 1945. |
+| **Min** | 7 | 7 core nutritional parameters, including macronutrients, fibre, and sodium, and their modern recommended intake levels. |
+| **Hybrid** | 14 | The 7 nutritional parameters from Min, complemented by the 7 additional vitamins and minerals used by Stigler in 1945, with modern recommended intake levels. |
+| **Max** | 36 | 36 nutritional parameters, including macronutrients, essential fatty acids, vitamins, and minerals, and their modern recommended intake levels. |
+
+*Click on a nutrient set below to expand its full list of nutrients and their respective recommended intake levels. $\inf $ means that no upper limit was imposed for that nutrient.*
+
+<Details title="Stigler">
+
+| Nutrient                |       Min |   Max |
+|:------------------------|----------:|------:|
+| Energy [kcal]           | 3000      |   inf |
+| Protein [g]         |   70      |   inf |
+| Iron [g]            |    0.012  |   inf |
+| Calcium [g]         |    0.8    |   inf |
+| Vitamin A [g]       |    0.0015 |   inf |
+| Thiamine (B1) [g]   |    0.0018 |   inf |
+| Riboflavin (B2) [g] |    0.0027 |   inf |
+| Niacin (B3) [g]     |    0.018  |   inf |
+| Vitamin C [g]       |    0.075  |   inf |
+
+</Details>
+
+<Details title="Min">
+
+| Nutrient                                   |    Min |    Max |
+|:-------------------------------------------|-------:|-------:|
+| Energy [kcal]                              | 2305   | 2672   |
+| Total carbohydrates [g]                |  259   |  401   |
+| Protein [g]                            |   50   |  inf   |
+| Dietary fibre [g]                      |   30   |  inf   |
+| Fat of which saturated fatty acids [g] |    0   |   29.7 |
+| Total fat [g]                          |   51.2 |  103.9 |
+| Sodium [g]                             |    2   |  inf   |
+
+</Details>
+
+<Details title="Hybrid">
+
+| Nutrient                                   |        Min |      Max |
+|:-------------------------------------------|-----------:|---------:|
+| Energy [kcal]                              | 2305       | 2672     |
+| Total carbohydrates [g]                |  259       |  401     |
+| Protein [g]                            |   50       |  inf     |
+| Dietary fibre [g]                      |   30       |  inf     |
+| Fat of which saturated fatty acids [g] |    0       |   29.7   |
+| Total fat [g]                          |   51.2     |  103.9   |
+| Sodium [g]                             |    2       |  inf     |
+| Iron [g]                               |    0.011   |  inf     |
+| Calcium [g]                            |    0.95    |    2.5   |
+| Vitamin A [g]                          |    0.00075 |    0.003 |
+| Thiamine (B1) [g]                      |    0.0001  |  inf     |
+| Riboflavin (B2) [g]                    |    0.0016  |  inf     |
+| Niacin (B3) [g]                        |    0.0154  |    0.9   |
+| Vitamin C [g]                          |    0.11    |  inf     |
+
+</Details>
+
+<Details title="Max">
+
+| Nutrient                                                           |        Min |       Max |
+|:-------------------------------------------------------------------|-----------:|----------:|
+| Energy [kcal]                                                      | 2305       | 2672      |
+| Total carbohydrates [g]                                        |  259       |  401      |
+| Dietary fibre [g]                                              |   30       |  inf      |
+| Fat of which monounsaturated fatty acids [g]                   |   25.6     |   44.5    |
+| Fat of which saturated fatty acids [g]                         |    0       |   29.7    |
+| Total fat [g]                                                  |   51.2     |  103.9    |
+| Linoleic acid [g]                                              |   10.2     |  inf      |
+| Eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) [g] |    0.25    |  inf      |
+| Alpha-linolenic acid [g]                                       |    1.28    |  inf      |
+| Protein [g]                                                    |   50       |  inf      |
+| Calcium [g]                                                    |    0.95    |    2.5    |
+| Fluoride [g]                                                   |    0.0034  |    0.007  |
+| Molybdenum [g]                                                 |    6.5e-05 |    0.0006 |
+| Potassium [g]                                                  |    3.5     |  inf      |
+| Manganese [g]                                                  |    0.003   |  inf      |
+| Copper [g]                                                     |    0.0016  |    0.005  |
+| Phosphorus [g]                                                 |    0.55    |  inf      |
+| Iron [g]                                                       |    0.011   |  inf      |
+| Magnesium [g]                                                  |    0.35    |  inf      |
+| Iodine [g]                                                     |    0.00015 |    0.0006 |
+| Selenium [g]                                                   |    7e-05   |    0.0003 |
+| Zinc [g]                                                       |    0.0094  |    0.025  |
+| Chloride [g]                                                   |    3.1     |  inf      |
+| Sodium [g]                                                     |    2       |  inf      |
+| Niacin (B3) [g]                                                |    0.0154  |    0.9    |
+| Pyridoxine (B6) [g]                                            |    0.0017  |    0.025  |
+| Vitamin K [g]                                                  |    7e-05   |  inf      |
+| Folate (B9) [DFE-grams]                                            |    0.00033 |    0.001  |
+| Vitamin C [g]                                                  |    0.11    |  inf      |
+| Vitamin E [g]                                                  |    0.013   |    0.3    |
+| Riboflavin (B2) [g]                                            |    0.0016  |  inf      |
+| Pantothenic acid (B5) [g]                                      |    0.005   |  inf      |
+| Biotin (B7) [g]                                                |    4e-05   |  inf      |
+| Thiamine (B1) [g]                                              |    0.0001  |  inf      |
+| Vitamin D [g]                                                  |    1.5e-05 |    0.0001 |
+| Vitamin A [g]                                                  |    0.00075 |    0.003  |
+
+</Details>
+
+### The Cost of Fewer Ingredients
+
+For each nutrient set, I ran the mixed-integer optimisation model, starting with a maximum of $K = 15$ ingredients and gradually reducing $K$ until the solver could no longer find a feasible solution.
+
+For every value of $K$, I recorded the minimum daily cost of the resulting diet and plotted it against the maximum number of allowed ingredients.
+
+The graph below shows the results of these calculations. They took 72 minutes in total, with the `Max` set alone taking the longest at 50 minutes.
+
+You can hide a line by clicking on its name in the legend, 
+or double-click one to display only that nutritional set. The graph is also zoomable, and hovering over a data point shows the IDs of the food products selected for that particular solution, 
+together with their quantities in grams and some other info.
+
+You can look up the corresponding food on the Migros website by replacing \{id} in https://www.migros.ch/en/product/{id} with the displayed product ID.
+
+<JSONPlot lightPath="/plots/MCDPlotWhite.json" darkPath="/plots/MCDPlotDark.json" /> 
+
+## Making Sense of the Results
+
+### Diminishing Returns
+
+As expected, the price rises the fewer ingredients are permitted. 
+However, the additional cost benefit of including further ingredients becomes negligible relatively quickly. The impact of the chosen nutritional requirements is significantly greater.
+
+`Min` is the cheapest at 0.79 CHF per day, whilst `Max` is by far the most expensive at at least 8.36 CHF. This comes as little surprise.
+
+More interesting is the comparison between `Stigler` and `Hybrid`. Although `Hybrid` takes more nutrients into account, it is cheaper than `Stigler` for many permitted ingredients.
+
+My guess is that this is mainly due to the different calorie requirements. Whilst `Stigler` requires at least 3,000 kcal, `Hybrid` only needs between 2,305 and 2,672 kcal.
+
+For many ingredients, the solver can cover the additional vitamins and minerals required by `Hybrid` using small quantities of cheaper dietary supplements, which makes the upper limit smaller than that of `Stigler` with its higher calorie requirement. 
+If fewer ingredients are permitted, this strategy becomes increasingly less effective, as individual foods must meet several requirements simultaneously.
+
+`Stigler` has an advantage here, as fewer nutrients are taken into account and there are no upper limits. Consequently, `Stigler` is once again the cheaper option when only a few ingredients are permitted.
+
+### When Optimisation Gets Absurd
+
+Both `Min` and `Stigler` can meet their requirements with just a single ingredient. `Hybrid`, on the other hand, requires at least two.
+
+For `Min`, the solution consists of around 572 g of Migros sunflower seed bread mix. `Hybrid` combines around 556 g of the same bread mix with 23.75 g of Actilife All in One Power Boost Direct Sticks.
+
+Coincidentally, I have these sticks at home myself and occasionally use them as a coffee substitute in the morning.
+
+However, 23.75 g is equivalent to roughly 7.9 sticks and thus almost 594 mg of caffeine, even though the packaging recommends a maximum of one stick per day. 
+By way of comparison, the FDA states that 400 mg per day is a level that does not normally cause adverse effects in most healthy adults.
+
+The results become even more absurd with `Max`. As infant formula and follow-on formula contain particularly detailed nutritional information and cover many vitamins and minerals, 
+the solutions with few ingredients consist mainly of these products.
+
+This also explains the striking jump in price at `Stigler` from 1.44 CHF for two ingredients to 8.40 CHF for one ingredient: the cheapest solution then consists of 5.175 kg of follow-on formula per day.
+
+This is pretty much the exact opposite of a practical diet, which is what I actually wanted to achieve by limiting the number of ingredients.
+
+### Stigler's Diet: 1945 vs. 2026
+
+To compare my results with Stigler’s original diet, I allowed five ingredients (the same number as the solution in Stigler’s paper).
+
+
+| Food                                                      |   Amount [g] |   Price [CHF] |
+|:----------------------------------------------------------|-----------------:|--------------:|
+| Migros · Hörnli · aus Hartweizengriess [100024965]        |       583.333    |     0.583333  |
+| Migros · Kristallzucker · Fein [100197825]                |       240.403    |     0.259635  |
+| Actilife · All in One Depot Tabletten [100122598]         |         5.625    |     0.328125  |
+| Actilife · Calcium 600 Tabletten [100181112]              |         0.580357 |     0.0509425 |
+| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |         0.441964 |     0.0540179 |
+| Total                                                     |       830.383    |     1.27605   |
+
+<Details title="Nutritional breakdown">
+
+| Nutrient                |       Min |        Total |   Max |
+|:------------------------|----------:|-------------:|------:|
+| Energy [kcal]           | 3000      | 3000         |   inf |
+| Protein [g]         |   70      |   70         |   inf |
+| Iron [g]            |    0.012  |    0.012     |   inf |
+| Calcium [g]         |    0.8    |    0.8       |   inf |
+| Vitamin A [g]       |    0.0015 |    0.0015    |   inf |
+| Thiamine (B1) [g]   |    0.0018 |    0.0020625 |   inf |
+| Riboflavin (B2) [g] |    0.0027 |    0.0030375 |   inf |
+| Niacin (B3) [g]     |    0.018  |    0.03      |   inf |
+| Vitamin C [g]       |    0.075  |    0.311786  |   inf |
+
+</Details>
+
+All nine of the original nutritional requirements are met at an annual cost of 465.76 CHF.
+
+Stigler’s original diet cost 39.93 USD per year, based on 1939 prices. 
+According to the Bureau of Labour Statistics’ inflation calculator, this equates to approximately 976.58 USD, or around 815.90 CHF, in October 2026.
+
+My solution is therefore around 43 per cent cheaper than Stigler’s inflation-adjusted diet.
+
+## Choosing a Diet to Try
+
+### 	Finding a Middle Ground
+
+For my final recipe, I’ve opted for `Hybrid`.
+
+`Min` doesn’t provide enough nutrients, whilst `Max` relies too heavily on specific products due to the incomplete nutritional information.
+
+`Hybrid` therefore seems like a sensible compromise.
+
+I’ve opted for $K = 7$, as an eighth ingredient would make virtually no difference to the price and is only required in a tiny amount (12.5 mg).
+
+
+| Food                                                      |   Amount [g] |   Price [CHF] |
+|:----------------------------------------------------------|-----------------:|--------------:|
+| Migros · Hörnli · aus Hartweizengriess [100024965]        |       337.62     |    0.33762    |
+| M-Classic · Vollkorn-Haferflocken · grob [100039746]      |       230.449    |    0.322629   |
+| M-Budget · Rapsöl  [100158988]                            |        29.4226   |    0.111934   |
+| Jura Sel · Salz · jodiert & fluoridiert [100001090]       |         5.02055  |    0.00527158 |
+| Actilife · All in One Depot Tabletten [100122598]         |         2.8875   |    0.168437   |
+| Actilife · Calcium 600 Tabletten [100181112]              |         1.30052  |    0.114157   |
+| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |         0.745446 |    0.0911101  |
+| Total                                                     |       607.446    |    1.15116    |
+
+<Details title="Nutritional breakdown">
+
+| Nutrient                                   |        Min |         Total |      Max |
+|:-------------------------------------------|-----------:|--------------:|---------:|
+| Energy [kcal]                              | 2305       | 2305          | 2672     |
+| Total carbohydrates [g]                |  259       |  377.49       |  401     |
+| Protein [g]                            |   50       |   70.4728     |  inf     |
+| Dietary fibre [g]                      |   30       |   30          |  inf     |
+| Fat of which saturated fatty acids [g] |    0       |    6.00997    |   29.7   |
+| Total fat [g]                          |   51.2     |   51.2        |  103.9   |
+| Sodium [g]                             |    2       |    2          |  inf     |
+| Iron [g]                               |    0.011   |    0.011      |  inf     |
+| Calcium [g]                            |    0.95    |    0.95       |    2.5   |
+| Vitamin A [g]                          |    0.00075 |    0.00077    |    0.003 |
+| Thiamine (B1) [g]                      |    0.0001  |    0.00105875 |  inf     |
+| Riboflavin (B2) [g]                    |    0.0016  |    0.00204325 |  inf     |
+| Niacin (B3) [g]                        |    0.0154  |    0.0154     |    0.9   |
+| Vitamin C [g]                          |    0.11    |    0.173879   |  inf     |
+
+</Details>
+
+With daily costs of 1.15 CHF, this works out at 420.17 CHF per year. Coincidentally, this is only slightly more than half of Stigler’s inflation-adjusted annual cost of subsistence.
+
+
+### The Catch
+
+Of course, meeting all the mathematical nutritional requirements does not automatically mean that a diet is healthy in the long term.
+
+A number of significant issues remain:
+
+- A diet that is identical every day lacks variety.
+- Many nutrients are missing from product data and are therefore not taken into account correctly.
+- Dietary supplements play a major role, although they should not be used as a substitute for a varied diet (Stigler deliberately left them out of his 1945 paper for this reason).
+- The recommended maximum daily intakes for individual substances (e.g. caffeine) are not taken into account.
+
+The calculated formula is therefore primarily a mathematical experiment and not a recommendation for a long-term diet.
+
+## From Solver to Oven
+
+Having decided on the `Hybrid` solution with seven ingredients, I bought all the necessary products and weighed them out in the calculated quantities.
+
+<FigureBox
+figure = {Ingredients} 
+alt = "The seven ingredients used in the optimised diet" 
+caption = "The seven ingredients for my mathematically optimal diet." 
+size = "w80"
+id = "Ingredients"
+/>
+
+I had to improvise a little during the preparation. First, I cooked the Hörnli and then used the pasta water to cook the oat flakes in it. 
+I puréed these until the mixture was as smooth as possible, before adding the Hörnli and blending everything again briefly. 
+I then stirred in the salt and rapeseed oil, poured the mixture into a cake tin and baked it in the oven.
+
+I took the dietary supplements separately so that the vitamins they contained would not be exposed to the heat during baking.
+
+The result was the following cake:
+
+<FigureBox
+figure = {Cake} 
+alt = "A round, brown cake with a rough, uneven surface sits on a dark metal baking tray. A section has been removed, exposing a dense, yellowish interior with a soft, uneven texture." 
+caption = "Behold: The ideal breakfast, lunch and dinner in one." 
+size = "w60"
+id = "Cake"
+/>
+
+The cake tasted pretty much exactly how it looked: like shit.
+
+I really can’t recommend this diet to anyone. I could only just manage to eat one slice of it myself.
+
+At least I’ve learnt something from it: ‘mathematically optimal’ obviously doesn’t mean ‘culinarily optimal’.
+
+## Addendum
+
+I also ran the optimisation using a different dataset: the [Swiss Food Composition Database](https://naehrwertdaten.ch/en/) , provided by the Federal Food Safety and Veterinary Office (FSVO).
+
+Since this database contains nutritional information about generic foods rather than specific supermarket products, 
+I manually matched the foods with prices from [Agrimarketdata](https://www.agrimarketdata.ch/) and the [Swiss Federal Statistical Office](https://statistik.admin.ch/de/asset/36773855).
+
+Unfortunately, this resulted in a rather flawed dataset, with inaccurate price estimates and some foods missing entirely (including something as basic as eggs).
+
+So take the following result with a grain of salt.
+
+Nevertheless, I ran the optimisation without any limit on the number of ingredients ($K$).
+
+The resulting diet costs 583.99 CHF per year, or approximately 1.60 CHF per day.
+
+While more expensive than my previous solution, it is hopefully also somewhat healthier. Given the limitations of the dataset, however, I wouldn't put too much trust in the exact numbers.
+
+| Food                                    |   Amount [g] |   Price [CHF] |
+|:----------------------------------------|-----------------:|--------------:|
+| Wheat, soft, whole grain                |         329.629  |      0.187526 |
+| Brown bread                             |         258.06   |      0.51612  |
+| Bell pepper, red, raw                   |          71.9976 |      0.272871 |
+| Skimmed milk powder                     |          59.7005 |      0.294323 |
+| Carrot, raw                             |          49.3425 |      0.095231 |
+| Sunflower oil                           |          41.3036 |      0.233904 |
+| Total                                   |         810.033  |      1.59998  |
+
+<Details title="Nutritional breakdown">
+
+| Nutrient                                   |        Min |         Total |      Max |
+|:-------------------------------------------|-----------:|--------------:|---------:|
+| Energy [kcal]                              | 2305       | 2305          | 2672     |
+| Total carbohydrates [g]                |  259       |  348.926      |  401     |
+| Protein [g]                            |   50       |   83.5147     |  inf     |
+| Dietary fibre [g]                      |   30       |   56.9773     |  inf     |
+| Fat of which saturated fatty acids [g] |    0       |    6.49725    |   29.7   |
+| Total fat [g]                          |   51.2     |   51.2        |  103.9   |
+| Sodium [g]                             |    2       |    2          |  inf     |
+| Iron [g]                               |    0.011   |    0.0154613  |  inf     |
+| Calcium [g]                            |    0.95    |    0.95       |    2.5   |
+| Vitamin A [g]                          |    0.00075 |    0.00075    |    0.003 |
+| Thiamine (B1) [g]                      |    0.0001  |    0.00234921 |  inf     |
+| Riboflavin (B2) [g]                    |    0.0016  |    0.00185819 |  inf     |
+| Niacin (B3) [g]                        |    0.0154  |    0.0212117  |    0.9   |
+| Vitamin C [g]                          |    0.11    |    0.11       |  inf     |
+
+</Details>
+
+
+---
+
+## Sources
+
+
+https://www.statslab.cam.ac.uk/~rrw1/opt/diet_history.html
+https://www.jstor.org/stable/222950
+https://www.bls.gov/data/inflation_calculator.htm
+https://en.wikipedia.org/wiki/Stigler_diet
+https://www.jstor.org/stable/1231810
+https://www.globalproductprices.com/rankings/sugar_prices/
+
+### Data sources
+
+https://naehrwertdaten.ch/en/
+https://www.agrimarketdata.ch/ 
+https://statistik.admin.ch/de/asset/36773855
+https://www.migros.ch/
+https://www.blv.admin.ch/de/naehrstoffzufuhr

@@ -1,0 +1,41 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<details>
+  <summary>{title}</summary>
+  <div class="details-content">
+    <slot />
+  </div>
+</details>
+
+<style>
+  details {
+    margin-bottom: 0.5em;
+    color: var(--default-text);
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+  }
+
+  summary {
+    padding: 0.5em 0.8em;
+    cursor: pointer;
+    background-color: var(--card-header);
+  }
+
+  summary:hover {
+    background-color: var(--table-hover);
+  }
+
+  details[open] summary {
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .details-content {
+    padding: 0em 1em;
+  }
+</style>

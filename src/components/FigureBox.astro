@@ -1,0 +1,101 @@
+---
+const { figure, alt, caption, copyright, size, id , isInvertible} = Astro.props;
+
+
+import { Image } from 'astro:assets';
+
+---
+
+<figure 
+  id={id}     
+  class:list={{
+    invertible: isInvertible,
+    [size]: true,
+  }}
+  >
+
+  <Image 
+  src={figure} 
+  alt={alt} 
+  loading="lazy"
+  />
+
+  <figcaption>
+  {caption}
+
+  {copyright && (
+      <small class="copyright">
+        © {copyright}
+      </small>
+    )}
+  </figcaption>
+
+</figure>
+
+
+
+<style>
+
+/* Figure */
+figure {
+  margin: 1em auto;
+  padding: 0.5em;
+  border: 1px solid var(--fig-border);
+  background-color: var(--fig-bg);
+}
+
+figcaption {
+  padding: 0.5em;
+  text-align: justify;
+}
+
+figcaption p {
+  margin: 0;
+}
+
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.w80 {
+  width: 80%;
+}
+
+.w60 {
+  width: 60%;
+}
+
+.h50 {
+  max-height: 50vh;
+}
+
+.h25 {
+  max-height: 25vh;
+}
+
+:global(html[data-theme="dark"]) figure.invertible :global(img) {
+  filter: invert(1);
+}
+
+.copyright {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--default-text);
+  opacity: 0.65;
+}
+
+@media only screen and (max-width: 800px) {
+  .w100,
+  .w80,
+  .w60 {
+    width: 100%;
+  }
+}
+</style>

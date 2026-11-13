@@ -1,0 +1,64 @@
+---
+const { lightPath, darkPath, id } = Astro.props;
+---
+
+<div
+  id = {id}
+  class="plotly-chart"
+  data-light={lightPath}
+  data-dark={darkPath}
+></div>
+
+<style>
+  .plotly-chart {
+    width: 100%;
+    height: 600px;
+    padding-bottom: 1em;
+  }
+</style>
+
+<script>
+  // Load Plotly so it gets deduplicated by astro
+  const script = document.createElement("script");
+  script.src = "https://cdn.plot.ly/plotly-4.1.1.min.js";
+
+  script.onload = () => {
+
+    // Function to update all charts
+    async function updatePlots() {
+
+        const plots = document.querySelectorAll(".plotly-chart");
+        for (const plot of plots) {
+
+            // Choose JSON file & Fetch it
+            const path = document.documentElement.dataset.theme === "dark"
+                ? plot.dataset.dark
+                : plot.dataset.light;
+
+            const response = await fetch(path);
+            const fig = await response.json();
+
+            await window.Plotly.newPlot(plot, fig.data, fig.layout, {
+              responsive: true,
+            });
+
+            if (fig.frames?.length) {
+              await window.Plotly.addFrames(plot, fig.frames);
+}
+      }
+    }
+
+    //Watch for theme changes
+    new MutationObserver(updatePlots).observe(
+      document.documentElement,
+      {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+      }
+    );
+
+    updatePlots();
+  };
+
+  document.head.appendChild(script);
+</script>
