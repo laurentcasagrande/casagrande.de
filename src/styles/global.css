@@ -259,6 +259,8 @@ html[data-theme="dark"] .markdown-content pre.astro-code span {
 
 .markdown-content table {
   margin: auto;
+  margin-top: 1em ;
+  margin-bottom: 1em ;
   border-top: 2px solid var(--table-bold-line);
   border-bottom: 2px solid var(--table-bold-line);
   border-collapse: collapse;

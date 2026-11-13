@@ -1,28 +1,25 @@
 ---
 layout: ../../layouts/MarkdownPostLayout.astro
-title: 'Test Article'
+title: Eating on a Budget (Mathematically)
 pubDate: 2022-10-11
-description: 'This is the first post of my new Astro blog.'
+description: Eating cheaply is one thing. Eating as cheaply as mathematically possible is another. I revisit a famous optimisation problem from 1945, using modern supermarket prices to find out just how cheap you can get.
 image:
-   url: 'https://docs.astro.build/assets/rose.webp'
-   alt: 'The Astro logo on a dark background with a pink glow.'
-tags: ["astro", "blogging", "learning in public"]
+    url: https://docs.astro.build/assets/rose.webp
+    alt: The Astro logo on a dark background with a pink glow.
+tags: ["Maths", "Data", "Optimisation"]
 ---
+
 import JSONPlot from "../../components/JSONPlot.astro";
-
-import FigureBox from "../../components/FigureBox.astro";
-import Figure1 from "../../images/Simplex_algorithm.png";
-
-<JSONPlot lightPath="/plots/MCDPlotWhite.json" darkPath="/plots/MCDPlotDark.json" /> 
-
-
-https://data.bls.gov/cgi-bin/cpicalc.pl?cost1=39.93&year1=1939&year2=2016
+import Details from "../../components/Details.astro";
 
 ## Introduction
 The concept of reducing food to its essential nutritional components has long inspired dystopian literature and cinema alike, 
-envisioning a future in which eating is reduced to a purely functional act of sustenance. This is often represented as the most cost effective way for the ruling class to keep the populus alive, 
-at the cost of humanity and taste (for example in „The Matrix“ 1999 or newer „Snowpiercer“ (2013)), but has also been proposed in our current and past time, 
-mostly by armies in the quest to feed their soldiers during war Times. In 1945, following earlier efforts to optimize the allocation of American resources during World War II, future laureat of the Nobel Memorial Prize in Economic Sciences [George Stigler](https://en.wikipedia.org/wiki/George_Stigler) proposed a problem more or 
+envisioning a future in which eating is reduced to a purely functional act of sustenance. 
+This is often represented as the most cost effective way for the ruling class to keep the populus alive, 
+at the cost of humanity and taste (for example in „The Matrix“ 1999 or newer „Snowpiercer“ (2013)), 
+but has also been proposed in our current and past time, 
+mostly by armies in the quest to feed their soldiers during war Times. In 1945, following earlier efforts to optimize the allocation of American resources during World War II, 
+future laureat of the Nobel Memorial Prize in Economic Sciences [George Stigler](https://en.wikipedia.org/wiki/George_Stigler) proposed a problem more or 
 less in the following phrasing (not an actual quote):
 
 >
@@ -59,8 +56,12 @@ Lacking the mathematical tools to find the exact solution, he used heuristic met
 formulated his simplex algorithm for solving linear programming models, in one of the first instances of large scale computation in optimization, 
 the optimal solution was found to be $39.69 (off only by 24 cents).
 
-But a lot of Thing have changed since 1945 and processed foods have become much cheaper. So one would think that the minimal cost diet has gotten quite a bit diffrent in this time. 
-So i decided i would recalculate the Stigler diet but with a Modern Dataset. 
+But a lot of Thing have changed since 1945 and processed foods have become much cheaper.
+
+Sugar has gone from 11.4 cents per kilogramm (1939 dollars equivalent to 2.79 USD today according to the Bureau of labor statistics CPI inflation calculator) to 1.9 USD per kilogram in the USA (https://www.globalproductprices.com/rankings/sugar_prices/)
+
+So one would think that the minimal cost diet has gotten quite a bit diffrent and maybee even cheaper in this time. 
+So i decided i would recalculate the Stigler diet but with a Modern Dataset, and one from Switzerland insteads of the United States. 
 
 For this I got my hands on a dataset of every product listed on migros.com (The online storefront of one of the biggest retasilers in switzerland). 
 I then cleaned the dataset so only eddible products with listed nutritional information remain listed. 
@@ -91,8 +92,11 @@ At the end i ended up with a dataset of 14834 Foods, each with price. But as not
 | Free sugars (including added sugars) [grams]                       |       0 |   0         |
 
 
-So, while all items have a listed price, energy vitamins and minerals are listed much less often. This isn't surprising, as listing vitamins and minerals is voluntary and it just doesn't make sense for certain items, plus it costs money to measure.
-This is an issue for our optimisation, as items with lots of minerals or vitamins, like [oranges](https://www.migros.ch/de/product/263330108400), won't be used in the final recipe, even if they have loads of good nutrients, because they're not listed. I've decided to ignore this problem for now, as I'm more interested in the process than the solution.
+So, while all items have a listed price, energy vitamins and minerals are listed much less often. This isn't surprising, 
+as listing vitamins and minerals is voluntary and it just doesn't make sense for certain items, plus it costs money to measure.
+This is an issue for our optimisation, as items with lots of minerals or vitamins, like [oranges](https://www.migros.ch/de/product/263330108400), 
+won't be used in the final recipe, even if they have loads of good nutrients, because they're not listed. I've decided to ignore this problem for now, 
+as I'm more interested in the process than the solution.
 
 
 
@@ -100,7 +104,8 @@ This is an issue for our optimisation, as items with lots of minerals or vitamin
 
 To solve the problem, I started with essentially the same linear programming approach as [George Dantzig in 1947](https://www.researchgate.net/publication/300717166_Simplex_Method).
 
-Suppose we have $n$ different foods in our dataset and $m$ nutrients. Let $i$ be the index of a food product, where $i = 1, 2, \ldots, n$, and $j$ the index of a nutrient, where $j = 1, 2, \ldots, m$.
+Suppose we have $n$ different foods in our dataset and $m$ nutrients. 
+Let $i$ be the index of a food product, where $i = 1, 2, \ldots, n$, and $j$ the index of a nutrient, where $j = 1, 2, \ldots, m$.
 
 For each food product $i$, $x_i$ denotes the quantity of that food consumed per day, measured in grams. 
 
@@ -194,7 +199,7 @@ The interactive [visualisation above](#visualise) demonstrates how the Simplex m
 
 ## Implementation
 
-To do this efficently even with over 1400 foods/dimensions i used HiGHS, a open source software for linear optimisation via its Python interface highspy. 
+To do this efficently even with over 1400 foods/dimensions and a lot more constraints i used HiGHS, a open source software for linear optimisation via its Python interface highspy. 
 It allows adding lots of constrainsts and variables easily while still staying fast. 
 
 I used pandas to handle and clean the food and nutrient data and NumPy for numerical operations.
@@ -253,7 +258,7 @@ The resulting food quantities can then be extracted from the solver and converte
 However, with more than 14,000 products in my dataset, the mathematically optimal solution involves a large number of different food items, 
 making it rather impractical as an actual diet. 
 
-The final calculated solution includes 14 foods one of which only acounts for 32 miligrams.
+The final calculated solution includes 13 foods one of which only acounts for 32 miligrams.
 
 ## Mixed-Integer Linear Optimisation
 
@@ -295,134 +300,298 @@ $$
 
 This ensures that the final diet contains no more than $K$ different food products.
 
-## Graph
+## Results
+
+Now that I had a way to limit the number of different ingredients in the final diet, I wanted to see how much this restriction actually affects the price.
+
+I wanted to find out if and at what point diminishing returns set in.
+
+I also thought I'd try out different nutritional constraints. As some vitamins and minerals are only listed for a few products in my dataset, including all of them
+leads to the solver picking certain foods just because they're the only ones with the info you're looking for.
+
+To do this i created four subsets of the Nutrients in my dataset. One of these was the original requirements used by Stigler in 1945. 
+I did this to see how his original problem (with the old recommended intake levels) would perform with modern supermarket prices.
 
 
-| Food                                                      |      grams |  CHF |   kcal |   protein |   Fe |   Calcium |   A |   B1 |   B2 |   B3 |   C |
-|:----------------------------------------------------------|-----------:|-------------:|----------------:|-----------------:|--------------:|----------------:|------------------:|----------------:|------------------------:|---------------:|------------------:|
-| Migros · Hörnli · aus Hartweizengriess       | 583.333    |    0.583333  |     2035.83     |               70 |      0        |        0        |            0      |       0         |               0         |           0    |         0         |
-| Migros · Kristallzucker · Fein                 | 240.403    |    0.259635  |      961.61     |                0 |      0        |        0        |            0      |       0         |               0         |           0    |         0         |
-| Actilife · All in One Depot Tabletten          |   5.625    |    0.328125  |        1.875    |                0 |      0.007875 |        0.45     |            0.0015 |       0.0020625 |               0.002625  |           0.03 |         0.3       |
-| Actilife · Calcium 600 Tabletten             |   0.580357 |    0.0509425 |        0.386905 |                0 |      0        |        0.232143 |            0      |       0         |               0         |           0    |         0         |
-| Actilife · Vegetarier Depot Tabletten · vegan  |   0.441964 |    0.0540179 |        0.294643 |                0 |      0.004125 |        0.117857 |            0      |       0         |               0.0004125 |           0    |         0.0117857 |
-| Total                                                     | 830.383    |    1.27605   |     3000        |               70 |      0.012    |        0.8      |            0.0015 |       0.0020625 |               0.0030375 |           0.03 |         0.311786  |
+| Set | Nutrients | Description |
+|---|---:|---|
+| **Stigler** | 9 | The original 9 nutrients and their recommended intake levels used by Stigler in 1945. |
+| **Min** | 7 | 7 core nutritional parameters, including macronutrients, fibre, and sodium, and their modern recommended intake levels. |
+| **Hybrid** | 14 | The 7 nutritional parameters from Min, complemented by the 7 additional vitamins and minerals used by Stigler in 1945, with modern recommended intake levels. |
+| **Max** | 36 | 36 nutritional parameters, including macronutrients, essential fatty acids, vitamins, and minerals, and their modern recommended intake levels. |
 
-## Min
-| nutrient                                |    min |     max |
-|:----------------------------------------|-------:|--------:|
-| Energie[kcal]                           | 2305   |  2672   |
-| Gesamtkohlenhydrate[Gram]               |  259   |   401   |
-| Proteine[Gram]                          |   50   |   125   |
-| Nahrungsfasern[Gram]                    |   30   | 10000   |
-| Fett, davon gesättigte Fettsäuren[Gram] |    0   |    29.7 |
-| Lipide insgesamt[Gram]                  |   51.2 |   103.9 |
-| Natrium[Gram]                           |    0   |     2   |
+*Click on a nutrient set below to expand its full list of nutrients and their respective recommended intake levels. $\inf $ means that no upper limit was imposed for that nutrient.*
 
-| Food                                                 |    grams |   Price[CHF] |   Energie[kcal] |   Gesamtkohlenhydrate[Gram] |   Proteine[Gram] |   Nahrungsfasern[Gram] |   Fett, davon gesättigte Fettsäuren[Gram] |   Lipide insgesamt[Gram] |   Natrium[Gram] |
-|:-----------------------------------------------------|---------:|-------------:|----------------:|----------------------------:|-----------------:|-----------------------:|------------------------------------------:|-------------------------:|----------------:|
-| Migros · Hörnli · aus Hartweizengriess [100024965]   | 308.364  |     0.308364 |        1076.19  |                     215.855 |          37.0037 |                11.7178 |                                   1.23346 |                  4.62546 |      0.00616728 |
-| M-Classic · Vollkorn-Haferflöckli · fein [100041823] | 261.174  |     0.365643 |         974.178 |                     159.316 |          33.9526 |                18.2822 |                                   2.61174 |                 18.2822  |      0.0208939  |
-| M-Budget · Rapsöl  [100158988]                       |  28.2924 |     0.107634 |         254.631 |                       0     |           0      |                 0      |                                   2.15268 |                 28.2924  |      0          |
-| Total                                                | 597.83   |     0.781641 |        2305     |                     375.171 |          70.9563 |                30      |                                   5.99787 |                 51.2     |      0.0270612  |
+<Details title="Stigler">
 
-## In Between
+| Nutrient                |       Min |   Max |
+|:------------------------|----------:|------:|
+| Energy [kcal]           | 3000      |   inf |
+| Protein [grams]         |   70      |   inf |
+| Iron [grams]            |    0.012  |   inf |
+| Calcium [grams]         |    0.8    |   inf |
+| Vitamin A [grams]       |    0.0015 |   inf |
+| Thiamine (B1) [grams]   |    0.0018 |   inf |
+| Riboflavin (B2) [grams] |    0.0027 |   inf |
+| Niacin (B3) [grams]     |    0.018  |   inf |
+| Vitamin C [grams]       |    0.075  |   inf |
 
-| nutrient                                |        min |      max |
-|:----------------------------------------|-----------:|---------:|
-| Energie[kcal]                           | 2305       |  2672    |
-| Gesamtkohlenhydrate[Gram]               |  259       |   401    |
-| Proteine[Gram]                          |   50       |   125    |
-| Nahrungsfasern[Gram]                    |   30       | 10000    |
-| Fett, davon gesättigte Fettsäuren[Gram] |    0       |    29.7  |
-| Lipide insgesamt[Gram]                  |   51.2     |   103.9  |
-| Natrium[Gram]                           |    0       |     2    |
-| Eisen[Gram]                             |    0.011   |     0.04 |
-| Calcium[Gram]                           |    0.95    |     2.5  |
-| Vitamin A[Gram]                         |    0.00075 | 10000    |
-| Thiamin[Gram]                           |    0.00096 | 10000    |
-| Riboflavin (B2)[Gram]                   |    0.0016  | 10000    |
-| Niacin[Gram]                            |    0.0154  |     0.12 |
-| Vitamin C[Gram]                         |    0.11    | 10000    |
+</Details>
 
-| Food                                                      |   Amount [grams] |   Price [CHF] |   Energy [kcal] |   Total carbohydrates [grams] |   Protein [grams] |   Dietary fibre [grams] |   Fat of which saturated fatty acids [grams] |   Total Fat [grams] |   Sodium [grams] |   Iron [grams] |   Calcium [grams] |   Vitamin A [grams] |   Thiamine (B1) [grams] |   Riboflavin (B2) [grams] |   Niacin (B3) [grams] |   Vitamin C [grams] |
-|:----------------------------------------------------------|-----------------:|--------------:|----------------:|------------------------------:|------------------:|------------------------:|---------------------------------------------:|--------------------:|-----------------:|---------------:|------------------:|--------------------:|------------------------:|--------------------------:|----------------------:|--------------------:|
-| Migros · Hörnli · aus Hartweizengriess [100024965]        |       337.62     |     0.33762   |     1178.3      |                    236.334    |           40.5145 |               12.8296   |                                    1.35048   |            5.06431  |       0.00675241 |      0         |          0        |             0       |              0          |                0          |                0      |           0         |
-| M-Classic · Vollkorn-Haferflöckli · fein [100041823]      |       230.449    |     0.322628  |      859.574    |                    140.574    |           29.9583 |               16.1314   |                                    2.30449   |           16.1314   |       0.0184359  |      0         |          0        |             0       |              0          |                0          |                0      |           0         |
-| M-Budget · Rapsöl  [100158988]                            |        29.4227   |     0.111934  |      264.804    |                      0        |            0      |                0        |                                    2.23868   |           29.4227   |       0          |      0         |          0        |             0       |              0          |                0          |                0      |           0         |
-| Actilife · All in One Depot Tabletten [100122598]         |         2.8875   |     0.168438  |        0.9625   |                      0.240625 |            0      |                0.48125  |                                    0.048125  |            0.240625 |       0          |      0.0040425 |          0.231    |             0.00077 |              0.00105875 |                0.0013475  |                0.0154 |           0.154     |
-| Actilife · Calcium 600 Tabletten [100181112]              |         1.30054  |     0.114158  |        0.867024 |                      0.216756 |            0      |                0.433512 |                                    0.0433512 |            0.216756 |       0.00173405 |      0         |          0.520214 |             0       |              0          |                0          |                0      |           0         |
-| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |         0.745446 |     0.0911101 |        0.496964 |                      0.124241 |            0      |                0.124241 |                                    0.0248482 |            0.124241 |       0          |      0.0069575 |          0.198786 |             0       |              0          |                0.00069575 |                0      |           0.0198786 |
-| Total                                                     |       602.425    |     1.14589   |     2305        |                    377.49     |           70.4728 |               30        |                                    6.00997   |           51.2      |       0.0269224  |      0.011     |          0.95     |             0.00077 |              0.00105875 |                0.00204325 |                0.0154 |           0.173879  |                                                 |       602.385    |   1.1445      |   2305          |                  377.481      |           70.476  |             30          |                                  6.0102      |         51.2        |       0.0269431  |      0.011     |          0.95     |             0.00075 |              0.00105875 |                0.00205375 |                0.0154 |           0.170179  |
+<Details title="Min">
+
+| Nutrient                                   |    Min |    Max |
+|:-------------------------------------------|-------:|-------:|
+| Energy [kcal]                              | 2305   | 2672   |
+| Total carbohydrates [grams]                |  259   |  401   |
+| Protein [grams]                            |   50   |  inf   |
+| Dietary fibre [grams]                      |   30   |  inf   |
+| Fat of which saturated fatty acids [grams] |    0   |   29.7 |
+| Total Fat [grams]                          |   51.2 |  103.9 |
+| Sodium [grams]                             |    2   |  inf   |
+
+</Details>
+
+<Details title = "Hybrid">
+
+| Nutrient                                   |        Min |      Max |
+|:-------------------------------------------|-----------:|---------:|
+| Energy [kcal]                              | 2305       | 2672     |
+| Total carbohydrates [grams]                |  259       |  401     |
+| Protein [grams]                            |   50       |  inf     |
+| Dietary fibre [grams]                      |   30       |  inf     |
+| Fat of which saturated fatty acids [grams] |    0       |   29.7   |
+| Total Fat [grams]                          |   51.2     |  103.9   |
+| Sodium [grams]                             |    2       |  inf     |
+| Iron [grams]                               |    0.011   |  inf     |
+| Calcium [grams]                            |    0.95    |    2.5   |
+| Vitamin A [grams]                          |    0.00075 |    0.003 |
+| Thiamine (B1) [grams]                      |    0.0001  |  inf     |
+| Riboflavin (B2) [grams]                    |    0.0016  |  inf     |
+| Niacin (B3) [grams]                        |    0.0154  |    0.9   |
+| Vitamin C [grams]                          |    0.11    |  inf     |
+
+</Details>
+
+<Details title = "Max">
+
+| Nutrient                                                           |        Min |       Max |
+|:-------------------------------------------------------------------|-----------:|----------:|
+| Energy [kcal]                                                      | 2305       | 2672      |
+| Total carbohydrates [grams]                                        |  259       |  401      |
+| Dietary fibre [grams]                                              |   30       |  inf      |
+| Fat of which monounsaturated fatty acids [grams]                   |   25.6     |   44.5    |
+| Fat of which saturated fatty acids [grams]                         |    0       |   29.7    |
+| Total Fat [grams]                                                  |   51.2     |  103.9    |
+| Linoleic acid [grams]                                              |   10.2     |  inf      |
+| Eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) [grams] |    0.25    |  inf      |
+| Alpha-linolenic acid [grams]                                       |    1.28    |  inf      |
+| Protein [grams]                                                    |   50       |  inf      |
+| Calcium [grams]                                                    |    0.95    |    2.5    |
+| Fluoride [grams]                                                   |    0.0034  |    0.007  |
+| Molybdenum [grams]                                                 |    6.5e-05 |    0.0006 |
+| Potassium [grams]                                                  |    3.5     |  inf      |
+| Manganese [grams]                                                  |    0.003   |  inf      |
+| Copper [grams]                                                     |    0.0016  |    0.005  |
+| Phosphorus [grams]                                                 |    0.55    |  inf      |
+| Iron [grams]                                                       |    0.011   |  inf      |
+| Magnesium [grams]                                                  |    0.35    |  inf      |
+| Iodine [grams]                                                     |    0.00015 |    0.0006 |
+| Selenium [grams]                                                   |    7e-05   |    0.0003 |
+| Zinc [grams]                                                       |    0.0094  |    0.025  |
+| Chloride [grams]                                                   |    3.1     |  inf      |
+| Sodium [grams]                                                     |    2       |  inf      |
+| Niacin (B3) [grams]                                                |    0.0154  |    0.9    |
+| Pyridoxine (B6) [grams]                                            |    0.0017  |    0.025  |
+| Vitamin K [grams]                                                  |    7e-05   |  inf      |
+| Folate (B9) [DFE-grams]                                            |    0.00033 |    0.001  |
+| Vitamin C [grams]                                                  |    0.11    |  inf      |
+| Vitamin E [grams]                                                  |    0.013   |    0.3    |
+| Riboflavin (B2) [grams]                                            |    0.0016  |  inf      |
+| Pantothenic acid (B5) [grams]                                      |    0.005   |  inf      |
+| Biotin (B7) [grams]                                                |    4e-05   |  inf      |
+| Thiamine (B1) [grams]                                              |    0.0001  |  inf      |
+| Vitamin D [grams]                                                  |    1.5e-05 |    0.0001 |
+| Vitamin A [grams]                                                  |    0.00075 |    0.003  |
+
+</Details>
+
+For each Nutrient $i$ ran the Mixed integer implementation starting with a maximum of $K = 15$ until and gradually reducing $K$ until the solver could no longer find a feasible solution.
+
+For every value of $K$, I recorded the minimum daily cost of the resulting diet and plotted it against the maximum number of allowed ingredients.
+
+The graph below shows the results of these calculations. They took 72 minutes in total, with the `Max` set alone taking the longest at 50 minutes.
+
+You can hide a line by clicking on its name in the legend, 
+or double-click one to display only that nutritional set. The graph is also zoomable, and hovering over a data point shows the IDs of the food products selected for that particular solution, 
+together with their quantities in grams and some other info.
+
+You can look up the corresponding food on the Migros website by replacing \{id} in https://www.migros.ch/en/product/{id} with the displayed product ID.
+
+<JSONPlot lightPath="/plots/MCDPlotWhite.json" darkPath="/plots/MCDPlotDark.json" /> 
+
+## What the Numbers Tell Us
+
+As expected, the price rises the fewer ingredients are permitted. 
+However, the additional cost benefit of including further ingredients becomes negligible relatively quickly. The impact of the chosen nutritional requirements is significantly greater.
+
+`Min` is the cheapest at 0.79 CHF per day, whilst `Max` is by far the most expensive at at least 8.36 CHF. This comes as little surprise.
+
+More interesting is the comparison between `Stigler` and `Hybrid`. Although `Hybrid` takes more nutrients into account, it is cheaper than `Stigler` for many permitted ingredients.
+
+My guess is that this is mainly due to the different calorie requirements. Whilst `Stigler` requires at least 3,000 kcal, `Hybrid` only needs between 2,305 and 2,672 kcal.
+
+For many ingredients, the solver can cover the additional vitamins and minerals required by `Hybrid` using small quantities of cheaper dietary supplements, which makes the upper limit smaller than that of `Stigler` with its higher calorie requirement. 
+If fewer ingredients are permitted, this strategy becomes increasingly less effective, as individual foods must meet several requirements simultaneously.
+
+`Stigler` has an advantage here, as fewer nutrients are taken into account and there are no upper limits. Consequently, `Stigler` is once again the cheaper option when only a few ingredients are permitted.
+
+### When Optimisation Gets Absurd
+
+Both `Min` and `Stigler` can meet their requirements with just a single ingredient. `Hybrid`, on the other hand, requires at least two.
+
+For `Min`, the solution consists of around 572 g of Migros sunflower seed bread mix. `Hybrid` combines around 556 g of the same bread mix with 23.75 g of Actilife All in One Power Boost Direct Sticks.
+
+Coincidentally, I have these sticks at home myself and occasionally use them as a coffee substitute in the morning.
+
+However, 23.75 g is equivalent to roughly 7.9 sticks and thus almost 594 mg of caffeine, even though the packaging recommends a maximum of one stick per day. 
+By way of comparison, the FDA states that 400 mg per day is a level that does not normally cause adverse effects in most healthy adults.
+
+The results become even more absurd with `Max`. As infant formula and follow-on formula contain particularly detailed nutritional information and cover many vitamins and minerals, 
+the solutions with few ingredients consist mainly of these products.
+
+This also explains the striking jump in price at `Stigler` from 1.44 CHF for two ingredients to 8.40 CHF for one ingredient: the cheapest solution then consists of 5.175 kg of follow-on formula per day.
+
+This is pretty much the exact opposite of a practical diet, which is what I actually wanted to achieve by limiting the number of ingredients.
+
+### 1945 vs. 2026
+
+To compare my results with Stigler’s original diet, I allowed five ingredients (the same number as the solution in Stigler’s paper).
 
 
-## All
+| Food                                                      |   Amount [grams] |   Price [CHF] |
+|:----------------------------------------------------------|-----------------:|--------------:|
+| Migros · Hörnli · aus Hartweizengriess [100024965]        |       583.333    |     0.583333  |
+| Migros · Kristallzucker · Fein [100197825]                |       240.403    |     0.259635  |
+| Actilife · All in One Depot Tabletten [100122598]         |         5.625    |     0.328125  |
+| Actilife · Calcium 600 Tabletten [100181112]              |         0.580357 |     0.0509425 |
+| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |         0.441964 |     0.0540179 |
+| Total                                                     |       830.383    |     1.27605   |
 
-| nutrient                                                   |        min |          max |
-|:-----------------------------------------------------------|-----------:|-------------:|
-| Energie[kcal]                                              | 2305       |  2672        |
-| Gesamtkohlenhydrate[Gram]                                  |  259       |   401        |
-| Nahrungsfasern[Gram]                                       |   30       | 10000        |
-| Fett, davon einfach ungesättigte Fettsäuren[Gram]          |   25.6     |    44.5      |
-| Fett, davon gesättigte Fettsäuren[Gram]                    |    0       |    29.7      |
-| Lipide insgesamt[Gram]                                     |   51.2     |   103.9      |
-| Linolsäure[Gram]                                           |    9.7     |    12.4      |
-| Eicosapentaensäure (EPA) und Docosahexaensäure (DHA)[Gram] |    0.2     |     0.3      |
-| Alpha-Linolensäure[Gram]                                   |    0       |     1.98     |
-| Proteine[Gram]                                             |   50       |   125        |
-| Calcium[Gram]                                              |    0.95    |     2.5      |
-| Fluorid[Gram]                                              |    0.0034  | 10000        |
-| Molybdän[Gram]                                             |    6.5e-05 |     0.0006   |
-| Kalium[Gram]                                               |    3.5     | 10000        |
-| Mangan[Gram]                                               |    0.003   |     0.008    |
-| Kupfer[Gram]                                               |    0.0016  |     0.005    |
-| Phosphor[Gram]                                             |    0.55    | 10000        |
-| Eisen[Gram]                                                |    0.011   |     0.04     |
-| Magnesium[Gram]                                            |    0.35    | 10000        |
-| Jod[Gram]                                                  |    0.00015 |     0.0006   |
-| Selen[Gram]                                                |    7e-05   |     0.000255 |
-| Zink[Gram]                                                 |    0.0117  |     0.025    |
-| Chlorid[Gram]                                              |    3.1     | 10000        |
-| Natrium[Gram]                                              |    0       |     2        |
-| Niacin[Gram]                                               |    0.0154  |     0.12     |
-| Vitamin B6[Gram]                                           |    0.0017  |     0.012    |
-| Vitamin K[Gram]                                            |    7e-05   | 10000        |
-| Folat[DFE-Gram]                                            |    0.00033 | 10000        |
-| Vitamin C[Gram]                                            |    0.11    | 10000        |
-| Vitamin E[Gram]                                            |    0.013   |     0.3      |
-| Riboflavin (B2)[Gram]                                      |    0.0016  | 10000        |
-| Pantothensäure (B5)[Gram]                                  |    0.005   | 10000        |
-| Biotin[Gram]                                               |    4e-05   | 10000        |
-| Thiamin[Gram]                                              |    0.00096 | 10000        |
-| Vitamin D[Gram]                                            |    1.5e-05 |     0.0001   |
-| Vitamin A[Gram]                                            |    0.00075 | 10000        |
+| Nutrient                |       Min |        Total |   Max |
+|:------------------------|----------:|-------------:|------:|
+| Energy [kcal]           | 3000      | 3000         |   inf |
+| Protein [grams]         |   70      |   70         |   inf |
+| Iron [grams]            |    0.012  |    0.012     |   inf |
+| Calcium [grams]         |    0.8    |    0.8       |   inf |
+| Vitamin A [grams]       |    0.0015 |    0.0015    |   inf |
+| Thiamine (B1) [grams]   |    0.0018 |    0.0020625 |   inf |
+| Riboflavin (B2) [grams] |    0.0027 |    0.0030375 |   inf |
+| Niacin (B3) [grams]     |    0.018  |    0.03      |   inf |
+| Vitamin C [grams]       |    0.075  |    0.311786  |   inf |
 
-| Food                                                                                   |      grams |   Price[CHF] |   Energie[kcal] |   Gesamtkohlenhydrate[Gram] |   Nahrungsfasern[Gram] |   Fett, davon einfach ungesättigte Fettsäuren[Gram] |   Fett, davon gesättigte Fettsäuren[Gram] |   Lipide insgesamt[Gram] |   Linolsäure[Gram] |   Eicosapentaensäure (EPA) und Docosahexaensäure (DHA)[Gram] |   Alpha-Linolensäure[Gram] |   Proteine[Gram] |   Calcium[Gram] |   Fluorid[Gram] |   Molybdän[Gram] |   Kalium[Gram] |   Mangan[Gram] |   Kupfer[Gram] |   Phosphor[Gram] |   Eisen[Gram] |   Magnesium[Gram] |   Jod[Gram] |   Selen[Gram] |   Zink[Gram] |   Chlorid[Gram] |   Natrium[Gram] |   Niacin[Gram] |   Vitamin B6[Gram] |   Vitamin K[Gram] |   Folat[DFE-Gram] |   Vitamin C[Gram] |   Vitamin E[Gram] |   Riboflavin (B2)[Gram] |   Pantothensäure (B5)[Gram] |   Biotin[Gram] |   Thiamin[Gram] |   Vitamin D[Gram] |   Vitamin A[Gram] |
-|:---------------------------------------------------------------------------------------|-----------:|-------------:|----------------:|----------------------------:|-----------------------:|----------------------------------------------------:|------------------------------------------:|-------------------------:|-------------------:|-------------------------------------------------------------:|---------------------------:|-----------------:|----------------:|----------------:|-----------------:|---------------:|---------------:|---------------:|-----------------:|--------------:|------------------:|------------:|--------------:|-------------:|----------------:|----------------:|---------------:|-------------------:|------------------:|------------------:|------------------:|------------------:|------------------------:|----------------------------:|---------------:|----------------:|------------------:|------------------:|
-| Aptamil Pronutra 2 · Folgemilch 2 in Flasche · nach 6 Monaten (zubereitet) [100025995] | 1446.63    |   2.34685    |     950.445     |                 114.612     |              8.38628   |                                            0        |                                 13.9771   |                44.7268   |            0       |                                                    0.237611  |                   0        |        19.568    |     0.796697    |     0.000139771 |          0       |      1.22999   |    0.000139771 |    0.000698857 |        0.545108  |    0.0139771  |       0.0978399   | 0.000181703 |   4.33291e-05 |  0.00698857  |        0.712834 |      0.321474   |     0.00642948 |        0.000698857 |       8.24651e-05 |       0           |        0.139771   |        0.0209657  |             0.0019568   |                 0.00768742  |    2.65566e-05 |      0.00139771 |       2.37611e-05 |       0.000838628 |
-| Holle · Folgemilch 3 · Bio, Demeter, Kuhmilch, ab 10. Monat (zubereitet) [100004128]   |  459.894   |   1.40785    |     298.575     |                  33.4225    |              0         |                                            8.46704  |                                  4.45634  |                15.5972   |            2.49555 |                                                    0.0623887 |                   0.222817 |         6.23887  |     0.26738     |     0           |          0       |      0.384136  |    2.22817e-05 |    0.000236186 |        0.16533   |    0.00258468 |       0.0222817   | 5.88237e-05 |   1.64885e-05 |  0.00200535  |        0.22861  |      0.111408   |     0.00178254 |        0.000164885 |       2.89662e-05 |       4.81285e-05 |        0.0307487  |        0.00534761 |             0.000579324 |                 0.00160428  |    7.57577e-06 |      0.00013369 |       7.13014e-06 |       0.000241088 |
-| Badoit · Mineralwasser · mit Kohlensäure [100006019]                                   |  221.501   |   0.210426   |       0         |                   0         |              0         |                                            0        |                                  0        |                 0        |            0       |                                                    0         |                   0        |         0        |     0.338896    |     0.00265801  |          0       |      0.0243651 |    0           |    0           |        0         |    0          |       0.177201    | 0           |   0           |  0           |        0.11961  |      0.398701   |     0          |        0           |       0           |       0           |        0          |        0          |             0           |                 0           |    0           |      0          |       0           |       0           |
-| Biotta · Rüebli · Bio, vegan [100002235]                                               |  217.827   |   1.2634     |      60.9915    |                  15.2479    |              0         |                                            0        |                                  0.217827 |                 0.108913 |            0       |                                                    0         |                   0        |         0.871307 |     0           |     0           |          0       |      0.660015  |    0           |    0           |        0         |    0          |       0.0174261   | 0           |   0           |  0           |        0        |      0.104557   |     0          |        0           |       0           |       0           |        0          |        0          |             0           |                 0           |    0           |      0          |       0           |       0           |
-| Migros · Hörnli · aus Hartweizengriess [100024965]                                     |   99.7379  |   0.0997379  |     348.085     |                  69.8165    |              3.79004   |                                            0        |                                  0.398952 |                 1.49607  |            0       |                                                    0         |                   0        |        11.9685   |     0           |     0           |          0       |      0         |    0           |    0           |        0         |    0          |       0           | 0           |   0           |  0           |        0        |      0.00199476 |     0          |        0           |       0           |       0           |        0          |        0          |             0           |                 0           |    0           |      0          |       0           |       0           |
-| M-Classic · Weizenkeime [100008281]                                                    |   68.5478  |   0.959669   |     257.74      |                  23.9917    |              8.91121   |                                            0        |                                  1.30241  |                 6.85478  |            0       |                                                    0         |                   0        |        20.5643   |     0           |     0           |          0       |      0.692333  |    0           |    0           |        0.664914  |    0.00548382 |       0.169313    | 0           |   0           |  0.00891121  |        0        |      0.00822574 |     0.00520963 |        0.000754026 |       0           |       0           |        0          |        0.0137096  |             0           |                 0.00507254  |    1.85079e-05 |      0.00102822 |       0           |       0           |
-| Sponser · Whey Isolate 94 · Chocolate [100026835]                                      |   22.9353  |   1.594      |      80.3395    |                   0.487379  |              1.22827   |                                            0.102849 |                                  0.295021 |                 0.575627 |            0       |                                                    0         |                   0        |        18.1755   |     0.204124    |     0           |          0       |      0.509163  |    0           |    0           |        0.0459789 |    0.0004305  |       0.100915    | 0           |   0           |  0           |        2.03895  |      0.0718048  |     0          |        0           |       0           |       0           |        0          |        0          |             0           |                 0           |    0           |      0          |       0           |       0           |
-| M-Classic · Pflanzenölzubereitung · Balance, vegan [100010268]                         |   17.5718  |   0.19329    |     143.913     |                   0         |              0         |                                            5.27155  |                                  1.58146  |                15.9904   |            7.20445 |                                                    0         |                   1.75718  |         0        |     0           |     0           |          0       |      0         |    0           |    0           |        0         |    0          |       0           | 0           |   0           |  0           |        0        |      0.0351437  |     0          |        0           |       0           |       0           |        0          |        0.00632586 |             0           |                 0           |    0           |      0          |       0           |       0           |
-| M-Classic · HOLL-Rapsöl  [100031443]                                                   |   15.4541  |   0.0828699  |     139.087     |                   0         |              0         |                                           11.7586   |                                  1.00788  |                15.4541   |            0       |                                                    0         |                   0        |         0        |     0           |     0           |          0       |      0         |    0           |    0           |        0         |    0          |       0           | 0           |   0           |  0           |        0        |      0          |     0          |        0           |       0           |       0           |        0          |        0.00386353 |             0           |                 0           |    0           |      0          |       0           |       0           |
-| Weizenkleie · Bio [100124131]                                                          |   13.9172  |   0.0914558  |      33.6796    |                   1.39172   |              7.65445   |                                            0        |                                  0.125255 |                 0.556688 |            0       |                                                    0         |                   0        |         1.94841  |     0           |     0           |          0       |      0         |    0           |    0           |        0         |    0          |       0           | 0           |   0           |  0           |        0        |      0          |     0          |        0           |       0           |       0           |        0          |        0          |             0           |                 0           |    0           |      0          |       0           |       0           |
-| Axamine Vitality · Multivit Sticks · Tropical [100053393]                              |    3.9     |   0.755625   |       0         |                   0         |              0         |                                            0        |                                  0        |                 0        |            0       |                                                    0         |                   0        |         0        |     0.156       |     0           |          6.5e-05 |      0         |    0.0026      |    0.0013      |        0         |    0.00273    |       0.073125    | 0.000195    |   7.15e-05    |  0.0065      |        0        |      0          |     0.0312     |        0.00273     |       0.00014625  |       0.00065     |        0.156      |        0.0234     |             0.00273     |                 0.0117      |    9.75e-05    |      0.002145   |       9.75e-06    |       0.00104     |
-| Jura Sel · Salz · jodiert & fluoridiert [100001090]                                    |    2.40888 |   0.00252933 |       0         |                   0         |              0         |                                            0        |                                  0        |                 0        |            0       |                                                    0         |                   0        |         0        |     2.40888e-06 |     0.00060222  |          0       |      0         |    0           |    0           |        0         |    0          |       2.40888e-06 | 6.0222e-05  |   0           |  0           |        0        |      0.94669    |     0          |        0           |       0           |       0           |        0          |        0          |             0           |                 0           |    0           |      0          |       0           |       0           |
-| Actilife · Beauty Hair & Nail Tabletten  · vegan [100166752]                           |    0.17846 |   0.0230015  |       0.0568707 |                   0.0297434 |              0.0297434 |                                            0        |                                  0        |                 0        |            0       |                                                    0         |                   0        |         0        |     0           |     0           |          0       |      0         |    0.000237947 |    0.000118973 |        0         |    0          |       0           | 0           |   6.54354e-06 |  0.000594867 |        0        |      0          |     0.00190358 |        0.000166563 |       0           |       0           |        0.00951788 |        0          |             0.000166563 |                 0.000713841 |    5.35381e-05 |      0          |       0           |       9.51788e-05 |
-| Total                                                                                  | 2590.51    |   9.0307     |    2312.91      |                 259         |             30         |                                           25.6      |                                 23.3623   |               101.361    |            9.7     |                                                    0.3       |                   1.98     |        79.335    |     1.7631      |     0.0034      |          6.5e-05 |      3.5       |    0.003       |    0.00235402  |        1.42133   |    0.0252061  |       0.658104    | 0.000495748 |   0.000137861 |  0.025       |        3.1      |      2          |     0.0465252  |        0.00451433  |       0.000257681 |       0.000698128 |        0.336038   |        0.0736123  |             0.00543269  |                 0.0267781   |    0.000203678 |      0.00470462 |       4.06413e-05 |       0.00221489  |
+All nine of the original nutritional requirements are met at an annual cost of 465.76 CHF.
+
+Stigler’s original diet cost 39.93 USD per year, based on 1939 prices. 
+According to the Bureau of Labour Statistics’ inflation calculator, this equates to approximately 976.58 USD, or around 815.90 CHF, in October 2026.
+
+My solution is therefore around 43 per cent cheaper than Stigler’s inflation-adjusted diet.
+
+## 	Finding a Middle Ground
+
+For my final recipe, I’ve opted for `Hybrid`.
+
+`Min` doesn’t provide enough nutrients, whilst `Max` relies too heavily on specific products due to the incomplete nutritional information.
+
+`Hybrid` therefore seems like a sensible compromise.
+
+I’ve opted for K = 7, as an eighth ingredient would make virtually no difference to the price and is only required in a tiny amount (12.5 mg).
 
 
+| Food                                                      |   Amount [grams] |   Price [CHF] |
+|:----------------------------------------------------------|-----------------:|--------------:|
+| Migros · Hörnli · aus Hartweizengriess [100024965]        |       337.62     |    0.33762    |
+| M-Classic · Vollkorn-Haferflocken · grob [100039746]      |       230.449    |    0.322629   |
+| M-Budget · Rapsöl  [100158988]                            |        29.4226   |    0.111934   |
+| Jura Sel · Salz · jodiert & fluoridiert [100001090]       |         5.02055  |    0.00527158 |
+| Actilife · All in One Depot Tabletten [100122598]         |         2.8875   |    0.168437   |
+| Actilife · Calcium 600 Tabletten [100181112]              |         1.30052  |    0.114157   |
+| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |         0.745446 |    0.0911101  |
+| Total                                                     |       607.446    |    1.15116    |
 
-| Food                                                                                 |      grams |   Price[CHF] |   Energie[kcal] |   Gesamtkohlenhydrate[Gram] |   Nahrungsfasern[Gram] |   Fett, davon einfach ungesättigte Fettsäuren[Gram] |   Fett, davon gesättigte Fettsäuren[Gram] |   Lipide insgesamt[Gram] |   Linolsäure[Gram] |   Eicosapentaensäure (EPA) und Docosahexaensäure (DHA)[Gram] |   Alpha-Linolensäure[Gram] |   Proteine[Gram] |   Calcium[Gram] |   Fluorid[Gram] |   Molybdän[Gram] |   Kalium[Gram] |   Mangan[Gram] |   Kupfer[Gram] |   Phosphor[Gram] |   Eisen[Gram] |   Magnesium[Gram] |   Jod[Gram] |   Selen[Gram] |   Zink[Gram] |   Chlorid[Gram] |   Natrium[Gram] |   Niacin[Gram] |   Vitamin B6[Gram] |   Vitamin K[Gram] |   Folat[DFE-Gram] |   Vitamin C[Gram] |   Vitamin E[Gram] |   Riboflavin (B2)[Gram] |   Pantothensäure (B5)[Gram] |   Biotin[Gram] |   Thiamin[Gram] |   Vitamin D[Gram] |   Vitamin A[Gram] |
-|:-------------------------------------------------------------------------------------|-----------:|-------------:|----------------:|----------------------------:|-----------------------:|----------------------------------------------------:|------------------------------------------:|-------------------------:|-------------------:|-------------------------------------------------------------:|---------------------------:|-----------------:|----------------:|----------------:|-----------------:|---------------:|---------------:|---------------:|-----------------:|--------------:|------------------:|------------:|--------------:|-------------:|----------------:|----------------:|---------------:|-------------------:|------------------:|------------------:|------------------:|------------------:|------------------------:|----------------------------:|---------------:|----------------:|------------------:|------------------:|
-| Holle · Folgemilch 3 · Bio, Demeter, Kuhmilch, ab 10. Monat (zubereitet) [100004128] | 1925.9     |     5.89564  |        1250.34  |                    139.964  |                0       |                                           35.4574   |                                  18.6618  |                 65.3163  |            10.4506 |                                                     0.261265 |                    0.93309 |          26.1265 |        1.11971  |          0      |      0           |      1.60865   |     9.3309e-05 |    0.000989076 |         0.692353 |    0.0108238  |         0.093309  | 0.000246336 |   6.90487e-05 |   0.00839781 |        0.957351 |       0.466545  |     0.00746472 |        0.000690487 |       0.000121302 |       0.000201547 |          0.128766 |         0.0223942 |              0.00242603 |                  0.00671825 |    3.17251e-05 |     0.000559854 |       2.98589e-05 |        0.0010096  |
-| Badoit · Mineralwasser · mit Kohlensäure [100006019]                                 |  283.333   |     0.269167 |           0     |                      0      |                0       |                                            0        |                                   0       |                  0       |             0      |                                                     0        |                    0       |           0      |        0.4335   |          0.0034 |      0           |      0.0311667 |     0          |    0           |         0        |    0          |         0.226667  | 0           |   0           |   0          |        0.153    |       0.51      |     0          |        0           |       0           |       0           |          0        |         0         |              0          |                  0          |    0           |     0           |       0           |        0          |
-| Migros · Vollkornmehl · Typ 1600 [100005321]                                         |  231.933   |     0.579832 |         763.059 |                    132.202  |               25.5126  |                                            0        |                                   1.15966 |                  5.79832 |             0      |                                                     0        |                    0       |          32.4706 |        0        |          0      |      0           |      0         |     0          |    0           |         0        |    0          |         0         | 0           |   0           |   0          |        0        |       0.0278319 |     0          |        0           |       0           |       0           |          0        |         0         |              0          |                  0          |    0           |     0           |       0           |        0          |
-| Sponser · Whey Isolate 94 · Chocolate [100026835]                                    |   83.7921  |     5.82355  |         293.514 |                      1.7806 |                4.48738 |                                            0.375749 |                                   1.07784 |                  2.10301 |             0      |                                                     0        |                    0       |          66.4029 |        0.74575  |          0      |      0           |      1.86019   |     0          |    0           |         0.16798  |    0.0015728  |         0.368685  | 0           |   0           |   0          |        7.44912  |       0.262333  |     0          |        0           |       0           |       0           |          0        |         0         |              0          |                  0          |    0           |     0           |       0           |        0          |
-| Axamine Vitality · Multivit Sticks · Tropical [100053393]                            |    4.36004 |     0.844757 |           0     |                      0      |                0       |                                            0        |                                   0       |                  0       |             0      |                                                     0        |                    0       |           0      |        0.174401 |          0      |      7.26673e-05 |      0         |     0.00290669 |    0.00145335  |         0        |    0.00305203 |         0.0817507 | 0.000218002 |   7.9934e-05  |   0.00726673 |        0        |       0         |     0.0348803  |        0.00305203  |       0.000163501 |       0.000726673 |          0.174401 |         0.0261602 |              0.00305203 |                  0.0130801  |    0.000109001 |     0.00239802  |       1.09001e-05 |        0.00116268 |
-| Total                                                                                | 2529.32    |    13.4129   |        2306.91  |                    273.946  |               30       |                                           35.8332   |                                  20.8993  |                 73.2176  |            10.4506 |                                                     0.261265 |                    0.93309 |         125      |        2.47336  |          0.0034 |      7.26673e-05 |      3.5       |     0.003      |    0.00244242  |         0.860333 |    0.0154487  |         0.770412  | 0.000464338 |   0.000148983 |   0.0156645  |        8.55947  |       1.26671   |     0.042345   |        0.00374251  |       0.000284803 |       0.00092822  |          0.303168 |         0.0485544 |              0.00547806 |                  0.0197984  |    0.000140726 |     0.00295787  |       4.0759e-05  |        0.00217228 |
+
+| Nutrient                                   |        Min |         Total |      Max |
+|:-------------------------------------------|-----------:|--------------:|---------:|
+| Energy [kcal]                              | 2305       | 2305          | 2672     |
+| Total carbohydrates [grams]                |  259       |  377.49       |  401     |
+| Protein [grams]                            |   50       |   70.4728     |  inf     |
+| Dietary fibre [grams]                      |   30       |   30          |  inf     |
+| Fat of which saturated fatty acids [grams] |    0       |    6.00997    |   29.7   |
+| Total Fat [grams]                          |   51.2     |   51.2        |  103.9   |
+| Sodium [grams]                             |    2       |    2          |  inf     |
+| Iron [grams]                               |    0.011   |    0.011      |  inf     |
+| Calcium [grams]                            |    0.95    |    0.95       |    2.5   |
+| Vitamin A [grams]                          |    0.00075 |    0.00077    |    0.003 |
+| Thiamine (B1) [grams]                      |    0.0001  |    0.00105875 |  inf     |
+| Riboflavin (B2) [grams]                    |    0.0016  |    0.00204325 |  inf     |
+| Niacin (B3) [grams]                        |    0.0154  |    0.0154     |    0.9   |
+| Vitamin C [grams]                          |    0.11    |    0.173879   |  inf     |
+
+
+With daily costs of 1.15 CHF, this works out at 420.17 CHF per year. Coincidentally, this is only slightly more than half of Stigler’s inflation-adjusted annual cost of subsistence.
+
+
+## The Catch
+
+Of course, meeting all the mathematical nutritional requirements does not automatically mean that a diet is healthy in the long term.
+
+A number of significant issues remain:
+
+- A diet that is identical every day lacks variety.
+
+- Many nutrients are missing from product data and are therefore not taken into account correctly.
+
+- Dietary supplements play a major role, although they should not be used as a substitute for a varied diet (Stigler deliberately left them out of his 1945 paper for this reason).
+
+- The recommended maximum daily intakes for individual substances (e.g. caffeine) are not taken into account.
+
+The calculated formula is therefore primarily a mathematical experiment and not a recommendation for a long-term diet.
+
+## Enough Maths, Let's Cook!
+
+## Appendum
+
+i also calculated with a dataset about nutrients in generic foods from https://naehrwertdaten.ch/en/ the swiss food composition database provided by the The Federal Food Safety and Veterinary Office FSVO provides, 
+and manually matched it with prices from https://www.agrimarketdata.ch/ https://statistik.admin.ch/de/asset/36773855 this resulted in a very flawed dataset with flawed pricing and missing products (like eggs for example) but i still
+ran my programm on it with no max K which resulted in the following probably healthier diet at 583.9927CHF/year
+
+| Food                                    |   Amount [grams] |   Price [CHF] |
+|:----------------------------------------|-----------------:|--------------:|
+| Weizen (Weichweizen), ganzes Korn [734] |         329.629  |      0.187526 |
+| Ruchbrot [829]                          |         258.06   |      0.51612  |
+| Peperoni, rot, roh [360]                |          71.9976 |      0.272871 |
+| Magermilchpulver [578]                  |          59.7005 |      0.294323 |
+| Karotte, roh [355]                      |          49.3425 |      0.095231 |
+| Sonnenblumenöl [598]                    |          41.3036 |      0.233904 |
+| Total                                   |         810.033  |      1.59998  |
+
+| Nutrient                                   |        Min |         Total |      Max |
+|:-------------------------------------------|-----------:|--------------:|---------:|
+| Energy [kcal]                              | 2305       | 2305          | 2672     |
+| Total carbohydrates [grams]                |  259       |  348.926      |  401     |
+| Protein [grams]                            |   50       |   83.5147     |  inf     |
+| Dietary fibre [grams]                      |   30       |   56.9773     |  inf     |
+| Fat of which saturated fatty acids [grams] |    0       |    6.49725    |   29.7   |
+| Total Fat [grams]                          |   51.2     |   51.2        |  103.9   |
+| Sodium [grams]                             |    2       |    2          |  inf     |
+| Iron [grams]                               |    0.011   |    0.0154613  |  inf     |
+| Calcium [grams]                            |    0.95    |    0.95       |    2.5   |
+| Vitamin A [grams]                          |    0.00075 |    0.00075    |    0.003 |
+| Thiamine (B1) [grams]                      |    0.0001  |    0.00234921 |  inf     |
+| Riboflavin (B2) [grams]                    |    0.0016  |    0.00185819 |  inf     |
+| Niacin (B3) [grams]                        |    0.0154  |    0.0212117  |    0.9   |
+| Vitamin C [grams]                          |    0.11    |    0.11       |  inf     |
+
 
 
 
@@ -433,3 +602,14 @@ This ensures that the final diet contains no more than $K$ different food produc
 Sources:
 https://www.statslab.cam.ac.uk/~rrw1/opt/diet_history.html
 https://www.jstor.org/stable/222950
+https://www.bls.gov/data/inflation_calculator.htm
+https://en.wikipedia.org/wiki/Stigler_diet
+https://www.jstor.org/stable/1231810
+
+
+Data:
+https://naehrwertdaten.ch/en/
+https://www.agrimarketdata.ch/ 
+https://statistik.admin.ch/de/asset/36773855
+https://www.migros.ch/
+https://www.blv.admin.ch/de/naehrstoffzufuhr
