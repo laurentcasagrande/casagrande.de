@@ -8,7 +8,10 @@ import { Image } from 'astro:assets';
 
 <figure 
   id={id}     
-  class:list={{invertible: isInvertible,}}
+  class:list={{
+    invertible: isInvertible,
+    [size]: true,
+  }}
   >
 
   <Image 
