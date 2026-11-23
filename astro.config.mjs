@@ -7,6 +7,7 @@ import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
+
 // https://astro.build/config
 export default defineConfig({
 
@@ -15,8 +16,15 @@ export default defineConfig({
   markdown: {
 
     processor: unified({ // for LaTeX rendering
+
       remarkPlugins: [remarkMath],
+
       rehypePlugins: [rehypeKatex],
+
+      remarkRehype: {
+        footnoteLabel: "References",
+  },
+
     }),
 
     shikiConfig: { //For codeblocks styling

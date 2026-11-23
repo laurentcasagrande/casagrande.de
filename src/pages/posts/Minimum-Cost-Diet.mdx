@@ -25,7 +25,7 @@ While this might seem like a strange science-fiction idea, the question behind i
 
 Similar questions have also been explored in the real world, particularly by military planners trying to feed their soldiers during wartime. 
 
-In 1945, economist and future Nobel laureate [George Stigler](https://en.wikipedia.org/wiki/George_Stigler) investigated this problem in his paper *The Cost of Subsistence*. 
+In 1945, economist and future Nobel laureate [George Stigler](https://en.wikipedia.org/wiki/George_Stigler) investigated this problem in his paper *The Cost of Subsistence* [^subsistence]. 
 His goal was simple: find the cheapest combination of foods that would satisfy a person's daily nutritional requirements.
 
 But finding that combination turned out to be a surprisingly difficult mathematical problem.
@@ -74,14 +74,14 @@ Using this new method, the optimal solution to Stigler's diet problem was found 
 
 But a lot of things have changed since 1945 and processed foods have become much cheaper.
 
-For instance, the price of sugar has decreased from 11.4 cents per kilogram (1939 dollars, or 2.79 USD today) to 1.9 USD per kilogram in the USA.
+For instance, the price of sugar has decreased from 11.4 cents per kilogram (1939 dollars, or 2.79 USD today) to 1.9 USD per kilogram in the USA [^sugar-prices].
 
 So one would think that the minimal cost diet has gotten quite a bit different and perhaps even cheaper in this time. 
 So I decided I would recalculate the Stigler diet but with a modern dataset, and one from Switzerland instead of the United States. 
 
 For this, I got my hands on a dataset of every product listed on migros.com (the online storefront of one of the biggest retailers in Switzerland). 
 I then cleaned the dataset so that only edible products with listed nutritional information remained. 
-I then further edited the dataset so that each nutrient was linked to one of the 39 nutrients in the [Swiss reference values for nutrient intake](https://www.blv.admin.ch/en/swiss-reference-values-for-nutrient-intake) 
+I then further edited the dataset so that each nutrient was linked to one of the 39 nutrients in the Swiss reference values for nutrient intake [^nutrient-intake] 
 set out by the Federal Food Safety and Veterinary Office. This was needed as the same nutrients were listed under different names on different product pages. 
 At the end I ended up with a dataset of 14788 Foods, each with a price. But as not every food item has every nutrient listed I compiled below list of how often each attribute is available.
 
@@ -120,7 +120,7 @@ as I'm more interested in the process than the solution.
 
 ### Linear Programming
 
-To solve the problem, I started with essentially the same linear programming approach as [George Dantzig in 1947](https://www.researchgate.net/publication/300717166_Simplex_Method).
+To solve the problem, I started with essentially the same linear programming approach as George Dantzig in 1947 [^simplex].
 
 Suppose we have $n$ different foods in our dataset and $m$ nutrients. 
 Let $i$ be the index of a food product, where $i = 1, 2, \ldots, n$, and $j$ the index of a nutrient, where $j = 1, 2, \ldots, m$.
@@ -521,7 +521,7 @@ To compare my results with Stigler’s original diet, I allowed five ingredients
 All nine of the original nutritional requirements are met at an annual cost of 465.76 CHF.
 
 Stigler’s original diet cost 39.93 USD per year, based on 1939 prices. 
-According to the Bureau of Labour Statistics’ inflation calculator, this equates to approximately 976.58 USD, or around 815.90 CHF, in October 2026.
+According to the Bureau of Labour Statistics’ inflation calculator, this equates to approximately 976.58 USD, or around 815.90 CHF, in October 2026 [^inflation].
 
 My solution is therefore around 43 per cent cheaper than Stigler’s inflation-adjusted diet.
 
@@ -621,10 +621,10 @@ At least I’ve learnt something from it: ‘mathematically optimal’ obviously
 
 ## Addendum
 
-I also ran the optimisation using a different dataset: the [Swiss Food Composition Database](https://naehrwertdaten.ch/en/), provided by the Federal Food Safety and Veterinary Office (FSVO).
+I also ran the optimisation using a different dataset: the Swiss Food Composition Database [^swiss-food], provided by the Federal Food Safety and Veterinary Office (FSVO).
 
 Since this database contains nutritional information about generic foods rather than specific supermarket products, 
-I manually matched the foods with prices from [Agrimarketdata](https://www.agrimarketdata.ch/) and the [Swiss Federal Statistical Office](https://statistik.admin.ch/de/asset/36773855).
+I manually matched the foods with prices from Agrimarketdata [^agrimarket] and the Swiss Federal Statistical Office [^swiss-prices].
 
 Unfortunately, this resulted in a rather flawed dataset, with inaccurate price estimates and some foods missing entirely (including something as basic as eggs).
 
@@ -666,23 +666,34 @@ While a bit more expensive than my previous solution, it is hopefully also somew
 
 </Details>
 
-
 ---
 
-## Sources
+<span hidden>[^diet-history]</span>
+<span hidden>[^diet-revisited]</span>
+<span hidden>[^stigler-wiki]</span>
+<span hidden>[^migros]</span>
 
 
-https://www.statslab.cam.ac.uk/~rrw1/opt/diet_history.html
-https://www.jstor.org/stable/222950
-https://www.bls.gov/data/inflation_calculator.htm
-https://en.wikipedia.org/wiki/Stigler_diet
-https://www.jstor.org/stable/1231810
-https://www.globalproductprices.com/rankings/sugar_prices/
+[^diet-history]: [History of the Diet Problem](https://www.statslab.cam.ac.uk/~rrw1/opt/diet_history.html) (n.d.). *University of Cambridge, Statistical Laboratory*. Accessed 13 November 2026.
 
-### Data sources
+[^diet-revisited]: Susan Garner Garille and Saul I. Gass (2001). [Stigler’s Diet Problem Revisited](https://www.jstor.org/stable/222950). *Operations Research*, 49(1), pp. 1–13.
 
-https://naehrwertdaten.ch/en/
-https://www.agrimarketdata.ch/ 
-https://statistik.admin.ch/de/asset/36773855
-https://www.migros.ch/
-https://www.blv.admin.ch/de/naehrstoffzufuhr
+[^inflation]: U.S. Bureau of Labor Statistics (n.d.). [CPI Inflation Calculator](https://www.bls.gov/data/inflation_calculator.htm). Accessed 13 November 2026.
+
+[^stigler-wiki]: Wikipedia contributors (n.d.). [Stigler diet](https://en.wikipedia.org/wiki/Stigler_diet). *Wikipedia*. Accessed 13 November 2026.
+
+[^subsistence]: George J. Stigler (1945). [The Cost of Subsistence](https://www.jstor.org/stable/1231810). *Journal of Farm Economics*, 27(2), pp. 303–314.
+
+[^sugar-prices]: GlobalProductPrices.com (2026). [Sugar prices by country, January 2026](https://www.globalproductprices.com/rankings/sugar_prices/). Accessed 13 November 2026.
+
+[^swiss-food]: Federal Food Safety and Veterinary Office (n.d.). [The Swiss Food Composition Database](https://naehrwertdaten.ch/en/). Accessed 13 November 2026.
+
+[^agrimarket]: Bundesamt für Landwirtschaft (n.d.). [Datenportal Agrar- und Lebensmittelmärkte](https://www.agrimarketdata.ch/). Accessed 13 November 2026.
+
+[^swiss-prices]: Bundesamt für Statistik (2026, August 3). [LIK, Durchschnittspreise ausgewählter Produkte, Monatswerte](https://statistik.admin.ch/de/asset/36773855) [Data table, July 2026].
+
+[^migros]: Migros (n.d.). [Migros online shop](https://www.migros.ch/). Accessed 13 November 2026.
+
+[^nutrient-intake]: Bundesamt für Lebensmittelsicherheit und Veterinärwesen (n.d.). [Schweizer Referenzwerte für die Nährstoffzufuhr](https://www.blv.admin.ch/de/naehrstoffzufuhr). Accessed 13 November 2026.
+
+[^simplex]: Ping-Qi Pan (2014). [Simplex Method](https://www.researchgate.net/publication/300717166_Simplex_Method). In *Linear Programming Computation*, pp. 61–100.

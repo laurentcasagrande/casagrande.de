@@ -33,6 +33,7 @@
   --bg-color: rgb(246, 244, 239);
   --header-title-text: rgb(45, 43, 39);
   --default-text: rgb(45, 43, 39);
+  --faded-text: rgb(115, 112, 104);
   --navbar-rule: rgb(210, 207, 199);
 
   /* Links */
@@ -81,6 +82,7 @@ html[data-theme="dark"] {
   --bg-color: rgb(24, 26, 27);
   --header-title-text: rgb(230, 227, 220);
   --default-text: rgb(230, 227, 220);
+  --faded-text: rgb(170, 167, 159);
   --navbar-rule: rgb(56, 59, 61);
 
   /* Links */
@@ -277,6 +279,74 @@ html[data-theme="dark"] .markdown-content pre.astro-code span {
 
 .markdown-content tr:hover {
   background-color: var(--table-hover);
+}
+
+
+/* Footnote */
+.footnotes {
+  margin-top: 3rem;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.footnotes #footnote-label {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: normal;
+}
+
+.footnotes ol {
+  list-style: none;
+  padding: 0;
+  counter-reset: reference;
+}
+
+.footnotes ol > li {
+  position: relative;
+  counter-increment: reference;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0.6rem 0.5rem 3.5rem;
+  border-radius: 4px;
+}
+
+.footnotes ol > li::before {
+  content: "[" counter(reference) "]";
+  position: absolute;
+  left: 0.6rem;
+}
+
+.footnotes ol > li:hover {
+  background: var(--table-hover);
+}
+
+.footnotes p {
+  margin: 0;
+  text-align: justify;
+}
+
+.footnotes em {
+  color: var(--faded-text);
+}
+
+/* Keep citations on the text baseline */
+sup:has(> a[data-footnote-ref]) {
+  vertical-align: baseline;
+  font-size: inherit;
+  line-height: inherit;
+  top: auto;
+}
+
+a[data-footnote-ref]::before {
+  content: "[";
+}
+
+a[data-footnote-ref]::after {
+  content: "]";
 }
 
 
