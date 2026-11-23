@@ -1,12 +1,16 @@
 ---
 interface Props {
   title: string;
+  // Optional ID for links or scripts that need to find this box.
+  id?: string;
+  // Start expanded when requested; existing uses stay collapsed by default.
+  open?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, id, open = false } = Astro.props;
 ---
 
-<details>
+<details id={id} open={open}>
   <summary>{title}</summary>
   <div class="details-content">
     <slot />

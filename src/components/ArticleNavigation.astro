@@ -1,0 +1,243 @@
+---
+import type { MarkdownHeading } from 'astro';
+import Details from './Details.astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+// Astro supplies each heading's level (depth), anchor ID (slug), and text.
+// Leave out h1 headings: the article title is already shown above the TOC.
+const sections = headings.filter(({ depth }) => depth >= 2 && depth <= 6);
+// Start indentation at zero, even if the first heading level is h3 or deeper.
+const baseDepth = Math.min(...sections.map(({ depth }) => depth));
+---
+
+{sections.length > 0 && (
+  <div class="article-navigation">
+    <!-- Reuse the shared collapsible box, with the TOC expanded initially. -->
+    <Details id="article-toc" title="Table of Contents" open>
+      <nav aria-label="Table of contents">
+        <ol class="toc-list" role="list">
+          {sections.map(({ depth, slug, text }) => (
+            <li data-depth={depth} style={`--toc-depth: ${depth - baseDepth}`}>
+              <a href={`#${slug}`}>{text}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </Details>
+
+    <!-- Prepare all section links here; the script shows only the current path. -->
+    <nav id="reading-header" class="reading-header" aria-label="Current section" hidden>
+      <div class="reading-header-inner">
+        <button id="back-to-top" type="button" aria-label="Back to top" title="Back to top">
+          <!-- A symmetric icon stays centered regardless of the text font. -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 19V5 M6 11L12 5L18 11" />
+          </svg>
+        </button>
+        <ol id="section-trail" class="section-trail" role="list">
+          {sections.map(({ depth, slug, text }) => (
+            <li data-depth={depth} hidden>
+              <a href={`#${slug}`} title={text}>{text}</a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </nav>
+  </div>
+)}
+
+<script>
+  const toc = document.getElementById('article-toc');
+  const header = document.getElementById('reading-header');
+  const breadcrumbs = document.querySelectorAll<HTMLLIElement>('#section-trail li');
+  const links = document.querySelectorAll<HTMLAnchorElement>('.toc-list a');
+  // Turn links such as #introduction into references to the actual headings.
+  // Remove the # and decode any URL-encoded characters before looking up the ID.
+  const headings = Array.from(links, link => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+
+  // Pages without headings do not render a TOC or reading header.
+  if (toc && header) {
+    function updateHeader() {
+      if (!toc || !header) return;
+
+      // Show the bar once the bottom of the TOC has left the screen.
+      header.hidden = toc.getBoundingClientRect().bottom > 0;
+      if (header.hidden) return;
+
+      // Find the last heading that has reached the top of the reading area.
+      // -1 means we have not reached any heading yet.
+      let current = -1;
+      for (let i = 0; i < headings.length; i++) {
+        const heading = headings[i];
+        if (!heading) continue;
+        // Use the same gap as CSS anchor scrolling. The extra pixel allows rounding.
+        const offset = parseFloat(getComputedStyle(heading).scrollMarginTop);
+        if (heading.getBoundingClientRect().top <= offset + 1) current = i;
+      }
+
+      // Walk backwards: keep the current heading, then its parent headings.
+      // For example: h4 "Stage 1" -> h3 "Pipeline" -> h2 "Methodology".
+      // Start at 7 so any heading level (h2 through h6) can be selected first.
+      let parentDepth = 7;
+      for (let i = breadcrumbs.length - 1; i >= 0; i--) {
+        const item = breadcrumbs[i];
+        const depth = Number(item.dataset.depth);
+        item.hidden = true;
+        if (i <= current && depth < parentDepth) {
+          item.hidden = false;
+          parentDepth = depth;
+        }
+
+        // Mark the current section for screen readers and the bold CSS style.
+        const link = item.querySelector('a');
+        if (i === current) link?.setAttribute('aria-current', 'location');
+        else link?.removeAttribute('aria-current');
+      }
+    }
+
+    // Recheck when scrolling or when loading, resizing, or collapsing changes layout.
+    // passive tells the browser this listener will not prevent scrolling.
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    window.addEventListener('resize', updateHeader);
+    window.addEventListener('load', updateHeader);
+    toc.addEventListener('toggle', updateHeader);
+    updateHeader();
+  }
+
+  document.getElementById('back-to-top')?.addEventListener('click', () => {
+    // Skip the scrolling animation if the visitor prefers reduced motion.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'instant' : 'smooth' });
+    // Move keyboard focus back to the title without interrupting the scroll.
+    document.getElementById('article-top')?.focus({ preventScroll: true });
+  });
+</script>
+
+<style>
+  .article-navigation {
+    margin-block: 1.5rem 2rem;
+  }
+
+  .toc-list {
+    list-style: none;
+    margin: 1rem 0;
+    padding: 0;
+  }
+
+  .toc-list li {
+    padding: 0;
+    /* Each heading level adds one step of indentation. */
+    margin-inline-start: calc(var(--toc-depth) * 1.1rem);
+  }
+
+  .toc-list a {
+    display: block;
+    padding-block: 0.25rem;
+    color: var(--default-text);
+    overflow-wrap: anywhere;
+  }
+
+  .toc-list li[data-depth]:not([data-depth="2"]) a { color: var(--faded-text); }
+
+  .reading-header {
+    /* Keep the bar at the top of the viewport, above the article content. */
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    background: var(--bg-color);
+    border-bottom: 1px solid var(--navbar-rule);
+    color: var(--default-text);
+  }
+
+  .reading-header[hidden] { display: none; }
+
+  .reading-header-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 90%;
+    max-width: 100ch;
+    height: 3.25rem;
+    margin-inline: auto;
+  }
+
+  #back-to-top {
+    display: grid;
+    place-items: center;
+    flex: 0 0 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border-radius: 0.25rem;
+    border: 0;
+    background: transparent;
+    color: var(--default-text);
+    cursor: pointer;
+  }
+
+  #back-to-top:hover {
+    color: var(--link-hover);
+  }
+
+  /* Underline the SVG on hover, just like a text link. */
+  #back-to-top:hover svg {
+    box-shadow: 0 1px currentColor;
+  }
+
+  .section-trail {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    min-width: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .section-trail li {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding: 0;
+  }
+
+  /* Override display: flex for links the script has hidden. */
+  .section-trail li[hidden] { display: none; }
+
+  .section-trail li::before {
+    content: '›';
+    margin-inline: 0.5rem;
+    color: var(--faded-text);
+  }
+
+  .section-trail a {
+    display: block;
+    /* Shorten long section titles with an ellipsis instead of wrapping. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--default-text);
+    line-height: 2.75rem;
+  }
+
+  .section-trail a[aria-current] { font-weight: 700; }
+
+  .section-trail a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+
+  /* Leave space for the fixed bar when jumping to a heading.
+     :global reaches the article headings outside this Astro component. */
+  :global(.markdown-content:has(.article-navigation) :is(h1, h2, h3, h4, h5, h6)[id]) {
+    scroll-margin-top: 4.5rem;
+  }
+
+  @media (max-width: 480px) {
+    /* On small screens, show only the current section to save space. */
+    .section-trail li:not(:has([aria-current])) { display: none; }
+  }
+</style>
