@@ -2,20 +2,37 @@
 const { lightPath, darkPath, id } = Astro.props;
 ---
 
-<div
-  id = {id}
-  class="plotly-chart"
-  data-light={lightPath}
-  data-dark={darkPath}
-></div>
+<div class="plotly-wrapper">
+  <div
+    id={id}
+    class="plotly-chart"
+    data-light={lightPath}
+    data-dark={darkPath}
+  ></div>
+</div>
 
 <style>
+  .plotly-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .plotly-chart {
     width: 100%;
     height: 600px;
-    padding-bottom: 1em;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 600px) {
+    .plotly-chart {
+      min-width: 750px;
+      height: 600px;
+    }
   }
 </style>
+
 
 <script>
   // Load Plotly so it gets deduplicated by astro

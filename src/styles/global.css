@@ -290,3 +290,12 @@ html[data-theme="dark"] .markdown-content pre.astro-code span {
     overflow-x: auto;
   }
 }
+
+/* Prevent equations from overflowing on mobile */
+@media (max-width: 800px) {
+  .markdown-content .katex-display {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}
