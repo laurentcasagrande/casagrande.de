@@ -9,6 +9,19 @@ import 'katex/dist/katex.min.css';
         <article class="markdown-content">
             <h1>{frontmatter.title}</h1>
             <slot />
+            <a class="backlink" href="/blog">← Back to all posts</a>
         </article>
     </main>
 </BaseLayout>
+
+<style>
+  .markdown-content {
+    padding-bottom: 1em;
+  }
+
+  .backlink {
+    position: absolute;
+    bottom: 10px;
+    line-height: 1em;
+  }
+</style>
