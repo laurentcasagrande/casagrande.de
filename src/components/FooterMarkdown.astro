@@ -1,0 +1,46 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <a href="/blog">← Back to all posts</a>
+  <p>&copy; {year} LNC</p>
+</footer>
+
+<style>
+
+footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  width: 90%;
+  max-width: 100ch;
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding-bottom: 10px;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer p {
+  margin: 0;
+  line-height: 1em;
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  margin: 0;
+  line-height: 1em;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+</style>

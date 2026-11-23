@@ -1,8 +1,9 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import MarkdownFooter from "../components/FooterMarkdown.astro"
 import ArticleNavigation from "../components/ArticleNavigation.astro";
 const { frontmatter, headings = [] } = Astro.props;
-// Only blog posts get a TOC. Set `toc: false` in a post's frontmatter to hide it.
+// Set `toc: false` in a post's frontmatter to hide it.
 const showToc = Astro.url.pathname.startsWith('/posts/') && frontmatter.toc !== false;
 import 'katex/dist/katex.min.css';
 ---
@@ -13,19 +14,13 @@ import 'katex/dist/katex.min.css';
             <h1 id="article-top" tabindex="-1">{frontmatter.title}</h1>
             {showToc && <ArticleNavigation headings={headings} />}
             <slot />
-            <a class="backlink" href="/blog">← Back to all posts</a>
         </article>
     </main>
+    <MarkdownFooter slot="footer" />
 </BaseLayout>
 
 <style>
   .markdown-content {
     padding-bottom: 1em;
-  }
-
-  .backlink {
-    position: absolute;
-    bottom: 10px;
-    line-height: 1em;
   }
 </style>

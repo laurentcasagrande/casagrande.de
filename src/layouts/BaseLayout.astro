@@ -22,7 +22,9 @@ import Footer from '../components/Footer.astro';
 
         <slot />
 		
-		<Footer />
+		<slot name="footer">
+        	<Footer />
+    	</slot>
 	</body>
 	
 </html>
