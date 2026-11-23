@@ -66,9 +66,9 @@ Lacking the mathematical tools to find the exact solution, he used heuristic met
 | Dried Navy Beans  | 285 lb (129 kg)   | $ 16.80     |
 | Total Annual Cost |                   | $ 39.93     |
 
-Two years later, after the second George in this short story, [George Dantzig](https://en.wikipedia.org/wiki/George_Dantzig), 
-formulated his simplex algorithm for solving linear programming models, in one of the first instances of large-scale computation in optimisation, 
-the optimal solution was found to be $39.69 (off only by 24 cents).
+Two years later, the second George in this short story, [George Dantzig](https://en.wikipedia.org/wiki/George_Dantzig), developed the simplex algorithm for solving linear programming problems.
+
+Using this new method, the optimal solution to Stigler's diet problem was found to cost just $39.69 per year, only 24 cents less than Stigler's original estimate.
 
 ### Bringing the Problem to Switzerland
 
@@ -79,36 +79,36 @@ For instance, the price of sugar has decreased from 11.4 cents per kilogram (193
 So one would think that the minimal cost diet has gotten quite a bit different and perhaps even cheaper in this time. 
 So I decided I would recalculate the Stigler diet but with a modern dataset, and one from Switzerland instead of the United States. 
 
-For this I got my hands on a dataset of every product listed on migros.com (The online storefront of one of the biggest retailers in Switzerland). 
-I then cleaned the dataset so only edible products with listed nutritional information remain listed. 
+For this, I got my hands on a dataset of every product listed on migros.com (the online storefront of one of the biggest retailers in Switzerland). 
+I then cleaned the dataset so that only edible products with listed nutritional information remained. 
 I then further edited the dataset so that each nutrient was linked to one of the 39 nutrients in the [Swiss reference values for nutrient intake](https://www.blv.admin.ch/en/swiss-reference-values-for-nutrient-intake) 
 set out by the Federal Food Safety and Veterinary Office. This was needed as the same nutrients were listed under different names on different product pages. 
-At the end I ended up with a dataset of 14788 Foods, each with price. But as not every food item has every nutrient listed i compiled below list of which attribute exist how often.
+At the end I ended up with a dataset of 14788 Foods, each with a price. But as not every food item has every nutrient listed I compiled below list of how often each attribute is available.
 
 | Food                                                               |   Count |           % |
 |:-------------------------------------------------------------------|--------:|------------:|
 | Price [CHF]                                                        |   14788 | 100         |
-| Weight [g]                                                     |   14788 | 100         |
+| Weight [g]                                                         |   14788 | 100         |
 | Energy [kcal]                                                      |   11847 |  80.1123    |
-| Protein [g]                                                    |   10957 |  74.0939    |
-| Total carbohydrates [g]                                        |   10952 |  74.06      |
-| Total fat [g]                                                  |   10744 |  72.6535    |
-| Sodium [g]                                                     |   10660 |  72.0855    |
-| Fat of which saturated fatty acids [g]                         |    9801 |  66.2767    |
-| Dietary fibre [g]                                              |    7155 |  48.3838    |
-| Calcium [g]                                                    |     408 |   2.75899   |
-| ⋮                                                                   |        ⋮ |         ⋮  |
-| Fluoride [g]                                                   |      71 |   0.480119  |
-| Manganese [g]                                                  |      56 |   0.378685  |
-| Eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) [g] |      50 |   0.338112  |
-| Molybdenum [g]                                                 |      25 |   0.169056  |
-| Alpha-linolenic acid [g]                                       |      24 |   0.162294  |
-| Linoleic acid [g]                                              |      13 |   0.0879091 |
-| Water [g]                                                      |       4 |   0.027049  |
-| Free sugars (including added sugars) [g]                       |       0 |   0         |
+| Protein [g]                                                        |   10957 |  74.0939    |
+| Total carbohydrates [g]                                            |   10952 |  74.06      |
+| Total fat [g]                                                      |   10744 |  72.6535    |
+| Sodium [g]                                                         |   10660 |  72.0855    |
+| Fat of which saturated fatty acids [g]                             |    9801 |  66.2767    |
+| Dietary fibre [g]                                                  |    7155 |  48.3838    |
+| Calcium [g]                                                        |     408 |   2.75899   |
+| ⋮                                                                   |       ⋮ |          ⋮  |
+| Fluoride [g]                                                       |      71 |   0.480119  |
+| Manganese [g]                                                      |      56 |   0.378685  |
+| Eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) [g]     |      50 |   0.338112  |
+| Molybdenum [g]                                                     |      25 |   0.169056  |
+| Alpha-linolenic acid [g]                                           |      24 |   0.162294  |
+| Linoleic acid [g]                                                  |      13 |   0.0879091 |
+| Water [g]                                                          |       4 |   0.027049  |
+| Free sugars (including added sugars) [g]                           |       0 |   0         |
 
 
-So, while all items have a listed price, energy vitamins and minerals are listed much less often. This isn't surprising, 
+So, while all items have a listed price, energy, vitamins and minerals are listed much less often. This isn't surprising, 
 as listing vitamins and minerals is voluntary and it just doesn't make sense for certain items, plus it costs money to measure.
 This is an issue for our optimisation, as items with lots of minerals or vitamins, like [oranges](https://www.migros.ch/de/product/263330108400), 
 won't be used in the final recipe, even if they have loads of good nutrients, because they're not listed. I've decided to ignore this problem for now, 
@@ -217,7 +217,7 @@ The interactive [visualisation above](#visualise) demonstrates how the Simplex m
 
 ### Implementing the Solver
 
-To do this efficently even with over 14000 foods/dimensions and a lot more constraints i used HiGHS, an open-source solver for linear optimisation via its Python interface highspy. 
+To do this efficiently even with over 14000 foods/dimensions and a lot more constraints I used HiGHS, an open-source solver for linear optimisation via its Python interface highspy. 
 It allows adding many constraints and variables easily while still staying fast. 
 
 I used pandas to handle and clean the food and nutrient data and NumPy for numerical operations.
@@ -276,7 +276,7 @@ The resulting food quantities can then be extracted from the solver and converte
 However, with more than 14000 products in my dataset, the mathematically optimal solution involves a large number of different food items, 
 making it rather impractical as an actual diet. 
 
-The final calculated solution includes 13 foods one of which only accounts for just 32 milligrams.
+The final calculated solution includes 14 foods, one of which accounts for just 10 milligrams.
 
 ### Limiting the Number of Ingredients
 
@@ -329,7 +329,7 @@ I wanted to find out if and at what point diminishing returns set in.
 I also thought I'd try out different nutritional constraints. As some vitamins and minerals are only listed for a few products in my dataset, including all of them
 leads to the solver picking certain foods just because they're the only ones with the info you're looking for.
 
-To do this i created four subsets of the Nutrients in my dataset. One of these was the original requirements used by Stigler in 1945. 
+To do this, I created four subsets of the nutrients in my dataset. One of these was the original requirements used by Stigler in 1945. 
 I did this to see how his original problem (with the old recommended intake levels) would perform with modern supermarket prices.
 
 
@@ -347,14 +347,14 @@ I did this to see how his original problem (with the old recommended intake leve
 | Nutrient                |       Min |   Max |
 |:------------------------|----------:|------:|
 | Energy [kcal]           | 3000      |   inf |
-| Protein [g]         |   70      |   inf |
-| Iron [g]            |    0.012  |   inf |
-| Calcium [g]         |    0.8    |   inf |
-| Vitamin A [g]       |    0.0015 |   inf |
-| Thiamine (B1) [g]   |    0.0018 |   inf |
-| Riboflavin (B2) [g] |    0.0027 |   inf |
-| Niacin (B3) [g]     |    0.018  |   inf |
-| Vitamin C [g]       |    0.075  |   inf |
+| Protein [g]             |   70      |   inf |
+| Iron [g]                |    0.012  |   inf |
+| Calcium [g]             |    0.8    |   inf |
+| Vitamin A [g]           |    0.0015 |   inf |
+| Thiamine (B1) [g]       |    0.0018 |   inf |
+| Riboflavin (B2) [g]     |    0.0027 |   inf |
+| Niacin (B3) [g]         |    0.018  |   inf |
+| Vitamin C [g]           |    0.075  |   inf |
 
 </Details>
 
@@ -363,12 +363,12 @@ I did this to see how his original problem (with the old recommended intake leve
 | Nutrient                                   |    Min |    Max |
 |:-------------------------------------------|-------:|-------:|
 | Energy [kcal]                              | 2305   | 2672   |
-| Total carbohydrates [g]                |  259   |  401   |
-| Protein [g]                            |   50   |  inf   |
-| Dietary fibre [g]                      |   30   |  inf   |
-| Fat of which saturated fatty acids [g] |    0   |   29.7 |
-| Total fat [g]                          |   51.2 |  103.9 |
-| Sodium [g]                             |    2   |  inf   |
+| Total carbohydrates [g]                    |  259   |  401   |
+| Protein [g]                                |   50   |  inf   |
+| Dietary fibre [g]                          |   30   |  inf   |
+| Fat of which saturated fatty acids [g]     |    0   |   29.7 |
+| Total Fat [g]                              |   51.2 |  103.9 |
+| Sodium [g]                                 |    0.2 |    2   |
 
 </Details>
 
@@ -377,19 +377,19 @@ I did this to see how his original problem (with the old recommended intake leve
 | Nutrient                                   |        Min |      Max |
 |:-------------------------------------------|-----------:|---------:|
 | Energy [kcal]                              | 2305       | 2672     |
-| Total carbohydrates [g]                |  259       |  401     |
-| Protein [g]                            |   50       |  inf     |
-| Dietary fibre [g]                      |   30       |  inf     |
-| Fat of which saturated fatty acids [g] |    0       |   29.7   |
-| Total fat [g]                          |   51.2     |  103.9   |
-| Sodium [g]                             |    2       |  inf     |
-| Iron [g]                               |    0.011   |  inf     |
-| Calcium [g]                            |    0.95    |    2.5   |
-| Vitamin A [g]                          |    0.00075 |    0.003 |
-| Thiamine (B1) [g]                      |    0.0001  |  inf     |
-| Riboflavin (B2) [g]                    |    0.0016  |  inf     |
-| Niacin (B3) [g]                        |    0.0154  |    0.9   |
-| Vitamin C [g]                          |    0.11    |  inf     |
+| Total carbohydrates [g]                    |  259       |  401     |
+| Protein [g]                                |   50       |  inf     |
+| Dietary fibre [g]                          |   30       |  inf     |
+| Fat of which saturated fatty acids [g]     |    0       |   29.7   |
+| Total Fat [g]                              |   51.2     |  103.9   |
+| Sodium [g]                                 |    0.2     |    2     |
+| Iron [g]                                   |    0.011   |  inf     |
+| Calcium [g]                                |    0.95    |    2.5   |
+| Vitamin A [g]                              |    0.00075 |    0.003 |
+| Thiamine (B1) [g]                          |    0.00096 |  inf     |
+| Riboflavin (B2) [g]                        |    0.0016  |  inf     |
+| Niacin (B3) [g]                            |    0.0154  |    0.9   |
+| Vitamin C [g]                              |    0.11    |  inf     |
 
 </Details>
 
@@ -398,41 +398,42 @@ I did this to see how his original problem (with the old recommended intake leve
 | Nutrient                                                           |        Min |       Max |
 |:-------------------------------------------------------------------|-----------:|----------:|
 | Energy [kcal]                                                      | 2305       | 2672      |
-| Total carbohydrates [g]                                        |  259       |  401      |
-| Dietary fibre [g]                                              |   30       |  inf      |
-| Fat of which monounsaturated fatty acids [g]                   |   25.6     |   44.5    |
-| Fat of which saturated fatty acids [g]                         |    0       |   29.7    |
-| Total fat [g]                                                  |   51.2     |  103.9    |
-| Linoleic acid [g]                                              |   10.2     |  inf      |
-| Eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) [g] |    0.25    |  inf      |
-| Alpha-linolenic acid [g]                                       |    1.28    |  inf      |
-| Protein [g]                                                    |   50       |  inf      |
-| Calcium [g]                                                    |    0.95    |    2.5    |
-| Fluoride [g]                                                   |    0.0034  |    0.007  |
-| Molybdenum [g]                                                 |    6.5e-05 |    0.0006 |
-| Potassium [g]                                                  |    3.5     |  inf      |
-| Manganese [g]                                                  |    0.003   |  inf      |
-| Copper [g]                                                     |    0.0016  |    0.005  |
-| Phosphorus [g]                                                 |    0.55    |  inf      |
-| Iron [g]                                                       |    0.011   |  inf      |
-| Magnesium [g]                                                  |    0.35    |  inf      |
-| Iodine [g]                                                     |    0.00015 |    0.0006 |
-| Selenium [g]                                                   |    7e-05   |    0.0003 |
-| Zinc [g]                                                       |    0.0094  |    0.025  |
-| Chloride [g]                                                   |    3.1     |  inf      |
-| Sodium [g]                                                     |    2       |  inf      |
-| Niacin (B3) [g]                                                |    0.0154  |    0.9    |
-| Pyridoxine (B6) [g]                                            |    0.0017  |    0.025  |
-| Vitamin K [g]                                                  |    7e-05   |  inf      |
+| Total carbohydrates [g]                                            |  259       |  401      |
+| Dietary fibre [g]                                                  |   30       |  inf      |
+| Fat of which monounsaturated fatty acids [g]                       |   25.6     |   44.5    |
+| Fat of which saturated fatty acids [g]                             |    0       |   29.7    |
+| Total Fat [g]                                                      |   51.2     |  103.9    |
+| Linoleic acid [g]                                                  |   10.2     |  inf      |
+| Eicosapentaenoic acid (EPA) and docosahexaenoic acid (DHA) [g]     |    0.25    |  inf      |
+| Alpha-linolenic acid [g]                                           |    1.28    |  inf      |
+| Protein [g]                                                        |   50       |  inf      |
+| Calcium [g]                                                        |    0.95    |    2.5    |
+| Fluoride [g]                                                       |    0.0034  |    0.007  |
+| Molybdenum [g]                                                     |    6.5e-05 |    0.0006 |
+| Potassium [g]                                                      |    3.5     |  inf      |
+| Manganese [g]                                                      |    0.003   |  inf      |
+| Copper [g]                                                         |    0.0016  |    0.005  |
+| Phosphorus [g]                                                     |    0.55    |  inf      |
+| Iron [g]                                                           |    0.011   |  inf      |
+| Magnesium [g]                                                      |    0.35    |  inf      |
+| Iodine [g]                                                         |    0.00015 |    0.0006 |
+| Selenium [g]                                                       |    7e-05   |    0.0003 |
+| Zinc [g]                                                           |    0.0094  |    0.025  |
+| Chloride [g]                                                       |    3.1     |  inf      |
+| Sodium [g]                                                         |    0.2     |    2      |
+| Niacin (B3) [g]                                                    |    0.0154  |    0.9    |
+| Pyridoxine (B6) [g]                                                |    0.0017  |    0.025  |
+| Vitamin K [g]                                                      |    7e-05   |  inf      |
 | Folate (B9) [DFE-grams]                                            |    0.00033 |    0.001  |
-| Vitamin C [g]                                                  |    0.11    |  inf      |
-| Vitamin E [g]                                                  |    0.013   |    0.3    |
-| Riboflavin (B2) [g]                                            |    0.0016  |  inf      |
-| Pantothenic acid (B5) [g]                                      |    0.005   |  inf      |
-| Biotin (B7) [g]                                                |    4e-05   |  inf      |
-| Thiamine (B1) [g]                                              |    0.0001  |  inf      |
-| Vitamin D [g]                                                  |    1.5e-05 |    0.0001 |
-| Vitamin A [g]                                                  |    0.00075 |    0.003  |
+| Vitamin C [g]                                                      |    0.11    |  inf      |
+| Vitamin E [g]                                                      |    0.013   |    0.3    |
+| Riboflavin (B2) [g]                                                |    0.0016  |  inf      |
+| Pantothenic acid (B5) [g]                                          |    0.005   |  inf      |
+| Biotin (B7) [g]                                                    |    4e-05   |  inf      |
+| Thiamine (B1) [g]                                                  |    0.00096 |  inf      |
+| Cobalamin (B12) [g]                                                |    4e-06   |  inf      |
+| Vitamin D [g]                                                      |    1.5e-05 |    0.0001 |
+| Vitamin A [g]                                                      |    0.00075 |    0.003  |
 
 </Details>
 
@@ -456,16 +457,16 @@ You can look up the corresponding food on the Migros website by replacing \{id} 
 
 ### Diminishing Returns
 
-As expected, the price rises the fewer ingredients are permitted. 
+As expected, the price rises as fewer ingredients are permitted.
 However, the additional cost benefit of including further ingredients becomes negligible relatively quickly. The impact of the chosen nutritional requirements is significantly greater.
 
-`Min` is the cheapest at 0.79 CHF per day, whilst `Max` is by far the most expensive at at least 8.36 CHF. This comes as little surprise.
+`Min` is the cheapest at 0.78 CHF per day, whilst `Max` is by far the most expensive at least 8.79 CHF. This comes as little surprise.
 
 More interesting is the comparison between `Stigler` and `Hybrid`. Although `Hybrid` takes more nutrients into account, it is cheaper than `Stigler` for many permitted ingredients.
 
 My guess is that this is mainly due to the different calorie requirements. Whilst `Stigler` requires at least 3,000 kcal, `Hybrid` only needs between 2,305 and 2,672 kcal.
 
-For many ingredients, the solver can cover the additional vitamins and minerals required by `Hybrid` using small quantities of cheaper dietary supplements, which makes the upper limit smaller than that of `Stigler` with its higher calorie requirement. 
+For many ingredients, the solver can cover the additional vitamins and minerals required by `Hybrid` using small quantities of cheap dietary supplements. Combined with its lower calorie requirement, this allows `Hybrid` to achieve a lower minimum cost than `Stigler`.
 If fewer ingredients are permitted, this strategy becomes increasingly less effective, as individual foods must meet several requirements simultaneously.
 
 `Stigler` has an advantage here, as fewer nutrients are taken into account and there are no upper limits. Consequently, `Stigler` is once again the cheaper option when only a few ingredients are permitted.
@@ -474,7 +475,7 @@ If fewer ingredients are permitted, this strategy becomes increasingly less effe
 
 Both `Min` and `Stigler` can meet their requirements with just a single ingredient. `Hybrid`, on the other hand, requires at least two.
 
-For `Min`, the solution consists of around 572 g of Migros sunflower seed bread mix. `Hybrid` combines around 556 g of the same bread mix with 23.75 g of Actilife All in One Power Boost Direct Sticks.
+For `Min`, the solution consists of around 547 g plain M-Budget Crunchy muesli. `Hybrid` combines around 532 g of the same muesli with 23.75 g of Actilife All in One Power Boost Direct Sticks.
 
 Coincidentally, I have these sticks at home myself and occasionally use them as a coffee substitute in the morning.
 
@@ -484,14 +485,13 @@ By way of comparison, the FDA states that 400 mg per day is a level that does no
 The results become even more absurd with `Max`. As infant formula and follow-on formula contain particularly detailed nutritional information and cover many vitamins and minerals, 
 the solutions with few ingredients consist mainly of these products.
 
-This also explains the striking jump in price at `Stigler` from 1.44 CHF for two ingredients to 8.40 CHF for one ingredient: the cheapest solution then consists of 5.175 kg of follow-on formula per day.
+This also explains the striking jump in price at `Stigler` from 1.44 CHF for two ingredients to 18.22 CHF for one ingredient: the cheapest solution then consists of 5.175 kg of follow-on formula per day.
 
 This is pretty much the exact opposite of a practical diet, which is what I actually wanted to achieve by limiting the number of ingredients.
 
 ### Stigler's Diet: 1945 vs. 2026
 
-To compare my results with Stigler’s original diet, I allowed five ingredients (the same number as the solution in Stigler’s paper).
-
+To compare my results with Stigler’s original diet, I allowed five ingredients (the same number as the solution in Stigler’s paper) and again used the nutritional requirements from 1945.
 
 | Food                                                      |   Amount [g] |   Price [CHF] |
 |:----------------------------------------------------------|-----------------:|--------------:|
@@ -537,40 +537,39 @@ For my final recipe, I’ve opted for `Hybrid`.
 
 I’ve opted for $K = 7$, as an eighth ingredient would make virtually no difference to the price and is only required in a tiny amount (12.5 mg).
 
-
 | Food                                                      |   Amount [g] |   Price [CHF] |
 |:----------------------------------------------------------|-----------------:|--------------:|
-| Migros · Hörnli · aus Hartweizengriess [100024965]        |       337.62     |    0.33762    |
-| M-Classic · Vollkorn-Haferflocken · grob [100039746]      |       230.449    |    0.322629   |
-| M-Budget · Rapsöl  [100158988]                            |        29.4226   |    0.111934   |
-| Jura Sel · Salz · jodiert & fluoridiert [100001090]       |         5.02055  |    0.00527158 |
-| Actilife · All in One Depot Tabletten [100122598]         |         2.8875   |    0.168437   |
-| Actilife · Calcium 600 Tabletten [100181112]              |         1.30052  |    0.114157   |
-| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |         0.745446 |    0.0911101  |
-| Total                                                     |       607.446    |    1.15116    |
+| Migros · Hörnli · aus Hartweizengriess [100024965]        |       337.62     |   0.33762     |
+| M-Classic · Vollkorn-Haferflöckli · fein [100041823]      |       230.449    |   0.322628    |
+| M-Budget · Rapsöl  [100158988]                            |        29.4227   |   0.111934    |
+| Actilife · All in One Depot Tabletten [100122598]         |         2.8875   |   0.168438    |
+| Actilife · Calcium 600 Tabletten [100181112]              |         1.30053  |   0.114158    |
+| Actilife · Vegetarier Depot Tabletten · vegan [100093898] |         0.745446 |   0.0911101   |
+| Jura Sel · Salz · jodiert & fluoridiert [100001090]       |         0.440401 |   0.000462421 |
+| Total                                                     |       602.866    |   1.14635     |
 
 <Details title="Nutritional breakdown">
 
 | Nutrient                                   |        Min |         Total |      Max |
 |:-------------------------------------------|-----------:|--------------:|---------:|
 | Energy [kcal]                              | 2305       | 2305          | 2672     |
-| Total carbohydrates [g]                |  259       |  377.49       |  401     |
-| Protein [g]                            |   50       |   70.4728     |  inf     |
-| Dietary fibre [g]                      |   30       |   30          |  inf     |
-| Fat of which saturated fatty acids [g] |    0       |    6.00997    |   29.7   |
-| Total fat [g]                          |   51.2     |   51.2        |  103.9   |
-| Sodium [g]                             |    2       |    2          |  inf     |
-| Iron [g]                               |    0.011   |    0.011      |  inf     |
-| Calcium [g]                            |    0.95    |    0.95       |    2.5   |
-| Vitamin A [g]                          |    0.00075 |    0.00077    |    0.003 |
-| Thiamine (B1) [g]                      |    0.0001  |    0.00105875 |  inf     |
-| Riboflavin (B2) [g]                    |    0.0016  |    0.00204325 |  inf     |
-| Niacin (B3) [g]                        |    0.0154  |    0.0154     |    0.9   |
-| Vitamin C [g]                          |    0.11    |    0.173879   |  inf     |
+| Total carbohydrates [g]                    |  259       |  377.49       |  401     |
+| Protein [g]                                |   50       |   70.4728     |  inf     |
+| Dietary fibre [g]                          |   30       |   30          |  inf     |
+| Fat of which saturated fatty acids [g]     |    0       |    6.00997    |   29.7   |
+| Total Fat [g]                              |   51.2     |   51.2        |  103.9   |
+| Sodium [g]                                 |    0.2     |    0.2        |    2     |
+| Iron [g]                                   |    0.011   |    0.011      |  inf     |
+| Calcium [g]                                |    0.95    |    0.95       |    2.5   |
+| Vitamin A [g]                              |    0.00075 |    0.00077    |    0.003 |
+| Thiamine (B1) [g]                          |    0.00096 |    0.00105875 |  inf     |
+| Riboflavin (B2) [g]                        |    0.0016  |    0.00204325 |  inf     |
+| Niacin (B3) [g]                            |    0.0154  |    0.0154     |    0.9   |
+| Vitamin C [g]                              |    0.11    |    0.173879   |  inf     |
 
 </Details>
 
-With daily costs of 1.15 CHF, this works out at 420.17 CHF per year. Coincidentally, this is only slightly more than half of Stigler’s inflation-adjusted annual cost of subsistence.
+With daily costs of 1.15 CHF, this works out at 418.42 CHF per year. Coincidentally, this is only slightly more than half of Stigler’s inflation-adjusted annual cost of subsistence.
 
 
 ### The Catch
@@ -622,7 +621,7 @@ At least I’ve learnt something from it: ‘mathematically optimal’ obviously
 
 ## Addendum
 
-I also ran the optimisation using a different dataset: the [Swiss Food Composition Database](https://naehrwertdaten.ch/en/) , provided by the Federal Food Safety and Veterinary Office (FSVO).
+I also ran the optimisation using a different dataset: the [Swiss Food Composition Database](https://naehrwertdaten.ch/en/), provided by the Federal Food Safety and Veterinary Office (FSVO).
 
 Since this database contains nutritional information about generic foods rather than specific supermarket products, 
 I manually matched the foods with prices from [Agrimarketdata](https://www.agrimarketdata.ch/) and the [Swiss Federal Statistical Office](https://statistik.admin.ch/de/asset/36773855).
@@ -633,38 +632,37 @@ So take the following result with a grain of salt.
 
 Nevertheless, I ran the optimisation without any limit on the number of ingredients ($K$).
 
-The resulting diet costs 583.99 CHF per year, or approximately 1.60 CHF per day.
+The resulting diet costs 432.15 CHF per year, or approximately 1.18 CHF per day.
 
-While more expensive than my previous solution, it is hopefully also somewhat healthier. Given the limitations of the dataset, however, I wouldn't put too much trust in the exact numbers.
+While a bit more expensive than my previous solution, it is hopefully also somewhat healthier. Given the limitations of the dataset, however, I wouldn't put too much trust in the exact numbers.
 
-| Food                                    |   Amount [g] |   Price [CHF] |
+| Food                                    |   Amount [g]     |   Price [CHF] |
 |:----------------------------------------|-----------------:|--------------:|
-| Wheat, soft, whole grain                |         329.629  |      0.187526 |
-| Brown bread                             |         258.06   |      0.51612  |
-| Bell pepper, red, raw                   |          71.9976 |      0.272871 |
-| Skimmed milk powder                     |          59.7005 |      0.294323 |
-| Carrot, raw                             |          49.3425 |      0.095231 |
-| Sunflower oil                           |          41.3036 |      0.233904 |
-| Total                                   |         810.033  |      1.59998  |
+| Wheat, soft, whole grain                |         515.823  |     0.293452  |
+| Bell pepper, red, raw                   |          72.016  |     0.272941  |
+| Skimmed milk powder                     |          58.9474 |     0.290611  |
+| Carrot, raw                             |          48.9428 |     0.0944596 |
+| Sunflower oil                           |          41.0579 |     0.232513  |
+| Total                                   |         736.787  |     1.18398   |
 
 <Details title="Nutritional breakdown">
 
 | Nutrient                                   |        Min |         Total |      Max |
 |:-------------------------------------------|-----------:|--------------:|---------:|
 | Energy [kcal]                              | 2305       | 2305          | 2672     |
-| Total carbohydrates [g]                |  259       |  348.926      |  401     |
-| Protein [g]                            |   50       |   83.5147     |  inf     |
-| Dietary fibre [g]                      |   30       |   56.9773     |  inf     |
-| Fat of which saturated fatty acids [g] |    0       |    6.49725    |   29.7   |
-| Total fat [g]                          |   51.2     |   51.2        |  103.9   |
-| Sodium [g]                             |    2       |    2          |  inf     |
-| Iron [g]                               |    0.011   |    0.0154613  |  inf     |
-| Calcium [g]                            |    0.95    |    0.95       |    2.5   |
-| Vitamin A [g]                          |    0.00075 |    0.00075    |    0.003 |
-| Thiamine (B1) [g]                      |    0.0001  |    0.00234921 |  inf     |
-| Riboflavin (B2) [g]                    |    0.0016  |    0.00185819 |  inf     |
-| Niacin (B3) [g]                        |    0.0154  |    0.0212117  |    0.9   |
-| Vitamin C [g]                          |    0.11    |    0.11       |  inf     |
+| Total carbohydrates [g]                    |  259       |  345.167      |  401     |
+| Protein [g]                                |   50       |   79.9646     |  inf     |
+| Dietary fibre [g]                          |   30       |   71.1502     |  inf     |
+| Fat of which saturated fatty acids [g]     |    0       |    6.50753    |   29.7   |
+| Total Fat [g]                              |   51.2     |   51.2        |  103.9   |
+| Sodium [g]                                 |    0.2     |    0.384226   |    2     |
+| Iron [g]                                   |    0.011   |    0.017284   |  inf     |
+| Calcium [g]                                |    0.95    |    0.95       |    2.5   |
+| Vitamin A [g]                              |    0.00075 |    0.00075    |    0.003 |
+| Thiamine (B1) [g]                          |    0.00096 |    0.00260949 |  inf     |
+| Riboflavin (B2) [g]                        |    0.0016  |    0.00182848 |  inf     |
+| Niacin (B3) [g]                            |    0.0154  |    0.027808   |    0.9   |
+| Vitamin C [g]                              |    0.11    |    0.11       |  inf     |
 
 </Details>
 
