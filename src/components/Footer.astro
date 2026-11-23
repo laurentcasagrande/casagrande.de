@@ -10,15 +10,16 @@ const year = new Date().getFullYear();
 
 footer {
   position: absolute;
-  bottom: 0;
+  bottom: 0px;
   left: 5%;
   width: 90%;
   box-sizing: border-box;
-  height: 1em;
-  padding: 5px;
+  padding-bottom: 10px;
   overflow: hidden;
-  background-color: var(--footer-bg);
-  color: var(--default-text);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 footer p {
